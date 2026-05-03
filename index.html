@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reserva tu Cita</title>
+    <style>
+        /* Diseño General Mobile-First */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: #e9ecef; color: #444; }
+        .mobile-container { max-width: 420px; margin: auto; background: white; min-height: 100vh; box-shadow: 0 0 15px rgba(0,0,0,0.1); padding-bottom: 40px; }
+        
+        /* Cabecera y Foto de Perfil */
+        .banner { background-color: #d66b8d; height: 130px; width: 100%; }
+        .perfil-container { text-align: center; margin-top: -65px; }
+        .perfil-img { width: 130px; height: 130px; border-radius: 50%; border: 4px solid white; object-fit: cover; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .titulo { font-size: 28px; font-weight: 300; color: #333; margin: 10px 0 5px 0; }
+        .subtitulo { font-size: 15px; color: #666; margin-bottom: 20px; }
+        
+        /* Botones Generales */
+        .btn-main { background-color: #d66b8d; color: white; border: none; padding: 14px 20px; font-size: 16px; border-radius: 5px; width: 90%; margin: 0 auto; display: block; cursor: pointer; font-weight: bold; transition: background 0.3s; }
+        .btn-main:disabled { background-color: #ccc; cursor: not-allowed; }
+        
+        /* Sistema de Reservas */
+        .reserva-container { text-align: center; padding: 20px; margin-top: 10px; border-top: 1px solid #eee; background: #fdfdfd; }
+        
+        /* Lista de Multiselección (Checkboxes) */
+        .checkbox-group { text-align: left; margin-bottom: 20px; background: #fff; border: 1px solid #ccc; border-radius: 5px; max-height: 220px; overflow-y: auto; padding: 15px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+        .grupo-titulo { font-weight: bold; color: #b85273; margin: 15px 0 8px 0; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        .grupo-titulo:first-child { margin-top: 0; }
+        .checkbox-label { display: block; padding: 8px 0; font-size: 15px; color: #555; cursor: pointer; }
+        .checkbox-label input[type="checkbox"] { margin-right: 12px; transform: scale(1.3); accent-color: #d66b8d; cursor: pointer; }
+        
+        /* Carrusel de Fechas y Horas */
+        .carrusel-dias { display: flex; justify-content: space-between; align-items: center; margin: 20px auto; width: 90%; }
+        .btn-flecha { background: none; border: none; font-size: 35px; color: #d66b8d; cursor: pointer; padding: 0 10px; font-weight: bold; }
+        .btn-flecha:disabled { color: #e0e0e0; cursor: not-allowed; }
+        #fecha-actual-texto { font-size: 18px; color: #555; margin: 0; font-weight: 400; flex-grow: 1; text-align: center; }
+        .opciones-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 20px; }
+        .chip { padding: 10px 18px; background: #d66b8d; color: white; border-radius: 5px; cursor: pointer; user-select: none; font-size: 14px; opacity: 0.6; transition: 0.2s; }
+        .chip.activo { opacity: 1; transform: scale(1.05); font-weight: bold; box-shadow: 0 3px 6px rgba(214, 107, 141, 0.4); }
+        
+        /* Input Nombre */
+        .input-nombre { width: 90%; padding: 12px; border: 1px solid #ccc; border-radius: 5px; margin-bottom: 15px; font-size: 15px; box-sizing: border-box; text-align: center; background: #fff; }
+        #mensaje-error { color: #ff4d4d; text-align: center; display: none; margin-top: 10px; font-size: 14px; font-weight: bold; }
+        
+        /* Secciones de Información */
+        .seccion { padding: 25px 30px; border-top: 1px solid #f0f0f0; }
+        .seccion-titulo { font-size: 17px; color: #555; text-align: center; margin-bottom: 15px; font-weight: normal; }
+        .seccion p { font-size: 14px; line-height: 1.6; color: #666; text-align: justify; margin: 0; }
+        
+        /* MENÚ DE SERVICIOS Y PAQUETES (ACORDEÓN Y CAJAS BICOLOR) */
+        details.acordeon-servicios { margin-bottom: 15px; }
+        details.acordeon-servicios summary { font-size: 16px; color: #555; text-align: center; cursor: pointer; list-style: none; font-weight: bold; padding: 12px; background: #f9f9f9; border-radius: 5px; border: 1px solid #eee; }
+        details.acordeon-servicios summary::-webkit-details-marker { display: none; }
+        .servicio-fila { display: flex; margin-top: 10px; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .Anuncio { display: flex; margin-top: 10px; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .servicio-nombre { background-color: #d66b8d; color: white; padding: 15px; flex-grow: 1; font-weight: 500; font-size: 14px; }
+        .anuncio-color { background-color: #b85273; color: white; padding: 15px; flex-grow: 1; font-weight: 500; font-size: 14px; }
+        .servicio-precio { background-color: #b85273; color: white; padding: 15px; min-width: 60px; text-align: center; font-weight: bold; font-size: 15px; }
+
+        /* Listas y Tablas */
+        .horarios-tabla { width: 100%; font-size: 14px; color: #666; margin: 0 auto; max-width: 250px; }
+        .horarios-tabla td { padding: 6px 0; }
+        .horarios-tabla td:first-child { font-weight: bold; width: 45%; color: #444; }
+        
+        /* Contacto */
+        .contacto-item { display: flex; align-items: center; gap: 15px; padding: 12px 0; font-size: 14px; color: #444; border-bottom: 1px solid #f5f5f5; }
+        .contacto-item:last-child { border: none; }
+        .link-mapa { color: #d66b8d; text-decoration: none; display: block; text-align: center; margin-top: 5px; font-size: 14px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="mobile-container">
+    
+    <!-- Cabecera -->
+    <header>
+        <div class="banner"></div>
+        <div class="perfil-container">
+            <img class="perfil-img" src="C:\Users\lange\OneDrive\Desktop\Sistema_Reservas\Logo.jpeg">
+            <h1 class="titulo">Depilación con cera</h1>
+            <p class="subtitulo">Facial y corporal<br><br>Exclusivo damas</p>
+            <button id="btn-mostrar-reservas" class="btn-main">✓ Agendar una Cita</button>
+        </div>
+    </header>
+
+    <!-- Zona interactiva OCULTA INICIALMENTE -->
+    <div id="zona-reservas" class="reserva-container" style="display: none;">
+        
+        <p style="color: #666; font-size: 14px; margin-bottom: 10px;">1. Selecciona uno o más servicios:</p>
+        
+        <!-- Lista de Multiselección con Scroll (ACTUALIZADA) -->
+        <div class="checkbox-group">
+            <div class="grupo-titulo">Depilación Facial</div>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Ceja ($100)"> Ceja - $100</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Bozo ($60)"> Bozo - $60</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Frente ($60)"> Frente - $60</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Nariz ($40)"> Nariz - $40</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Patillas ($80)"> Patillas - $80</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Barbilla ($50)"> Barbilla - $50</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Cuello ($50)"> Cuello - $50</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Mejillas ($60)"> Mejillas - $60</label>
+
+            <div class="grupo-titulo" style="margin-top: 15px;">Depilación Corporal</div>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Axilas ($100)"> Axilas - $100</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Brazos ($350)"> Brazos - $350</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="1/2 Brazo ($280)"> 1/2 Brazo - $280</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Manos ($50)"> Manos - $50</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Dedos ($50)"> Dedos - $50</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Bikini Completo ($300)"> Bikini Completo - $300</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Línea de bikini ($260)"> Línea de bikini - $260</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Interglútea ($100)"> Interglúteo - $100</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Glúteos ($280)"> Glúteos - $280</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Piernas Completas ($450)"> Piernas Completas - $450</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="1/2 Pierna ($350)"> 1/2 Pierna - $350</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Abdomen Completo ($250)"> Abdomen Completo - $250</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="1/2 Abdomen ($150)"> 1/2 Abdomen - $150</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Caminito de ombligo ($100)"> Caminito de ombligo - $100</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Espalda Completa ($350)"> Espalda Completa - $350</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="1/2 Espalda ($250)"> 1/2 Espalda - $250</label>
+            
+            <div class="grupo-titulo" style="margin-top: 15px;">Paquetes Especiales</div>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Paquete Playa ($600)"> Paquete Playa - $600</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Paquete Completo ($680)"> Paquete Completo - $680</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Paquete Facial ($370)"> Paquete Facial - $370</label>
+        </div>
+
+        <p style="color: #666; font-size: 14px; margin-top: 20px;">2. Selecciona la fecha y hora:</p>
+
+        <div class="carrusel-dias">
+            <button id="btn-prev" class="btn-flecha" onclick="cambiarDia(-1)" disabled>&#8592;</button>
+            <h3 id="fecha-actual-texto">Buscando días...</h3>
+            <button id="btn-next" class="btn-flecha" onclick="cambiarDia(1)" disabled>&#8594;</button>
+        </div>
+
+        <div id="seccion-horarios">
+            <div id="horarios-container" class="opciones-container"></div>
+            
+            <p style="color: #666; font-size: 14px; margin-top: 20px;">3. Ingresa tu nombre:</p>
+            <input type="text" id="nombre-cliente" class="input-nombre" placeholder="Ej. María Pérez" required>
+
+            <button id="btn-whatsapp" class="btn-main" style="margin-top: 5px; background-color: #25D366;">Confirmar por WhatsApp</button>
+            <p id="mensaje-error">Por favor completa todos los pasos.</p>
+        </div>
+    </div>
+
+    <!-- Sección Acerca de -->
+    <section class="seccion">
+        <h3 class="seccion-titulo">📋 Información</h3>
+        <p>El servicio de depilación se realiza con cera de colágeno para piel sensible. <br>Mi compromiso es ofrecerte un servicio higiénico y seguro, con la finalidad de que te sientas cómoda y bella.</p>
+    </section>
+
+    <!-- MENÚS DESPLEGABLES -->
+    <section class="seccion" style="padding-top: 10px; padding-bottom: 5px;">
+        <details class="acordeon-servicios">
+            <summary>≡ Depilación Facial ▼</summary>
+            <div class="servicio-fila"><div class="servicio-nombre">Ceja</div><div class="servicio-precio">$100</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Bozo</div><div class="servicio-precio">$60</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Frente</div><div class="servicio-precio">$60</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Nariz</div><div class="servicio-precio">$40</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Patillas</div><div class="servicio-precio">$80</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Barbilla</div><div class="servicio-precio">$50</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Cuello</div><div class="servicio-precio">$50</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Mejillas</div><div class="servicio-precio">$60</div></div>
+        </details>
+        
+        <details class="acordeon-servicios">
+            <summary>≡ Depilación Corporal ▼</summary>
+            <div class="servicio-fila"><div class="servicio-nombre">Axilas</div><div class="servicio-precio">$100</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Brazos</div><div class="servicio-precio">$350</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">1/2 Brazo</div><div class="servicio-precio">$280</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Manos</div><div class="servicio-precio">$50</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Dedos</div><div class="servicio-precio">$50</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Bikini Completo</div><div class="servicio-precio">$300</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Línea de bikini</div><div class="servicio-precio">$260</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Interglúteo</div><div class="servicio-precio">$100</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Glúteos</div><div class="servicio-precio">$280</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Piernas Completas</div><div class="servicio-precio">$450</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">1/2 Pierna</div><div class="servicio-precio">$350</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Abdomen Completo</div><div class="servicio-precio">$250</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">1/2 Abdomen</div><div class="servicio-precio">$150</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Caminito de ombligo</div><div class="servicio-precio">$100</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Espalda Completa</div><div class="servicio-precio">$350</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">1/2 Espalda</div><div class="servicio-precio">$250</div></div>
+        </details>
+
+        <details class="acordeon-servicios">
+            <summary>≡ Paquetes Especiales ▼</summary>
+            <div class="servicio-fila"><div class="servicio-nombre">Paquete playa:<br>Cejas + Bozo + Axilas + Piernas completas + Línea de bikini</div><div class="servicio-precio"><br>$600</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Paquete completo:<br>Cejas + Bozo + Axilas + Piernas completas + Bikini completo</div><div class="servicio-precio"><br>$680</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Paquete Facial: <br>Cejas + Frente + Patillas + Mejillas + Nariz + Bozo + Barbilla + Cuello</div><div class="servicio-precio"><br>$370</div></div>
+            <div class="Anuncio"><div class="anuncio-color"><p style="text-align: center; color: white; margin: 0;">No se hacen cambios de áreas.<br> En caso de vello muy abundante o grueso se cobra extra.</p></div></div>
+        </details>
+    </section>
+
+    <!-- Sección Horarios Generales -->
+    <section class="seccion">
+        <h3 class="seccion-titulo">🕒 Horarios de atención</h3>
+        <table class="horarios-tabla">
+            <tr><td>Lunes a Viernes</td><td>10:00 a 13:00 <br> 15:00 a 20:00</td></tr>
+            <tr><td>Sábados</td><td>10:00 a las 15:00</td></tr>
+            <tr><td>Domingos</td><td>Cerrado</td></tr>
+        </table>
+    </section>
+
+    <!-- Sección Contacto -->
+    <section class="seccion">
+        <div class="contacto-item">📞 <span>81 3273 1350</span></div>
+        <div class="contacto-item">🅵 <span>Cecy Perales Depilación</span></div>
+        
+        <div style="margin-top: 30px; text-align: center;">
+            <p style="font-weight: bold; margin-bottom: 5px; color: #444;">📍 Dirección</p>
+            <p style="font-size: 14px; margin-bottom: 5px;">Plutarco Elías Calles 3102, Riberas del Río<br>Guadalupe, Nuevo León</p>
+            <a href="https://maps.app.goo.gl/12PVvMo1RKXYBcTF8" class="link-mapa">Ver en Google Maps</a>
+        </div>
+    </section>
+
+</div>
+
+<!-- Conexión con Firebase -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+    import { getFirestore, collection, getDocs, addDoc, doc, updateDoc, arrayRemove } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDNjqux_hDFWfflfF4FhDh7cNmh3W5oRVQ",
+        authDomain: "depilacion-reservas.firebaseapp.com",
+        projectId: "depilacion-reservas",
+        storageBucket: "depilacion-reservas.firebasestorage.app",
+        messagingSenderId: "246526216829",
+        appId: "1:246526216829:web:324c7887234eb9a9ce7f14",
+        measurementId: "G-5Q500M6E14"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let fechasDisponiblesArray = []; 
+    let indiceDiaActual = 0; 
+    let diasDisponiblesObj = {}; 
+    let horaSeleccionada = null;
+
+    const btnMostrarReservas = document.getElementById('btn-mostrar-reservas');
+    const zonaReservas = document.getElementById('zona-reservas');
+    const fechaActualTexto = document.getElementById('fecha-actual-texto');
+    const btnPrev = document.getElementById('btn-prev');
+    const btnNext = document.getElementById('btn-next');
+    const horariosContainer = document.getElementById('horarios-container');
+    const btnWhatsapp = document.getElementById('btn-whatsapp');
+    const inputNombre = document.getElementById('nombre-cliente');
+    const mensajeError = document.getElementById('mensaje-error');
+
+    btnMostrarReservas.addEventListener('click', () => {
+        zonaReservas.style.display = 'block';
+        zonaReservas.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    async function cargarDisponibilidad() {
+        try {
+            const querySnapshot = await getDocs(collection(db, "disponibilidad"));
+            diasDisponiblesObj = {}; 
+            
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                if (data.activo && data.horarios && data.horarios.length > 0) {
+                    diasDisponiblesObj[doc.id] = data.horarios.sort(); 
+                }
+            });
+
+            fechasDisponiblesArray = Object.keys(diasDisponiblesObj).sort();
+
+            if (fechasDisponiblesArray.length > 0) {
+                indiceDiaActual = 0; 
+                actualizarVistaCarrusel();
+            } else {
+                fechaActualTexto.textContent = "Sin fechas disponibles";
+                horariosContainer.innerHTML = "";
+            }
+        } catch (error) {
+            fechaActualTexto.textContent = "Error de conexión";
+        }
+    }
+
+    window.cambiarDia = function(direccion) {
+        indiceDiaActual += direccion;
+        actualizarVistaCarrusel();
+    }
+
+    function actualizarVistaCarrusel() {
+        btnPrev.disabled = (indiceDiaActual === 0);
+        btnNext.disabled = (indiceDiaActual === fechasDisponiblesArray.length - 1);
+        const fechaStr = fechasDisponiblesArray[indiceDiaActual];
+        
+        fechaActualTexto.textContent = fechaStr;
+        horaSeleccionada = null; 
+
+        horariosContainer.innerHTML = "";
+        diasDisponiblesObj[fechaStr].forEach(hora => {
+            const chip = document.createElement('div');
+            chip.className = 'chip';
+            chip.textContent = hora;
+            chip.onclick = () => seleccionarHora(hora, chip);
+            horariosContainer.appendChild(chip);
+        });
+    }
+
+    window.seleccionarHora = function(hora, elementoChip) {
+        horaSeleccionada = hora;
+        document.querySelectorAll('#horarios-container .chip').forEach(c => c.classList.remove('activo'));
+        elementoChip.classList.add('activo');
+    }
+
+    btnWhatsapp.addEventListener('click', async () => {
+        const casillasMarcadas = document.querySelectorAll('.servicio-checkbox:checked');
+        const diaSeleccionado = fechasDisponiblesArray[indiceDiaActual]; 
+        const nombreCliente = inputNombre.value.trim();
+
+        if (casillasMarcadas.length === 0 || !diaSeleccionado || !horaSeleccionada || nombreCliente === "") {
+            mensajeError.textContent = "Por favor selecciona servicio, hora y escribe tu nombre.";
+            mensajeError.style.display = 'block';
+            setTimeout(() => mensajeError.style.display = 'none', 3000);
+            return;
+        }
+
+        let listaServicios = [];
+        casillasMarcadas.forEach(casilla => listaServicios.push(casilla.value));
+        const textoServicios = listaServicios.join(', ');
+
+        btnWhatsapp.textContent = "Procesando...";
+        btnWhatsapp.disabled = true;
+
+        try {
+            await addDoc(collection(db, "citas"), {
+                nombre: nombreCliente,
+                servicios: textoServicios,
+                fecha: diaSeleccionado,
+                hora: horaSeleccionada,
+                estado: "pendiente", 
+                creada: new Date().toISOString()
+            });
+
+            const docRef = doc(db, "disponibilidad", diaSeleccionado);
+            await updateDoc(docRef, {
+                horarios: arrayRemove(horaSeleccionada)
+            });
+
+            const telefono = "528132731350"; 
+            const textoMensaje = `Hola, soy ${nombreCliente}. Acabo de solicitar una cita en la página web.%0A%0A*Servicios:* ${textoServicios}%0A*Día:* ${diaSeleccionado}%0A*Hora:* ${horaSeleccionada}%0A%0A¿Me confirmas para mandar el anticipo?`;
+            window.open(`https://wa.me/${telefono}?text=${textoMensaje}`, '_blank');
+
+            inputNombre.value = "";
+            document.querySelectorAll('.servicio-checkbox:checked').forEach(c => c.checked = false);
+            btnWhatsapp.textContent = "Confirmar por WhatsApp";
+            btnWhatsapp.disabled = false;
+            cargarDisponibilidad(); 
+
+        } catch (error) {
+            mensajeError.textContent = "Hubo un error al procesar tu cita. Intenta de nuevo.";
+            mensajeError.style.display = 'block';
+            btnWhatsapp.textContent = "Confirmar por WhatsApp";
+            btnWhatsapp.disabled = false;
+        }
+    });
+
+    cargarDisponibilidad();
+</script>
+</body>
+</html>
