@@ -350,8 +350,7 @@
 
             const telefono = "528132731350"; 
             const textoMensaje = `Hola, soy ${nombreCliente}. Acabo de solicitar una cita en la página web.%0A%0A*Servicios:* ${textoServicios}%0A*Día:* ${diaSeleccionado}%0A*Hora:* ${horaSeleccionada}%0A%0A¿Me confirmas para mandar el anticipo?`;
-            window.open(`https://wa.me/${telefono}?text=${textoMensaje}`, '_blank');
-
+window.location.href = `https://wa.me/${telefono}?text=${textoMensaje}`;
             inputNombre.value = "";
             document.querySelectorAll('.servicio-checkbox:checked').forEach(c => c.checked = false);
             btnWhatsapp.textContent = "Confirmar por WhatsApp";
