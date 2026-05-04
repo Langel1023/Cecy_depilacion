@@ -1,10 +1,17 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reserva tu Cita</title>
     <link rel="icon" type="image/jpeg" href="Logo.jpeg">
+    <!-- Metaetiquetas para que el link se vea bonito en WhatsApp -->
+    <meta property="og:title" content="Cecy Perales | Depilación con Cera">
+    <meta property="og:description" content="Agenda tu cita de depilación facial y corporal. Servicio higiénico y seguro, exclusivo para damas.">
+    <meta property="og:image" content="https://main.d30cuqwqnc3p7f.amplifyapp.com/Logo.jpeg">
+    <meta property="og:url" content="https://main.d30cuqwqnc3p7f.amplifyapp.com/">
+    <meta property="og:type" content="website">
     <style>
         /* Diseño General Mobile-First */
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: #e9ecef; color: #444; }
@@ -44,11 +51,17 @@
         .input-nombre { width: 90%; padding: 12px; border: 1px solid #ccc; border-radius: 5px; margin-bottom: 15px; font-size: 15px; box-sizing: border-box; text-align: center; background: #fff; }
         #mensaje-error { color: #ff4d4d; text-align: center; display: none; margin-top: 10px; font-size: 14px; font-weight: bold; }
         
-        /* Secciones de Información */
+       /* Secciones de Información (DISEÑO MEJORADO) */
         .seccion { padding: 25px 30px; border-top: 1px solid #f0f0f0; }
-        .seccion-titulo { font-size: 17px; color: #555; text-align: center; margin-bottom: 15px; font-weight: normal; }
-        .seccion p { font-size: 14px; line-height: 1.6; color: #666; text-align: justify; margin: 0; }
+        .seccion-titulo { font-size: 19px; color: #b85273; text-align: center; margin-bottom: 20px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
         
+        .info-card { background: #fff5f8; border-left: 4px solid #d66b8d; border-radius: 8px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .info-card p { font-size: 14.5px; line-height: 1.7; color: #555; text-align: justify; margin: 0 0 15px 0; }
+        .info-card p:last-child { margin-bottom: 0; }
+        
+        .lista-indicaciones { list-style: none; padding: 0; margin: 0; }
+        .lista-indicaciones li { background: #ffffff; margin-bottom: 10px; padding: 12px 15px; border-radius: 6px; font-size: 14px; color: #555; box-shadow: 0 1px 3px rgba(0,0,0,0.04); display: flex; align-items: flex-start; gap: 10px; border: 1px solid #fae3ea; }
+        .lista-indicaciones li::before { content: "✨"; font-size: 14px; flex-shrink: 0; margin-top: 2px; }
         /* MENÚ DE SERVICIOS Y PAQUETES (ACORDEÓN Y CAJAS BICOLOR) */
         details.acordeon-servicios { margin-bottom: 15px; }
         details.acordeon-servicios summary { font-size: 16px; color: #555; text-align: center; cursor: pointer; list-style: none; font-weight: bold; padding: 12px; background: #f9f9f9; border-radius: 5px; border: 1px solid #eee; }
@@ -146,12 +159,22 @@
     </div>
 
     <!-- Sección Acerca de -->
+<!-- Sección Acerca de (DISEÑO MEJORADO) -->
     <section class="seccion">
-        <h3 class="seccion-titulo">📋 Información</h3>
-        <p>El servicio de depilación se realiza con cera de colágeno para piel sensible. <br>Mi compromiso es ofrecerte un servicio higiénico y seguro, con la finalidad de que te sientas cómoda y bella.</p>
-    </section>
+        <h3 class="seccion-titulo">📋 Información </h3>
+        
+        <div class="info-card">
+            <p>La depilación con cera ha demostrado durante muchos años ser el método más efectivo que encontramos en el mercado, y por supuesto, súper accesible.</p>
+            <p style="font-weight: 500; color: #b85273;">Mi compromiso es ofrecerte un servicio en el que te sientas cómoda y bella.</p>
+        </div>
 
-    <!-- MENÚS DESPLEGABLES -->
+        <h4 style="color: #666; font-size: 15px; margin-bottom: 12px; text-align: center;">Indicaciones previas a tu cita:</h4>
+        <ul class="lista-indicaciones">
+            <li>Acudir con la piel completamente limpia (sin maquillaje, sin cremas y sin desodorante).</li>
+            <li>Llevar ropa cómoda y holgada.</li>
+            <li>Si eres menor de edad, deberás acudir acompañada de un adulto.</li>
+        </ul>
+    </section>    <!-- MENÚS DESPLEGABLES -->
     <section class="seccion" style="padding-top: 10px; padding-bottom: 5px;">
         <details class="acordeon-servicios">
             <summary>≡ Depilación Facial ▼</summary>
@@ -326,9 +349,12 @@
             return;
         }
 
-        let listaServicios = [];
-        casillasMarcadas.forEach(casilla => listaServicios.push(casilla.value));
-        const textoServicios = listaServicios.join(', ');
+let listaServicios = [];
+casillasMarcadas.forEach(casilla => {
+    // Esto corta el texto justo antes del " (" para eliminar el precio
+    let servicioSinPrecio = casilla.value.split(" (")[0];
+    listaServicios.push(servicioSinPrecio);
+});        const textoServicios = listaServicios.join(', ');
 
         btnWhatsapp.textContent = "Procesando...";
         btnWhatsapp.disabled = true;
@@ -349,8 +375,8 @@
             });
 
             const telefono = "528132731350"; 
-            const textoMensaje = `Hola, soy ${nombreCliente}. Acabo de solicitar una cita en la página web.%0A%0A*Servicios:* ${textoServicios}%0A*Día:* ${diaSeleccionado}%0A*Hora:* ${horaSeleccionada}%0A%0A¿Me confirmas para mandar el anticipo?`;
-window.location.href = `https://wa.me/${telefono}?text=${textoMensaje}`;
+const textoMensaje = `*${nombreCliente}, Está solicitando la siguiente cita disponible:*%0A%0ADía: ${diaSeleccionado}%0AHora: ${horaSeleccionada}%0AÁreas a depilar: ${textoServicios}%0A%0ASe solicitan los datos de pago, para que se efectúe el Anticipo.`;
+            window.location.href = `https://wa.me/${telefono}?text=${textoMensaje}`;
             inputNombre.value = "";
             document.querySelectorAll('.servicio-checkbox:checked').forEach(c => c.checked = false);
             btnWhatsapp.textContent = "Confirmar por WhatsApp";
