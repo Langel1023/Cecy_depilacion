@@ -133,11 +133,31 @@
             <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Espalda Completa ($350)"> Espalda Completa - $350</label>
             <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="1/2 Espalda ($250)"> 1/2 Espalda - $250</label>
             
-            <div class="grupo-titulo" style="margin-top: 15px;">Paquetes Especiales</div>
-            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Paquete Playa ($600)"> Paquete Playa - $600</label>
-            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Paquete Completo ($680)"> Paquete Completo - $680</label>
-            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Paquete Facial ($370)"> Paquete Facial - $370</label>
-        </div>
+<div class="grupo-titulo" style="margin-top: 15px;">Paquetes Especiales</div>
+            
+<label class="checkbox-label" style="display: flex; align-items: flex-start; margin-bottom: 10px;">
+    <input type="checkbox" class="servicio-checkbox" value="Paquete Playa ($600)" style="margin-top: 2px;"> 
+    <div style="line-height: 1.3;">
+        <strong>Paquete Playa - $600</strong><br>
+        <span style="font-size: 12.5px; color: #888;">Cejas, Bozo, Axilas, Piernas completas y Línea de bikini</span>
+    </div>
+</label>
+
+<label class="checkbox-label" style="display: flex; align-items: flex-start; margin-bottom: 10px;">
+    <input type="checkbox" class="servicio-checkbox" value="Paquete Completo ($680)" style="margin-top: 2px;"> 
+    <div style="line-height: 1.3;">
+        <strong>Paquete Completo - $680</strong><br>
+        <span style="font-size: 12.5px; color: #888;">Cejas, Bozo, Axilas, Piernas completas y Bikini completo</span>
+    </div>
+</label>
+
+<label class="checkbox-label" style="display: flex; align-items: flex-start; margin-bottom: 10px;">
+    <input type="checkbox" class="servicio-checkbox" value="Paquete Facial ($370)" style="margin-top: 2px;"> 
+    <div style="line-height: 1.3;">
+        <strong>Paquete Facial - $370</strong><br>
+        <span style="font-size: 12.5px; color: #888;">Cejas, Frente, Patillas, Mejillas, Nariz, Bozo, Barbilla y Cuello</span>
+    </div>
+</label>        </div>
 
         <p style="color: #666; font-size: 14px; margin-top: 20px;">2. Selecciona la fecha y hora:</p>
 
@@ -151,7 +171,14 @@
             <div id="horarios-container" class="opciones-container"></div>
             
             <p style="color: #666; font-size: 14px; margin-top: 20px;">3. Ingresa tu nombre:</p>
-            <input type="text" id="nombre-cliente" class="input-nombre" placeholder="Ej. María Pérez" required>
+
+<input type="text" id="nombre-cliente" class="input-nombre" placeholder="Ej. María Pérez" required>
+
+            <!-- Burbuja de Nota -->
+<div style="background-color: #d66b8d; color: white; padding: 15px; border-radius: 12px; font-size: 13.5px; margin-bottom: 15px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+    <strong style="color: #ffb3c6;">Nota:</strong> La cita quedara agendad una vez realizado el anticipo, con limite de 2 horas para enviar el comprobante, de lo contrario la cita se libera automaticamente.
+</div>
+
 
             <button id="btn-whatsapp" class="btn-main" style="margin-top: 5px; background-color: #25D366;">Confirmar por WhatsApp</button>
             <p id="mensaje-error">Por favor completa todos los pasos.</p>

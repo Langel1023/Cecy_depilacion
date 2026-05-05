@@ -30,7 +30,7 @@
             width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 16px; background-color: #fcfcfc;
         }
 
-        /* Botones */
+        /* Botones Generales */
         .btn-main { background-color: #d66b8d; color: white; border: none; padding: 15px; font-size: 16px; border-radius: 6px; width: 100%; cursor: pointer; font-weight: bold; margin-top: 20px; }
         .btn-logout { background-color: #ffefef; color: #cc0000; border: 1px solid #ffcccc; padding: 10px; font-size: 14px; border-radius: 6px; width: 100%; cursor: pointer; margin-bottom: 25px; font-weight: bold; }
 
@@ -52,9 +52,14 @@
         .estado-pendiente { background: #fff0f5; color: #d66b8d; }
         .estado-confirmado { background: #e8f8f5; color: #25D366; }
 
-        .cita-acciones { display: flex; gap: 10px; margin-top: 15px; }
-        .btn-confirmar { background: #25D366; color: white; border: none; padding: 10px; border-radius: 5px; flex: 1; font-weight: bold; cursor: pointer; font-size: 13px; }
+        /* Nuevos botones de acción divididos */
+        .cita-acciones { display: flex; flex-direction: column; gap: 8px; margin-top: 15px; }
+        .btn-confirmar { background: #25D366; color: white; border: none; padding: 10px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 13px; width: 100%; }
+        
+        /* Contenedor para botones rojos */
+        .acciones-peligrosas { display: flex; gap: 8px; width: 100%; }
         .btn-cancelar { background: #ff4d4d; color: white; border: none; padding: 10px; border-radius: 5px; flex: 1; font-weight: bold; cursor: pointer; font-size: 13px; }
+        .btn-liberar { background: #ff9900; color: white; border: none; padding: 10px; border-radius: 5px; flex: 1; font-weight: bold; cursor: pointer; font-size: 13px; }
 
         .mensaje-vacio { text-align: center; color: #999; font-size: 14px; padding: 30px 0; font-style: italic; }
         hr { border: 0; border-top: 1px solid #eee; margin: 25px 0; }
@@ -159,7 +164,6 @@
     const btnLogin = document.getElementById('btn-login');
     const btnLogout = document.getElementById('btn-logout');
     
-    // Pestañas
     const tabAgenda = document.getElementById('tab-agenda');
     const tabSolicitudes = document.getElementById('tab-solicitudes');
     const tabHorarios = document.getElementById('tab-horarios');
@@ -168,49 +172,29 @@
     const vistaSolicitudes = document.getElementById('vista-solicitudes');
     const vistaHorarios = document.getElementById('vista-horarios');
 
-    // Horarios
     const fechaInput = document.getElementById('fecha-seleccionada');
     const horaInput = document.getElementById('nueva-hora');
     const btnAgregarHora = document.getElementById('btn-agregar-hora');
     const listaHorarios = document.getElementById('lista-horarios');
 
-    // Contenedores de Citas
     const listaAgendaContainer = document.getElementById('lista-agenda-container');
     const listaSolicitudesContainer = document.getElementById('lista-solicitudes-container');
 
-    // LÓGICA DE PESTAÑAS (Manejo de 3 vistas)
-    tabAgenda.addEventListener('click', () => {
-        activarPestaña(tabAgenda, vistaAgenda);
-        cargarCitasGlobal();
-    });
-
-    tabSolicitudes.addEventListener('click', () => {
-        activarPestaña(tabSolicitudes, vistaSolicitudes);
-        cargarCitasGlobal();
-    });
-
-    tabHorarios.addEventListener('click', () => {
-        activarPestaña(tabHorarios, vistaHorarios);
-    });
+    // LÓGICA DE PESTAÑAS
+    tabAgenda.addEventListener('click', () => { activarPestaña(tabAgenda, vistaAgenda); cargarCitasGlobal(); });
+    tabSolicitudes.addEventListener('click', () => { activarPestaña(tabSolicitudes, vistaSolicitudes); cargarCitasGlobal(); });
+    tabHorarios.addEventListener('click', () => { activarPestaña(tabHorarios, vistaHorarios); });
 
     function activarPestaña(botonActivo, vistaActiva) {
-        // Quitar active a todos los botones
         tabAgenda.classList.remove('active'); tabSolicitudes.classList.remove('active'); tabHorarios.classList.remove('active');
-        // Ocultar todas las vistas
         vistaAgenda.classList.add('oculto'); vistaSolicitudes.classList.add('oculto'); vistaHorarios.classList.add('oculto');
-        
-        // Activar lo seleccionado
-        botonActivo.classList.add('active');
-        vistaActiva.classList.remove('oculto');
+        botonActivo.classList.add('active'); vistaActiva.classList.remove('oculto');
     }
 
     // LÓGICA DE SESIÓN
     btnLogin.addEventListener('click', async () => {
-        try {
-            await signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('password').value);
-        } catch (error) {
-            alert("Error: Correo o contraseña incorrectos.");
-        }
+        try { await signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('password').value); } 
+        catch (error) { alert("Error: Correo o contraseña incorrectos."); }
     });
 
     btnLogout.addEventListener('click', () => signOut(auth));
@@ -228,60 +212,42 @@
         }
     });
 
-    // ==========================================
-    // SECCIÓN 1 y 2: CARGAR CITAS Y DIVIDIRLAS
-    // ==========================================
+    // CARGA DE CITAS
     async function cargarCitasGlobal() {
         listaAgendaContainer.innerHTML = "<div class='mensaje-vacio'>Cargando agenda...</div>";
         listaSolicitudesContainer.innerHTML = "<div class='mensaje-vacio'>Cargando solicitudes...</div>";
 
         try {
             const snapshot = await getDocs(collection(db, "citas"));
-            
-            let confirmadas = [];
-            let pendientes = [];
+            let confirmadas = []; let pendientes = [];
 
             snapshot.forEach(doc => {
                 const data = { id: doc.id, ...doc.data() };
-                if(data.estado === 'confirmado') {
-                    confirmadas.push(data);
-                } else {
-                    pendientes.push(data);
-                }
+                if(data.estado === 'confirmado') confirmadas.push(data);
+                else pendientes.push(data);
             });
 
-            // Ordenar ambas listas por fecha y hora
             const ordenarPorFecha = (a, b) => a.fecha.localeCompare(b.fecha) || a.hora.localeCompare(b.hora);
-            confirmadas.sort(ordenarPorFecha);
-            pendientes.sort(ordenarPorFecha);
+            confirmadas.sort(ordenarPorFecha); pendientes.sort(ordenarPorFecha);
 
-            // 1. PINTAR LA AGENDA (Confirmadas)
-            if(confirmadas.length === 0) {
-                listaAgendaContainer.innerHTML = "<div class='mensaje-vacio'>No hay citas confirmadas para los próximos días.</div>";
-            } else {
+            if(confirmadas.length === 0) listaAgendaContainer.innerHTML = "<div class='mensaje-vacio'>No hay citas confirmadas.</div>";
+            else {
                 listaAgendaContainer.innerHTML = "";
-                confirmadas.forEach(cita => {
-                    listaAgendaContainer.innerHTML += generarHTMLTarjetaCita(cita, true);
-                });
+                confirmadas.forEach(cita => listaAgendaContainer.innerHTML += generarHTMLTarjetaCita(cita, true));
             }
 
-            // 2. PINTAR LAS SOLICITUDES (Pendientes)
-            if(pendientes.length === 0) {
-                listaSolicitudesContainer.innerHTML = "<div class='mensaje-vacio'>No tienes solicitudes pendientes de pago por ahora.</div>";
-            } else {
+            if(pendientes.length === 0) listaSolicitudesContainer.innerHTML = "<div class='mensaje-vacio'>No tienes solicitudes pendientes.</div>";
+            else {
                 listaSolicitudesContainer.innerHTML = "";
-                pendientes.forEach(cita => {
-                    listaSolicitudesContainer.innerHTML += generarHTMLTarjetaCita(cita, false);
-                });
+                pendientes.forEach(cita => listaSolicitudesContainer.innerHTML += generarHTMLTarjetaCita(cita, false));
             }
-
         } catch (error) {
             listaAgendaContainer.innerHTML = "<div class='mensaje-vacio' style='color:red;'>Error al cargar.</div>";
             listaSolicitudesContainer.innerHTML = "<div class='mensaje-vacio' style='color:red;'>Error al cargar.</div>";
         }
     }
 
-    // Función auxiliar para pintar las tarjetitas
+    // TARJETAS CON BOTONES DIVIDIDOS
     function generarHTMLTarjetaCita(cita, esConfirmada) {
         return `
             <div class="cita-card ${esConfirmada ? 'confirmada' : ''}">
@@ -295,89 +261,77 @@
                 </span>
 
                 <div class="cita-acciones">
-                    ${!esConfirmada ? `<button class="btn-confirmar" onclick="marcarPagada('${cita.id}')">✓ Confirmar</button>` : ''}
-                    <button class="btn-cancelar" onclick="cancelarCita('${cita.id}', '${cita.fecha}', '${cita.hora}')">❌ Cancelar / Liberar</button>
+                    ${!esConfirmada ? `<button class="btn-confirmar" onclick="marcarPagada('${cita.id}')">✓ Confirmar Cita</button>` : ''}
+                    <div class="acciones-peligrosas">
+                        <button class="btn-cancelar" onclick="soloBorrarCita('${cita.id}', '${cita.nombre}')">❌ Borrar (Sin liberar hora)</button>
+                        <button class="btn-liberar" onclick="borrarYLiberar('${cita.id}', '${cita.fecha}', '${cita.hora}', '${cita.nombre}')">🔓 Borrar y Liberar Hora</button>
+                    </div>
                 </div>
             </div>
         `;
     }
 
-    // Botón verde: Marcar como pagada
+    // ACCIONES DE BOTONES
     window.marcarPagada = async (idCita) => {
-        try {
-            await updateDoc(doc(db, "citas", idCita), { estado: "confirmado" });
-            cargarCitasGlobal(); // Recarga y mueve la tarjeta solita
-        } catch (error) { alert("Error al confirmar."); }
+        const seguro = confirm("¿El anticipo de esta cita ya fue pagado?\n\nAl confirmar, la cita pasará a la pestaña de 'Agenda'.");
+        if(!seguro) return;
+        try { await updateDoc(doc(db, "citas", idCita), { estado: "confirmado" }); cargarCitasGlobal(); } 
+        catch (error) { alert("Error al confirmar."); }
     };
 
-    // Botón rojo: Borrar cita y devolver hora a la página web
-    window.cancelarCita = async (idCita, fecha, hora) => {
-        const confirmar = confirm(`¿Seguro que quieres cancelar la cita del día ${fecha} a las ${hora}?\n\nAl hacer esto, la hora volverá a estar disponible en tu página web automáticamente.`);
+    // BOTÓN ROJO: Solo borra de la base de datos (Ej: Canceló y ya no queremos que nadie ocupe ese espacio)
+    window.soloBorrarCita = async (idCita, nombre) => {
+        const confirmar = confirm(`ESTA ACCIÓN ES DEFINITIVA\n\n¿Deseas BORRAR la cita de ${nombre}?\n(El horario NO se volverá a abrir al público).`);
         if (!confirmar) return;
+        try { await deleteDoc(doc(db, "citas", idCita)); alert("Cita eliminada."); cargarCitasGlobal(); } 
+        catch (error) { alert("Error al eliminar."); }
+    };
 
+    // BOTÓN NARANJA: Borra de la base de datos y REGRESA la hora a la web (Ej: Clienta canceló a tiempo y queremos vender ese espacio)
+    window.borrarYLiberar = async (idCita, fecha, hora, nombre) => {
+        const confirmar = confirm(`¿Deseas borrar la cita de ${nombre} y LIBERAR SU HORA?\n\nAl aceptar, la hora de las ${hora} volverá a aparecer disponible en la página web.`);
+        if (!confirmar) return;
         try {
             await deleteDoc(doc(db, "citas", idCita));
-            await setDoc(doc(db, "disponibilidad", fecha), { 
-                horarios: arrayUnion(hora), 
-                activo: true 
-            }, { merge: true });
-
-            alert("Cita cancelada y horario liberado con éxito.");
-            cargarCitasGlobal();
-            cargarHorariosDisponibles();
-        } catch (error) {
-            alert("Error al cancelar.");
-        }
+            await setDoc(doc(db, "disponibilidad", fecha), { horarios: arrayUnion(hora), activo: true }, { merge: true });
+            alert("Cita borrada y horario liberado con éxito.");
+            cargarCitasGlobal(); cargarHorariosDisponibles();
+        } catch (error) { alert("Error al liberar."); }
     };
 
-    // ==========================================
-    // SECCIÓN 3: GESTIÓN DE HORARIOS
-    // ==========================================
+    // GESTIÓN DE HORARIOS MANUAL
     async function cargarHorariosDisponibles() {
         const fecha = fechaInput.value;
         if(!fecha) return;
-        
         listaHorarios.innerHTML = "<div class='mensaje-vacio'>Cargando...</div>";
         const docSnap = await getDoc(doc(db, "disponibilidad", fecha));
-
         listaHorarios.innerHTML = ""; 
-        
         if (docSnap.exists() && docSnap.data().horarios && docSnap.data().horarios.length > 0) {
             const horarios = docSnap.data().horarios;
             horarios.sort().forEach(hora => {
                 listaHorarios.innerHTML += `
                     <div class="horario-item">
                         <span>${hora}</span>
-                        <button class="btn-eliminar-hora" onclick="eliminarHoraManual('${fecha}', '${hora}')">Borrar</button>
+                        <button class="btn-eliminar-hora" onclick="eliminarHoraManual('${fecha}', '${hora}')">Ocultar de la web</button>
                     </div>
                 `;
             });
-        } else {
-            listaHorarios.innerHTML = "<div class='mensaje-vacio'>Día libre. No hay horarios abiertos.</div>";
-        }
+        } else { listaHorarios.innerHTML = "<div class='mensaje-vacio'>No hay horarios abiertos al público.</div>"; }
     }
 
     btnAgregarHora.addEventListener('click', async () => {
-        const fecha = fechaInput.value;
-        const hora = horaInput.value;
+        const fecha = fechaInput.value; const hora = horaInput.value;
         if(!fecha || !hora) return alert("Elige día y hora.");
-
-        try {
-            await setDoc(doc(db, "disponibilidad", fecha), { horarios: arrayUnion(hora), activo: true }, { merge: true });
-            horaInput.value = ""; 
-            cargarHorariosDisponibles(); 
-        } catch (error) { alert("Error al guardar."); }
+        try { await setDoc(doc(db, "disponibilidad", fecha), { horarios: arrayUnion(hora), activo: true }, { merge: true }); horaInput.value = ""; cargarHorariosDisponibles(); } 
+        catch (error) { alert("Error al guardar."); }
     });
 
     window.eliminarHoraManual = async (fecha, hora) => {
-        try {
-            await updateDoc(doc(db, "disponibilidad", fecha), { horarios: arrayRemove(hora) });
-            cargarHorariosDisponibles(); 
-        } catch (error) { alert("Error al eliminar."); }
+        try { await updateDoc(doc(db, "disponibilidad", fecha), { horarios: arrayRemove(hora) }); cargarHorariosDisponibles(); } 
+        catch (error) { alert("Error al eliminar."); }
     };
 
     fechaInput.addEventListener('change', cargarHorariosDisponibles);
-
 </script>
 </body>
 </html>
