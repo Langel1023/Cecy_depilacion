@@ -6,63 +6,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reserva tu Cita</title>
     <link rel="icon" type="image/jpeg" href="Logo.jpeg">
-    <!-- Metaetiquetas para que el link se vea bonito en WhatsApp -->
     <meta property="og:title" content="Cecy Perales | Depilación con Cera">
     <meta property="og:description" content="Agenda tu cita de depilación facial y corporal. Servicio higiénico y seguro, exclusivo para damas.">
     <meta property="og:image" content="https://main.d30cuqwqnc3p7f.amplifyapp.com/Logo.jpeg">
     <meta property="og:url" content="https://main.d30cuqwqnc3p7f.amplifyapp.com/">
     <meta property="og:type" content="website">
     <style>
-        /* Diseño General Mobile-First */
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: #e9ecef; color: #444; }
         .mobile-container { max-width: 420px; margin: auto; background: white; min-height: 100vh; box-shadow: 0 0 15px rgba(0,0,0,0.1); padding-bottom: 40px; }
-        
-        /* Cabecera y Foto de Perfil */
         .banner { background-color: #d66b8d; height: 130px; width: 100%; }
         .perfil-container { text-align: center; margin-top: -65px; }
         .perfil-img { width: 130px; height: 130px; border-radius: 50%; border: 4px solid white; object-fit: cover; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
         .titulo { font-size: 28px; font-weight: 300; color: #333; margin: 10px 0 5px 0; }
         .subtitulo { font-size: 15px; color: #666; margin-bottom: 20px; }
-        
-        /* Botones Generales */
         .btn-main { background-color: #d66b8d; color: white; border: none; padding: 14px 20px; font-size: 16px; border-radius: 5px; width: 90%; margin: 0 auto; display: block; cursor: pointer; font-weight: bold; transition: background 0.3s; }
         .btn-main:disabled { background-color: #ccc; cursor: not-allowed; }
-        
-        /* Sistema de Reservas */
         .reserva-container { text-align: center; padding: 20px; margin-top: 10px; border-top: 1px solid #eee; background: #fdfdfd; }
-        
-        /* Lista de Multiselección (Checkboxes) */
         .checkbox-group { text-align: left; margin-bottom: 20px; background: #fff; border: 1px solid #ccc; border-radius: 5px; max-height: 220px; overflow-y: auto; padding: 15px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
         .grupo-titulo { font-weight: bold; color: #b85273; margin: 15px 0 8px 0; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
         .grupo-titulo:first-child { margin-top: 0; }
         .checkbox-label { display: block; padding: 8px 0; font-size: 15px; color: #555; cursor: pointer; }
         .checkbox-label input[type="checkbox"] { margin-right: 12px; transform: scale(1.3); accent-color: #d66b8d; cursor: pointer; }
-        
-        /* Carrusel de Fechas y Horas */
         .carrusel-dias { display: flex; justify-content: space-between; align-items: center; margin: 20px auto; width: 90%; }
         .btn-flecha { background: none; border: none; font-size: 35px; color: #d66b8d; cursor: pointer; padding: 0 10px; font-weight: bold; }
         .btn-flecha:disabled { color: #e0e0e0; cursor: not-allowed; }
-        #fecha-actual-texto { font-size: 18px; color: #555; margin: 0; font-weight: 400; flex-grow: 1; text-align: center; }
+        #fecha-actual-texto { font-size: 18px; color: #555; margin: 0; font-weight: 500; flex-grow: 1; text-align: center; text-transform: capitalize; }
         .opciones-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 20px; }
         .chip { padding: 10px 18px; background: #d66b8d; color: white; border-radius: 5px; cursor: pointer; user-select: none; font-size: 14px; opacity: 0.6; transition: 0.2s; }
         .chip.activo { opacity: 1; transform: scale(1.05); font-weight: bold; box-shadow: 0 3px 6px rgba(214, 107, 141, 0.4); }
-        
-        /* Input Nombre */
         .input-nombre { width: 90%; padding: 12px; border: 1px solid #ccc; border-radius: 5px; margin-bottom: 15px; font-size: 15px; box-sizing: border-box; text-align: center; background: #fff; }
         #mensaje-error { color: #ff4d4d; text-align: center; display: none; margin-top: 10px; font-size: 14px; font-weight: bold; }
-        
-       /* Secciones de Información (DISEÑO MEJORADO) */
         .seccion { padding: 25px 30px; border-top: 1px solid #f0f0f0; }
         .seccion-titulo { font-size: 19px; color: #b85273; text-align: center; margin-bottom: 20px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
-        
         .info-card { background: #fff5f8; border-left: 4px solid #d66b8d; border-radius: 8px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
         .info-card p { font-size: 14.5px; line-height: 1.7; color: #555; text-align: justify; margin: 0 0 15px 0; }
         .info-card p:last-child { margin-bottom: 0; }
-        
         .lista-indicaciones { list-style: none; padding: 0; margin: 0; }
         .lista-indicaciones li { background: #ffffff; margin-bottom: 10px; padding: 12px 15px; border-radius: 6px; font-size: 14px; color: #555; box-shadow: 0 1px 3px rgba(0,0,0,0.04); display: flex; align-items: flex-start; gap: 10px; border: 1px solid #fae3ea; }
         .lista-indicaciones li::before { content: "✨"; font-size: 14px; flex-shrink: 0; margin-top: 2px; }
-        /* MENÚ DE SERVICIOS Y PAQUETES (ACORDEÓN Y CAJAS BICOLOR) */
         details.acordeon-servicios { margin-bottom: 15px; }
         details.acordeon-servicios summary { font-size: 16px; color: #555; text-align: center; cursor: pointer; list-style: none; font-weight: bold; padding: 12px; background: #f9f9f9; border-radius: 5px; border: 1px solid #eee; }
         details.acordeon-servicios summary::-webkit-details-marker { display: none; }
@@ -71,13 +52,9 @@
         .servicio-nombre { background-color: #d66b8d; color: white; padding: 15px; flex-grow: 1; font-weight: 500; font-size: 14px; }
         .anuncio-color { background-color: #b85273; color: white; padding: 15px; flex-grow: 1; font-weight: 500; font-size: 14px; }
         .servicio-precio { background-color: #b85273; color: white; padding: 15px; min-width: 60px; text-align: center; font-weight: bold; font-size: 15px; }
-
-        /* Listas y Tablas */
         .horarios-tabla { width: 100%; font-size: 14px; color: #666; margin: 0 auto; max-width: 250px; }
         .horarios-tabla td { padding: 6px 0; }
         .horarios-tabla td:first-child { font-weight: bold; width: 45%; color: #444; }
-        
-        /* Contacto */
         .contacto-item { display: flex; align-items: center; gap: 15px; padding: 12px 0; font-size: 14px; color: #444; border-bottom: 1px solid #f5f5f5; }
         .contacto-item:last-child { border: none; }
         .link-mapa { color: #d66b8d; text-decoration: none; display: block; text-align: center; margin-top: 5px; font-size: 14px; font-weight: bold; }
@@ -87,7 +64,6 @@
 
 <div class="mobile-container">
     
-    <!-- Cabecera -->
     <header>
         <div class="banner"></div>
         <div class="perfil-container">
@@ -98,12 +74,10 @@
         </div>
     </header>
 
-    <!-- Zona interactiva OCULTA INICIALMENTE -->
     <div id="zona-reservas" class="reserva-container" style="display: none;">
         
         <p style="color: #666; font-size: 14px; margin-bottom: 10px;">1. Selecciona uno o más servicios:</p>
         
-        <!-- Lista de Multiselección con Scroll (ACTUALIZADA) -->
         <div class="checkbox-group">
             <div class="grupo-titulo">Depilación Facial</div>
             <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Ceja ($100)"> Ceja - $100</label>
@@ -133,75 +107,70 @@
             <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Espalda Completa ($350)"> Espalda Completa - $350</label>
             <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="1/2 Espalda ($250)"> 1/2 Espalda - $250</label>
             
-<div class="grupo-titulo" style="margin-top: 15px;">Paquetes Especiales</div>
-            
-<label class="checkbox-label" style="display: flex; align-items: flex-start; margin-bottom: 10px;">
-    <input type="checkbox" class="servicio-checkbox" value="Paquete Playa ($600)" style="margin-top: 2px;"> 
-    <div style="line-height: 1.3;">
-        <strong>Paquete Playa - $600</strong><br>
-        <span style="font-size: 12.5px; color: #888;">Cejas, Bozo, Axilas, Piernas completas y Línea de bikini</span>
-    </div>
-</label>
+            <div class="grupo-titulo" style="margin-top: 15px;">Paquetes Especiales</div>
+                        
+            <label class="checkbox-label" style="display: flex; align-items: flex-start; margin-bottom: 10px;">
+                <input type="checkbox" class="servicio-checkbox" value="Paquete Playa ($600)" style="margin-top: 2px;"> 
+                <div style="line-height: 1.3;">
+                    <strong>Paquete Playa - $600</strong><br>
+                    <span style="font-size: 12.5px; color: #888;">Cejas, Bozo, Axilas, Piernas completas y Línea de bikini</span>
+                </div>
+            </label>
 
-<label class="checkbox-label" style="display: flex; align-items: flex-start; margin-bottom: 10px;">
-    <input type="checkbox" class="servicio-checkbox" value="Paquete Completo ($680)" style="margin-top: 2px;"> 
-    <div style="line-height: 1.3;">
-        <strong>Paquete Completo - $680</strong><br>
-        <span style="font-size: 12.5px; color: #888;">Cejas, Bozo, Axilas, Piernas completas y Bikini completo</span>
-    </div>
-</label>
+            <label class="checkbox-label" style="display: flex; align-items: flex-start; margin-bottom: 10px;">
+                <input type="checkbox" class="servicio-checkbox" value="Paquete Completo ($680)" style="margin-top: 2px;"> 
+                <div style="line-height: 1.3;">
+                    <strong>Paquete Completo - $680</strong><br>
+                    <span style="font-size: 12.5px; color: #888;">Cejas, Bozo, Axilas, Piernas completas y Bikini completo</span>
+                </div>
+            </label>
 
-<label class="checkbox-label" style="display: flex; align-items: flex-start; margin-bottom: 10px;">
-    <input type="checkbox" class="servicio-checkbox" value="Paquete Facial ($370)" style="margin-top: 2px;"> 
-    <div style="line-height: 1.3;">
-        <strong>Paquete Facial - $370</strong><br>
-        <span style="font-size: 12.5px; color: #888;">Cejas, Frente, Patillas, Mejillas, Nariz, Bozo, Barbilla y Cuello</span>
-    </div>
-</label>        </div>
+            <label class="checkbox-label" style="display: flex; align-items: flex-start; margin-bottom: 10px;">
+                <input type="checkbox" class="servicio-checkbox" value="Paquete Facial ($370)" style="margin-top: 2px;"> 
+                <div style="line-height: 1.3;">
+                    <strong>Paquete Facial - $370</strong><br>
+                    <span style="font-size: 12.5px; color: #888;">Cejas, Frente, Patillas, Mejillas, Nariz, Bozo, Barbilla y Cuello</span>
+                </div>
+            </label>        
+        </div>
 
         <p style="color: #666; font-size: 14px; margin-top: 20px;">2. Selecciona la fecha y hora:</p>
 
         <div class="carrusel-dias">
-            <button id="btn-prev" class="btn-flecha" onclick="cambiarDia(-1)" disabled>&#8592;</button>
+            <button id="btn-prev" class="btn-flecha" onclick="cambiarDia(-1)" disabled>←</button>
             <h3 id="fecha-actual-texto">Buscando días...</h3>
-            <button id="btn-next" class="btn-flecha" onclick="cambiarDia(1)" disabled>&#8594;</button>
+            <button id="btn-next" class="btn-flecha" onclick="cambiarDia(1)" disabled>→</button>
         </div>
 
         <div id="seccion-horarios">
             <div id="horarios-container" class="opciones-container"></div>
             
             <p style="color: #666; font-size: 14px; margin-top: 20px;">3. Ingresa tu nombre:</p>
+            <input type="text" id="nombre-cliente" class="input-nombre" placeholder="Ej. María Pérez" required>
 
-<input type="text" id="nombre-cliente" class="input-nombre" placeholder="Ej. María Pérez" required>
-
-            <!-- Burbuja de Nota -->
-<div style="background-color: #d66b8d; color: white; padding: 15px; border-radius: 12px; font-size: 13.5px; margin-bottom: 15px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
-    <strong style="color: #ffb3c6;">Nota:</strong> La cita quedara agendad una vez realizado el anticipo, con limite de 2 horas para enviar el comprobante, de lo contrario la cita se libera automaticamente.
-</div>
-
+            <div style="background-color: #d66b8d; color: white; padding: 15px; border-radius: 12px; font-size: 13.5px; margin-bottom: 15px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+                <strong style="color: #ffb3c6;">Nota:</strong> La cita quedara agendada una vez realizado el anticipo, con limite de 2 horas para enviar el comprobante, de lo contrario la cita se libera automaticamente.
+            </div>
 
             <button id="btn-whatsapp" class="btn-main" style="margin-top: 5px; background-color: #25D366;">Confirmar por WhatsApp</button>
             <p id="mensaje-error">Por favor completa todos los pasos.</p>
         </div>
     </div>
 
-    <!-- Sección Acerca de -->
-<!-- Sección Acerca de (DISEÑO MEJORADO) -->
     <section class="seccion">
         <h3 class="seccion-titulo">📋 Información </h3>
-        
         <div class="info-card">
             <p>La depilación con cera ha demostrado durante muchos años ser el método más efectivo que encontramos en el mercado, y por supuesto, súper accesible.</p>
             <p style="font-weight: 500; color: #b85273;">Mi compromiso es ofrecerte un servicio en el que te sientas cómoda y bella.</p>
         </div>
-
         <h4 style="color: #666; font-size: 15px; margin-bottom: 12px; text-align: center;">Indicaciones previas a tu cita:</h4>
         <ul class="lista-indicaciones">
             <li>Acudir con la piel completamente limpia (sin maquillaje, sin cremas y sin desodorante).</li>
             <li>Llevar ropa cómoda y holgada.</li>
             <li>Si eres menor de edad, deberás acudir acompañada de un adulto.</li>
         </ul>
-    </section>    <!-- MENÚS DESPLEGABLES -->
+    </section>    
+
     <section class="seccion" style="padding-top: 10px; padding-bottom: 5px;">
         <details class="acordeon-servicios">
             <summary>≡ Depilación Facial ▼</summary>
@@ -213,7 +182,7 @@
             <div class="servicio-fila"><div class="servicio-nombre">Barbilla</div><div class="servicio-precio">$50</div></div>
             <div class="servicio-fila"><div class="servicio-nombre">Cuello</div><div class="servicio-precio">$50</div></div>
             <div class="servicio-fila"><div class="servicio-nombre">Mejillas</div><div class="servicio-precio">$60</div></div>
-                                    <div class="Anuncio"><div class="anuncio-color"><p style="text-align: center; color: white; margin: 0;"> En caso de vello muy grueso o abundante se cobra extra.</p></div></div>
+            <div class="Anuncio"><div class="anuncio-color"><p style="text-align: center; color: white; margin: 0;"> En caso de vello muy grueso o abundante se cobra extra.</p></div></div>
         </details>
         
         <details class="acordeon-servicios">
@@ -234,8 +203,7 @@
             <div class="servicio-fila"><div class="servicio-nombre">Caminito de ombligo</div><div class="servicio-precio">$100</div></div>
             <div class="servicio-fila"><div class="servicio-nombre">Espalda Completa</div><div class="servicio-precio">$350</div></div>
             <div class="servicio-fila"><div class="servicio-nombre">1/2 Espalda</div><div class="servicio-precio">$250</div></div>
-                        <div class="Anuncio"><div class="anuncio-color"><p style="text-align: center; color: white; margin: 0;"> En caso de vello muy grueso o abundante se cobra extra.</p></div></div>
-
+            <div class="Anuncio"><div class="anuncio-color"><p style="text-align: center; color: white; margin: 0;"> En caso de vello muy grueso o abundante se cobra extra.</p></div></div>
         </details>
 
         <details class="acordeon-servicios">
@@ -247,7 +215,6 @@
         </details>
     </section>
 
-    <!-- Sección Horarios Generales -->
     <section class="seccion">
         <h3 class="seccion-titulo">🕒 Horarios de atención</h3>
         <table class="horarios-tabla">
@@ -257,21 +224,17 @@
         </table>
     </section>
 
-    <!-- Sección Contacto -->
     <section class="seccion">
         <div class="contacto-item">📞 <span>81 3273 1350</span></div>
         <div class="contacto-item">🅵 <span>Cecy Perales Depilacion</span></div>
-        
         <div style="margin-top: 30px; text-align: center;">
             <p style="font-weight: bold; margin-bottom: 5px; color: #444;">📍 Dirección</p>
             <p style="font-size: 14px; margin-bottom: 5px;">Plutarco Elías Calles 3102, Riberas del Río<br>Guadalupe, Nuevo León</p>
             <a href="https://maps.app.goo.gl/12PVvMo1RKXYBcTF8" class="link-mapa">Ver en Google Maps</a>
         </div>
     </section>
-
 </div>
 
-<!-- Conexión con Firebase -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
     import { getFirestore, collection, getDocs, addDoc, doc, updateDoc, arrayRemove } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
@@ -316,7 +279,13 @@
             
             querySnapshot.forEach((doc) => {
                 const data = doc.data();
-                if (data.activo && data.horarios && data.horarios.length > 0) {
+                
+                // LÓGICA DE DOMINGOS Y BOTÓN DE OCULTAR:
+                const dateObj = new Date(doc.id + "T00:00:00");
+                const esDomingo = dateObj.getDay() === 0; // 0 significa Domingo
+
+                // Solo agregamos el día si NO es domingo y si tu tía NO lo ha ocultado manualmente
+                if (!esDomingo && data.activo !== false && data.horarios && data.horarios.length > 0) {
                     diasDisponiblesObj[doc.id] = data.horarios.sort(); 
                 }
             });
@@ -343,9 +312,15 @@
     function actualizarVistaCarrusel() {
         btnPrev.disabled = (indiceDiaActual === 0);
         btnNext.disabled = (indiceDiaActual === fechasDisponiblesArray.length - 1);
+        
         const fechaStr = fechasDisponiblesArray[indiceDiaActual];
         
-        fechaActualTexto.textContent = fechaStr;
+        const dateObj = new Date(fechaStr + "T00:00:00");
+        let fechaFormateada = dateObj.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
+        fechaFormateada = fechaFormateada.replace(',', ''); 
+        const fechaVista = fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
+        
+        fechaActualTexto.textContent = fechaVista;
         horaSeleccionada = null; 
 
         horariosContainer.innerHTML = "";
@@ -376,12 +351,12 @@
             return;
         }
 
-let listaServicios = [];
-casillasMarcadas.forEach(casilla => {
-    // Esto corta el texto justo antes del " (" para eliminar el precio
-    let servicioSinPrecio = casilla.value.split(" (")[0];
-    listaServicios.push(servicioSinPrecio);
-});        const textoServicios = listaServicios.join(', ');
+        let listaServicios = [];
+        casillasMarcadas.forEach(casilla => {
+            let servicioSinPrecio = casilla.value.split(" (")[0];
+            listaServicios.push(servicioSinPrecio);
+        });        
+        const textoServicios = listaServicios.join(', ');
 
         btnWhatsapp.textContent = "Procesando...";
         btnWhatsapp.disabled = true;
@@ -401,8 +376,14 @@ casillasMarcadas.forEach(casilla => {
                 horarios: arrayRemove(horaSeleccionada)
             });
 
+            const dateObj = new Date(diaSeleccionado + "T00:00:00");
+            let fechaFormateada = dateObj.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
+            fechaFormateada = fechaFormateada.replace(',', ''); 
+            const fechaFinal = fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
+
             const telefono = "528132731350"; 
-const textoMensaje = `*${nombreCliente}, Está solicitando la siguiente cita disponible:*%0A%0ADía: ${diaSeleccionado}%0AHora: ${horaSeleccionada}%0AÁreas a depilar: ${textoServicios}%0A%0ASe solicitan los datos de pago, para que se efectúe el Anticipo.`;
+            const textoMensaje = `*${nombreCliente}, Está solicitando la siguiente cita disponible:*%0A%0ADía: ${fechaFinal}%0AHora: ${horaSeleccionada}%0AÁreas a depilar: ${textoServicios}%0A%0ASe solicitan los datos de pago, para que se efectúe el Anticipo.`;
+            
             window.location.href = `https://wa.me/${telefono}?text=${textoMensaje}`;
             inputNombre.value = "";
             document.querySelectorAll('.servicio-checkbox:checked').forEach(c => c.checked = false);
