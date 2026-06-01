@@ -26,7 +26,7 @@
 
         /* Formularios e Inputs */
         label { display: block; font-size: 14px; font-weight: bold; color: #666; margin-bottom: 8px; margin-top: 20px; }
-        input[type="email"], input[type="password"], input[type="date"] {
+        input[type="email"], input[type="password"], input[type="date"], input[type="time"] {
             width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 16px; background-color: #fcfcfc;
         }
 
@@ -53,7 +53,7 @@
         .btn-cancelar { background: #ff4d4d; color: white; border: none; padding: 10px; border-radius: 5px; flex: 1; font-weight: bold; cursor: pointer; font-size: 12px; }
         .btn-liberar { background: #ff9900; color: white; border: none; padding: 10px; border-radius: 5px; flex: 1; font-weight: bold; cursor: pointer; font-size: 12px; }
 
-        /* NUEVA GRILLA DE HORARIOS (Cuadritos) */
+        /* GRILLA DE HORARIOS (Cuadritos) */
         .opciones-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
         .chip { padding: 12px 10px; background: #f0f0f0; color: #777; border-radius: 6px; cursor: pointer; user-select: none; font-size: 15px; border: 1px solid #e0e0e0; flex-grow: 1; text-align: center; min-width: 25%; font-weight: 500; transition: 0.2s; }
         .chip.activo { background: #d66b8d; color: white; border-color: #b85273; font-weight: bold; transform: scale(1.03); box-shadow: 0 2px 5px rgba(214, 107, 141, 0.3); }
@@ -111,7 +111,7 @@
                 </div>
             </div>
 
-            <!-- PESTAÑA 3: GESTIÓN DE HORARIOS RÁPIDA -->
+            <!-- PESTAÑA 3: GESTIÓN DE HORARIOS HÍBRIDA -->
             <div id="vista-horarios" class="oculto">
                 <h3 style="margin-top: 0; color: #333; font-size: 18px;">Gestión de Disponibilidad</h3>
                 <label>1. Elige el día que quieres abrir</label>
@@ -121,6 +121,15 @@
                     <label>2. Toca las horas para abrirlas (rosas) o cerrarlas (grises)</label>
                     <div class="opciones-container" id="plantilla-chips">
                         <!-- Aquí se inyectan las horas de la plantilla -->
+                    </div>
+                    
+                    <!-- NUEVA SECCIÓN DE AGREGADO MANUAL / PERSONALIZADO -->
+                    <div style="margin-top: 15px; background: #fdfdfd; padding: 12px; border-radius: 8px; border: 1px dashed #d66b8d; box-sizing: border-box;">
+                        <label style="margin-top: 0; font-size: 13px; color: #555;">➕ ¿Agregar una hora personalizada fuera de la plantilla?</label>
+                        <div style="display: flex; gap: 8px; margin-top: 5px;">
+                            <input type="time" id="nueva-hora" style="flex: 2; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 15px;">
+                            <button id="btn-agregar-manual" class="btn-main" style="margin-top: 0; padding: 10px; flex: 1; font-size: 14px; background-color: #555;">+ Añadir</button>
+                        </div>
                     </div>
                     
                     <div style="display: flex; gap: 10px; margin-top: 15px;">
@@ -180,13 +189,15 @@
     const fechaInput = document.getElementById('fecha-seleccionada');
     const seccionPlantilla = document.getElementById('seccion-plantilla');
     const plantillaChips = document.getElementById('plantilla-chips');
+    const horaInput = document.getElementById('nueva-hora');
+    const btnAgregarManual = document.getElementById('btn-agregar-manual');
     const btnPlantillaCompleta = document.getElementById('btn-plantilla-completa');
     const btnGuardarPlantilla = document.getElementById('btn-guardar-plantilla');
     const btnToggleDia = document.getElementById('btn-toggle-dia');
     const estadoVisibilidad = document.getElementById('estado-visibilidad');
     const mensajeExito = document.getElementById('mensaje-exito');
 
-    // ESTA ES LA PLANTILLA DE HORAS QUE TU TÍA PIDIÓ
+    // Plantilla base solicitada
     const HORARIOS_BASE = ["10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30"];
     let diaActivo = true;
 
@@ -303,7 +314,7 @@
         cargarHorariosDisponibles();
     };
 
-    // LÓGICA DE LA NUEVA PLANTILLA DE HORARIOS
+    // LÓGICA DE LA PLANTILLA E INGRESO MANUAL
     async function cargarHorariosDisponibles() {
         const f = fechaInput.value;
         if (!f) { seccionPlantilla.classList.add('oculto'); return; }
@@ -331,27 +342,56 @@
                 estadoVisibilidad.innerHTML = `<div class="mensaje-vacio" style="color: #ff4d4d; padding: 5px 0 15px 0; font-weight: bold;">⚠️ Día oculto. Las clientas no pueden agendar hoy.</div>`;
             }
         } else {
-            diaActivo = true; // Por defecto abierto si no existe
+            diaActivo = true;
         }
 
-        // Dibujar los cuadritos
+        // 1. Unir las horas base con cualquier hora extra guardada en Firebase que no esté en la base
+        let todasLasHorasMostrar = [...HORARIOS_BASE];
+        horasAbiertas.forEach(h => {
+            if (!todasLasHorasMostrar.includes(h)) {
+                todasLasHorasMostrar.push(h);
+            }
+        });
+        todasLasHorasMostrar.sort(); // Ordenar cronológicamente
+
+        // 2. Renderizar los cuadritos
         plantillaChips.innerHTML = "";
-        HORARIOS_BASE.forEach(hora => {
+        todasLasHorasMostrar.forEach(hora => {
             const chip = document.createElement('div');
             chip.className = 'chip';
             if (horasAbiertas.includes(hora)) {
                 chip.classList.add('activo');
             }
             chip.textContent = hora;
-            
-            // Función de tocar para activar/desactivar
-            chip.onclick = () => {
-                chip.classList.toggle('activo');
-            };
-            
+            chip.onclick = () => { chip.classList.toggle('activo'); };
             plantillaChips.appendChild(chip);
         });
     }
+
+    // Evento para añadir hora manual personalizada
+    btnAgregarManual.addEventListener('click', () => {
+        const nuevaHora = horaInput.value;
+        if (!nuevaHora) return;
+
+        let existe = false;
+        document.querySelectorAll('#plantilla-chips .chip').forEach(chip => {
+            if (chip.textContent === nuevaHora) {
+                chip.classList.add('activo'); // Si ya existía el cuadrito, solo lo pintamos
+                existe = true;
+            }
+        });
+
+        if (!existe) {
+            // Si es una hora totalmente rara/nueva, creamos su cuadrito rosa activo al instante
+            const chip = document.createElement('div');
+            chip.className = 'chip activo';
+            chip.textContent = nuevaHora;
+            chip.onclick = () => { chip.classList.toggle('activo'); };
+            plantillaChips.appendChild(chip);
+        }
+        
+        horaInput.value = ""; // Limpiar el reloj manual
+    });
 
     // Botón de Marcar Todo
     btnPlantillaCompleta.addEventListener('click', () => {
@@ -360,18 +400,18 @@
         });
     });
 
-    // Botón de Guardar Día
+    // Botón de Guardar Día (Ordena y procesa todo junto)
     btnGuardarPlantilla.addEventListener('click', async () => {
         const f = fechaInput.value;
         if (!f) return;
         
-        // Recolectar solo los cuadritos que quedaron rosas
         let horasSeleccionadas = [];
         document.querySelectorAll('#plantilla-chips .chip.activo').forEach(chip => {
             horasSeleccionadas.push(chip.textContent);
         });
 
-        // Subir a Firebase de un solo golpe
+        horasSeleccionadas.sort(); // Super importante ordenar antes de subir para las clientas
+
         btnGuardarPlantilla.textContent = "Guardando...";
         await setDoc(doc(db, "disponibilidad", f), { 
             horarios: horasSeleccionadas, 
@@ -381,7 +421,6 @@
         btnGuardarPlantilla.textContent = "✓ Guardar Día";
         mensajeExito.style.display = "block";
         
-        // Ocultar mensaje de éxito después de 3 segundos
         setTimeout(() => { mensajeExito.style.display = "none"; }, 3000);
         cargarHorariosDisponibles();
     });
