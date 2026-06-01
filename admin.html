@@ -6,36 +6,58 @@
     <title>Panel de Administración | Cecy Perales</title>
     <link rel="icon" type="image/jpeg" href="Logo.jpeg">
     <style>
+        /* Diseño General */
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: #e9ecef; color: #444; }
         .mobile-container { max-width: 420px; margin: 20px auto; background: white; min-height: 95vh; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 10px; overflow: hidden; }
+
+        /* Cabecera del Admin */
         .header-admin { background-color: #333; color: white; text-align: center; padding: 25px 15px; }
         .header-admin h2 { margin: 0; font-size: 24px; font-weight: 500; letter-spacing: 0.5px; }
         .header-admin p { margin: 5px 0 0 0; font-size: 14px; color: #d66b8d; font-weight: bold; }
+
+        /* Utilidades */
         .oculto { display: none !important; }
         .pad-20 { padding: 20px; }
+
+        /* Pestañas (Tabs) */
         .tabs { display: flex; gap: 5px; margin-bottom: 25px; background: #f5f5f5; padding: 5px; border-radius: 8px; }
         .tab-btn { flex: 1; padding: 10px 5px; border: none; background: transparent; border-radius: 6px; cursor: pointer; font-weight: bold; color: #777; font-size: 13px; transition: 0.3s; text-align: center; }
         .tab-btn.active { background: white; color: #d66b8d; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+
+        /* Formularios e Inputs */
         label { display: block; font-size: 14px; font-weight: bold; color: #666; margin-bottom: 8px; margin-top: 20px; }
-        input[type="email"], input[type="password"], input[type="date"], input[type="time"] { width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 16px; background-color: #fcfcfc; }
-        .btn-main { background-color: #d66b8d; color: white; border: none; padding: 15px; font-size: 16px; border-radius: 6px; width: 100%; cursor: pointer; font-weight: bold; margin-top: 20px; }
+        input[type="email"], input[type="password"], input[type="date"] {
+            width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 16px; background-color: #fcfcfc;
+        }
+
+        /* Botones Generales */
+        .btn-main { background-color: #d66b8d; color: white; border: none; padding: 15px; font-size: 16px; border-radius: 6px; width: 100%; cursor: pointer; font-weight: bold; margin-top: 20px; transition: 0.2s; }
         .btn-logout { background-color: #ffefef; color: #cc0000; border: 1px solid #ffcccc; padding: 10px; font-size: 14px; border-radius: 6px; width: 100%; cursor: pointer; margin-bottom: 25px; font-weight: bold; }
+
+        /* Vista de Calendario Diario (Agenda) */
         .calendario-selector { background: #fdf2f5; padding: 15px; border-radius: 8px; border: 1px solid #fae3ea; margin-bottom: 20px; text-align: center; }
         .calendario-selector h4 { margin: 0 0 10px 0; color: #b85273; font-size: 15px; }
+
+        /* Tarjetas de Citas */
         .cita-card { background: white; border: 1px solid #eee; border-left: 5px solid #ffb3c6; padding: 15px; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 3px 6px rgba(0,0,0,0.04); }
         .cita-card.confirmada { border-left-color: #25D366; background-color: #fbfffb; }
         .cita-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; margin-bottom: 10px; }
         .cita-nombre { font-size: 16px; font-weight: bold; color: #333; margin: 0; }
         .cita-hora-badge { font-size: 15px; color: white; background: #d66b8d; padding: 4px 10px; border-radius: 20px; font-weight: bold; }
         .cita-servicios { font-size: 14px; color: #555; margin: 0 0 10px 0; line-height: 1.5; }
+        
+        /* Acciones de Citas */
         .cita-acciones { display: flex; flex-direction: column; gap: 8px; margin-top: 15px; }
         .btn-confirmar { background: #25D366; color: white; border: none; padding: 10px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 13px; }
         .acciones-rojas { display: flex; gap: 8px; }
         .btn-cancelar { background: #ff4d4d; color: white; border: none; padding: 10px; border-radius: 5px; flex: 1; font-weight: bold; cursor: pointer; font-size: 12px; }
         .btn-liberar { background: #ff9900; color: white; border: none; padding: 10px; border-radius: 5px; flex: 1; font-weight: bold; cursor: pointer; font-size: 12px; }
-        .horarios-wrapper { background: #f9f9f9; border: 1px solid #eee; border-radius: 8px; padding: 15px; margin-top: 10px; }
-        .horario-item { display: flex; justify-content: space-between; align-items: center; background: white; padding: 10px 15px; margin-bottom: 8px; border-radius: 6px; border: 1px solid #eee; }
-        .btn-eliminar-hora { background: #ff4d4d; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+
+        /* NUEVA GRILLA DE HORARIOS (Cuadritos) */
+        .opciones-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .chip { padding: 12px 10px; background: #f0f0f0; color: #777; border-radius: 6px; cursor: pointer; user-select: none; font-size: 15px; border: 1px solid #e0e0e0; flex-grow: 1; text-align: center; min-width: 25%; font-weight: 500; transition: 0.2s; }
+        .chip.activo { background: #d66b8d; color: white; border-color: #b85273; font-weight: bold; transform: scale(1.03); box-shadow: 0 2px 5px rgba(214, 107, 141, 0.3); }
+
         .mensaje-vacio { text-align: center; color: #999; font-size: 14px; padding: 40px 0; font-style: italic; }
         hr { border: 0; border-top: 1px solid #eee; margin: 25px 0; }
     </style>
@@ -49,6 +71,7 @@
     </div>
 
     <div class="pad-20">
+        <!-- SECCIÓN LOGIN -->
         <div id="seccion-login">
             <p style="text-align: center; color: #666; margin-bottom: 20px;">Ingresa para gestionar tu agenda</p>
             <label>Correo Electrónico</label>
@@ -58,6 +81,7 @@
             <button id="btn-login" class="btn-main">Entrar al Panel</button>
         </div>
 
+        <!-- PANEL PRINCIPAL -->
         <div id="seccion-panel" class="oculto">
             <button id="btn-logout" class="btn-logout">Cerrar Sesión</button>
             
@@ -67,6 +91,7 @@
                 <button id="tab-horarios" class="tab-btn">Abrir Horas ⏰</button>
             </div>
 
+            <!-- PESTAÑA 1: AGENDA -->
             <div id="vista-agenda">
                 <div class="calendario-selector">
                     <h4>📅 Ver Agenda del día:</h4>
@@ -77,6 +102,7 @@
                 </div>
             </div>
 
+            <!-- PESTAÑA 2: PENDIENTES -->
             <div id="vista-solicitudes" class="oculto">
                 <h3 style="margin-top: 0; color: #333; font-size: 18px;">Solicitudes Nuevas</h3>
                 <p style="font-size: 13px; color: #888; margin-top: -10px;">Estas clientas agendaron pero aún no confirman pago.</p>
@@ -85,19 +111,30 @@
                 </div>
             </div>
 
+            <!-- PESTAÑA 3: GESTIÓN DE HORARIOS RÁPIDA -->
             <div id="vista-horarios" class="oculto">
                 <h3 style="margin-top: 0; color: #333; font-size: 18px;">Gestión de Disponibilidad</h3>
-                <label>1. Elige el día</label>
+                <label>1. Elige el día que quieres abrir</label>
                 <input type="date" id="fecha-seleccionada">
-                <label>2. Agrega una hora</label>
-                <input type="time" id="nueva-hora">
-                <button id="btn-agregar-hora" class="btn-main" style="margin-top: 15px;">+ Abrir Horario</button>
-                <hr>
-                <label>📋 Visibilidad en la página web:</label>
                 
-                <button id="btn-toggle-dia" class="btn-main" style="margin-top: 0px; margin-bottom: 15px; display: none; padding: 12px; font-size: 15px;"></button>
-                
-                <div class="horarios-wrapper" id="lista-horarios"></div>
+                <div id="seccion-plantilla" class="oculto" style="margin-top: 20px;">
+                    <label>2. Toca las horas para abrirlas (rosas) o cerrarlas (grises)</label>
+                    <div class="opciones-container" id="plantilla-chips">
+                        <!-- Aquí se inyectan las horas de la plantilla -->
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        <button id="btn-plantilla-completa" class="btn-main" style="margin-top: 0; background-color: #fff0f3; color: #d66b8d; border: 1px solid #ffb3c6; flex: 1; font-size: 14px;">☀️ Marcar Todo</button>
+                        <button id="btn-guardar-plantilla" class="btn-main" style="margin-top: 0; background-color: #25D366; flex: 1; font-size: 14px;">✓ Guardar Día</button>
+                    </div>
+
+                    <p id="mensaje-exito" style="color: #25D366; text-align: center; font-weight: bold; font-size: 14px; display: none; margin-top: 10px;">¡Horarios guardados y publicados!</p>
+
+                    <hr>
+                    <label>📋 Control general de la página web:</label>
+                    <button id="btn-toggle-dia" class="btn-main" style="margin-top: 0px; margin-bottom: 15px; display: none; padding: 12px; font-size: 15px;"></button>
+                    <div id="estado-visibilidad"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -106,7 +143,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc, updateDoc, arrayUnion, arrayRemove, collection, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, getDocs, deleteDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyDNjqux_hDFWfflfF4FhDh7cNmh3W5oRVQ",
@@ -122,6 +159,7 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+    // Elementos de la interfaz
     const seccionLogin = document.getElementById('seccion-login');
     const seccionPanel = document.getElementById('seccion-panel');
     const btnLogin = document.getElementById('btn-login');
@@ -140,13 +178,19 @@
     const listaSolicitudesContainer = document.getElementById('lista-solicitudes-container');
 
     const fechaInput = document.getElementById('fecha-seleccionada');
-    const horaInput = document.getElementById('nueva-hora');
-    const btnAgregarHora = document.getElementById('btn-agregar-hora');
-    const listaHorarios = document.getElementById('lista-horarios');
+    const seccionPlantilla = document.getElementById('seccion-plantilla');
+    const plantillaChips = document.getElementById('plantilla-chips');
+    const btnPlantillaCompleta = document.getElementById('btn-plantilla-completa');
+    const btnGuardarPlantilla = document.getElementById('btn-guardar-plantilla');
     const btnToggleDia = document.getElementById('btn-toggle-dia');
+    const estadoVisibilidad = document.getElementById('estado-visibilidad');
+    const mensajeExito = document.getElementById('mensaje-exito');
 
+    // ESTA ES LA PLANTILLA DE HORAS QUE TU TÍA PIDIÓ
+    const HORARIOS_BASE = ["10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30"];
     let diaActivo = true;
 
+    // Control de pestañas
     tabAgenda.addEventListener('click', () => { activarPestaña(tabAgenda, vistaAgenda); cargarCitas(); });
     tabSolicitudes.addEventListener('click', () => { activarPestaña(tabSolicitudes, vistaSolicitudes); cargarCitas(); });
     tabHorarios.addEventListener('click', () => { activarPestaña(tabHorarios, vistaHorarios); });
@@ -158,11 +202,11 @@
         vista.classList.remove('oculto');
     }
 
+    // Sesión
     btnLogin.addEventListener('click', async () => {
         try { await signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('password').value); } 
         catch (e) { alert("Acceso denegado."); }
     });
-
     btnLogout.addEventListener('click', () => signOut(auth));
 
     onAuthStateChanged(auth, (user) => {
@@ -180,6 +224,7 @@
         }
     });
 
+    // Lógica de Citas
     async function cargarCitas() {
         listaAgendaContainer.innerHTML = "<div class='mensaje-vacio'>Cargando...</div>";
         listaSolicitudesContainer.innerHTML = "<div class='mensaje-vacio'>Cargando...</div>";
@@ -258,49 +303,90 @@
         cargarHorariosDisponibles();
     };
 
+    // LÓGICA DE LA NUEVA PLANTILLA DE HORARIOS
     async function cargarHorariosDisponibles() {
         const f = fechaInput.value;
-        if (!f) return;
-        listaHorarios.innerHTML = "Cargando...";
+        if (!f) { seccionPlantilla.classList.add('oculto'); return; }
+        
+        seccionPlantilla.classList.remove('oculto');
+        plantillaChips.innerHTML = "Cargando...";
         btnToggleDia.style.display = 'none';
+        estadoVisibilidad.innerHTML = "";
+        mensajeExito.style.display = "none";
         
         const snap = await getDoc(doc(db, "disponibilidad", f));
-        listaHorarios.innerHTML = "";
+        let horasAbiertas = [];
         
-        if (snap.exists() && snap.data().horarios?.length > 0) {
+        if (snap.exists()) {
             diaActivo = snap.data().activo !== false;
+            horasAbiertas = snap.data().horarios || [];
+            
             btnToggleDia.style.display = 'block';
-
             if (diaActivo) {
                 btnToggleDia.innerHTML = "👁️ Ocultar todo este día al público";
                 btnToggleDia.style.backgroundColor = "#555";
             } else {
                 btnToggleDia.innerHTML = "👁️‍🗨️ Volver a mostrar este día";
                 btnToggleDia.style.backgroundColor = "#25D366";
-                listaHorarios.innerHTML += `<div class="mensaje-vacio" style="color: #ff4d4d; padding: 5px 0 15px 0; font-weight: bold;">⚠️ Día oculto. Las clientas no pueden agendar hoy.</div>`;
+                estadoVisibilidad.innerHTML = `<div class="mensaje-vacio" style="color: #ff4d4d; padding: 5px 0 15px 0; font-weight: bold;">⚠️ Día oculto. Las clientas no pueden agendar hoy.</div>`;
             }
-
-            snap.data().horarios.sort().forEach(h => {
-                // AQUÍ ESTÁ EL CAMBIO: El botón ahora dice "Borrar"
-                listaHorarios.innerHTML += `<div class="horario-item"><span>${h}</span><button class="btn-eliminar-hora" onclick="quitarHora('${f}','${h}')">Borrar</button></div>`;
-            });
-        } else { 
-            listaHorarios.innerHTML = "<div class='mensaje-vacio'>Sin horarios en la web.</div>"; 
+        } else {
+            diaActivo = true; // Por defecto abierto si no existe
         }
+
+        // Dibujar los cuadritos
+        plantillaChips.innerHTML = "";
+        HORARIOS_BASE.forEach(hora => {
+            const chip = document.createElement('div');
+            chip.className = 'chip';
+            if (horasAbiertas.includes(hora)) {
+                chip.classList.add('activo');
+            }
+            chip.textContent = hora;
+            
+            // Función de tocar para activar/desactivar
+            chip.onclick = () => {
+                chip.classList.toggle('activo');
+            };
+            
+            plantillaChips.appendChild(chip);
+        });
     }
 
-    btnAgregarHora.addEventListener('click', async () => {
-        if (!fechaInput.value || !horaInput.value) return;
-        await setDoc(doc(db, "disponibilidad", fechaInput.value), { horarios: arrayUnion(horaInput.value), activo: true }, { merge: true });
-        horaInput.value = "";
+    // Botón de Marcar Todo
+    btnPlantillaCompleta.addEventListener('click', () => {
+        document.querySelectorAll('#plantilla-chips .chip').forEach(chip => {
+            chip.classList.add('activo');
+        });
+    });
+
+    // Botón de Guardar Día
+    btnGuardarPlantilla.addEventListener('click', async () => {
+        const f = fechaInput.value;
+        if (!f) return;
+        
+        // Recolectar solo los cuadritos que quedaron rosas
+        let horasSeleccionadas = [];
+        document.querySelectorAll('#plantilla-chips .chip.activo').forEach(chip => {
+            horasSeleccionadas.push(chip.textContent);
+        });
+
+        // Subir a Firebase de un solo golpe
+        btnGuardarPlantilla.textContent = "Guardando...";
+        await setDoc(doc(db, "disponibilidad", f), { 
+            horarios: horasSeleccionadas, 
+            activo: diaActivo 
+        }, { merge: true });
+        
+        btnGuardarPlantilla.textContent = "✓ Guardar Día";
+        mensajeExito.style.display = "block";
+        
+        // Ocultar mensaje de éxito después de 3 segundos
+        setTimeout(() => { mensajeExito.style.display = "none"; }, 3000);
         cargarHorariosDisponibles();
     });
 
-    window.quitarHora = async (f, h) => {
-        await updateDoc(doc(db, "disponibilidad", f), { horarios: arrayRemove(h) });
-        cargarHorariosDisponibles();
-    };
-
+    // Botón Maestro Ocultar/Mostrar
     btnToggleDia.addEventListener('click', async () => {
         const f = fechaInput.value;
         if (!f) return;
