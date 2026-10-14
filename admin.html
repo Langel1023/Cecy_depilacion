@@ -49,9 +49,15 @@
         /* Acciones de Citas */
         .cita-acciones { display: flex; flex-direction: column; gap: 8px; margin-top: 15px; }
         .btn-confirmar { background: #25D366; color: white; border: none; padding: 10px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 13px; }
+        .btn-editar { background: #007bff; color: white; border: none; padding: 10px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 12px; }
         .acciones-rojas { display: flex; gap: 8px; }
         .btn-cancelar { background: #ff4d4d; color: white; border: none; padding: 10px; border-radius: 5px; flex: 1; font-weight: bold; cursor: pointer; font-size: 12px; }
         .btn-liberar { background: #ff9900; color: white; border: none; padding: 10px; border-radius: 5px; flex: 1; font-weight: bold; cursor: pointer; font-size: 12px; }
+
+        /* Panel Desplegable para Reasignar Hora */
+        .panel-editar-hora { background: #f0f7ff; border: 1px dashed #007bff; padding: 12px; border-radius: 6px; margin-top: 10px; }
+        .panel-editar-hora label { margin-top: 5px; font-size: 12px; color: #0056b3; }
+        .panel-editar-hora input { padding: 8px; font-size: 14px; margin-bottom: 8px; }
 
         /* GRILLA DE HORARIOS (Cuadritos) */
         .opciones-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
@@ -285,6 +291,17 @@
                 <p class="cita-servicios">✨ <b>Servicios:</b> ${cita.servicios}</p>
                 <div class="cita-acciones">
                     ${!esAgenda ? `<button class="btn-confirmar" onclick="confirmarPago('${cita.id}')">✓ Confirmar Pago</button>` : ''}
+                    <button class="btn-editar" onclick="mostrarReasignar('${cita.id}')">✏️ Reasignar Fecha / Hora</button>
+                    
+                    <!-- Panel oculto para cambiar fecha/hora -->
+                    <div id="edit-panel-${cita.id}" class="panel-editar-hora oculto">
+                        <label>Nueva Fecha:</label>
+                        <input type="date" id="nueva-fecha-${cita.id}" value="${cita.fecha}">
+                        <label>Nueva Hora:</label>
+                        <input type="time" id="nueva-hora-${cita.id}" value="${cita.hora}">
+                        <button class="btn-confirmar" style="width: 100%; margin-top: 5px;" onclick="guardarReasignacion('${cita.id}', '${cita.fecha}', '${cita.hora}')">✓ Guardar Cambio</button>
+                    </div>
+
                     <div class="acciones-rojas">
                         <button class="btn-cancelar" onclick="eliminarCita('${cita.id}', '${cita.nombre}')">❌ Borrar</button>
                         <button class="btn-liberar" onclick="liberarCita('${cita.id}', '${cita.fecha}', '${cita.hora}', '${cita.nombre}')">🔓 Cancelar y Liberar Hora</button>
@@ -293,6 +310,43 @@
             </div>
         `;
     }
+
+    // Mostrar u ocultar el panel de edición
+    window.mostrarReasignar = (id) => {
+        const panel = document.getElementById(`edit-panel-${id}`);
+        panel.classList.toggle('oculto');
+    };
+
+    // Guardar el cambio de fecha/hora en Firebase
+    window.guardarReasignacion = async (id, fechaVieja, horaVieja) => {
+        const nuevaFecha = document.getElementById(`nueva-fecha-${id}`).value;
+        const nuevaHora = document.getElementById(`nueva-hora-${id}`).value;
+
+        if (!nuevaFecha || !nuevaHora) {
+            alert("Selecciona fecha y hora válidas.");
+            return;
+        }
+
+        try {
+            // 1. Actualizar el documento de la cita con los nuevos datos
+            await updateDoc(doc(db, "citas", id), {
+                fecha: nuevaFecha,
+                hora: nuevaHora
+            });
+
+            // 2. Liberar la hora anterior en la colección de disponibilidad para que otra clienta la pueda tomar
+            await setDoc(doc(db, "disponibilidad", fechaVieja), { 
+                horarios: arrayUnion(horaVieja) 
+            }, { merge: true });
+
+            alert(" Cita reasignada correctamente.");
+            cargarCitas();
+            cargarHorariosDisponibles();
+        } catch (e) {
+            alert("Error al reasignar cita.");
+            console.error(e);
+        }
+    };
 
     window.confirmarPago = async (id) => {
         if (!confirm("¿Confirmas que ya recibiste el anticipo?")) return;
