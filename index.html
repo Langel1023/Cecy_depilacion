@@ -5,93 +5,146 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reserva tu Cita</title>
-    <link rel="icon" type="image/jpeg" href="Logo.jpeg">
+    <link rel="icon" type="image/jpeg" href="Logo-halloween.jpeg">
     <!-- Metaetiquetas para que el link se vea bonito en WhatsApp -->
     <meta property="og:title" content="Cecy Perales | Depilación con Cera">
     <meta property="og:description" content="Agenda tu cita de depilación facial y corporal. Servicio higiénico y seguro, exclusivo para damas.">
-    <meta property="og:image" content="https://main.d30cuqwqnc3p7f.amplifyapp.com/Logo.jpeg">
+    <meta property="og:image" content="https://main.d30cuqwqnc3p7f.amplifyapp.com/Logo-halloween.jpeg">
     <meta property="og:url" content="https://main.d30cuqwqnc3p7f.amplifyapp.com/">
     <meta property="og:type" content="website">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
     <style>
+        /* ===== TEMA HALLOWEEN ===== */
+        :root {
+            --naranja: #ff7518;
+            --naranja-osc: #c9540a;
+            --morado: #7b2cbf;
+            --morado-osc: #3c096c;
+            --noche: #14091f;
+            --noche-2: #1f0f2e;
+            --noche-3: #2a1640;
+            --texto: #e9dcf5;
+            --texto-suave: #b9a6cc;
+        }
+
         /* Diseño General Mobile-First */
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: #e9ecef; color: #444; }
-        .mobile-container { max-width: 420px; margin: auto; background: white; min-height: 100vh; box-shadow: 0 0 15px rgba(0,0,0,0.1); padding-bottom: 40px; }
-        
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: #0b0512; color: var(--texto); }
+        .mobile-container { position: relative; max-width: 420px; margin: auto; background: var(--noche); min-height: 100vh; box-shadow: 0 0 25px rgba(255,117,24,0.25); padding-bottom: 40px; overflow: hidden; }
+
+        /* Decoración flotante */
+        .deco { position: absolute; pointer-events: none; user-select: none; z-index: 1; }
+        .telaraña { font-size: 60px; opacity: 0.55; }
+        .murcielago { font-size: 26px; animation: volar 6s ease-in-out infinite; }
+        @keyframes volar {
+            0%, 100% { transform: translate(0, 0) rotate(-5deg); }
+            50% { transform: translate(18px, -12px) rotate(8deg); }
+        }
+        .fantasma-flota { animation: flotar 3.5s ease-in-out infinite; display: inline-block; }
+        @keyframes flotar {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        .luna { position: absolute; top: 14px; right: 18px; width: 54px; height: 54px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #fff8d6, #f3d96b 70%); box-shadow: 0 0 25px 8px rgba(255,236,150,0.45); z-index: 1; }
+
         /* Cabecera y Foto de Perfil */
-        .banner { background-color: #d66b8d; height: 130px; width: 100%; }
-        .perfil-container { text-align: center; margin-top: -65px; }
-        .perfil-img { width: 130px; height: 130px; border-radius: 50%; border: 4px solid white; object-fit: cover; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .titulo { font-size: 28px; font-weight: 300; color: #333; margin: 10px 0 5px 0; }
-        .subtitulo { font-size: 15px; color: #666; margin-bottom: 20px; }
+        header { position: relative; }
+        .banner { position: relative; background: linear-gradient(180deg, #1a0b2e 0%, var(--morado-osc) 55%, var(--naranja-osc) 100%); height: 130px; width: 100%; overflow: hidden; border-bottom: 3px solid var(--naranja); }
+        .banner::after { content: "🌲 🌲 🏚️ 🌲 🌲 🌲 🌲 🏚️ 🌲 🌲"; position: absolute; bottom: -6px; left: 0; right: 0; text-align: center; font-size: 22px; letter-spacing: 2px; filter: brightness(0.15); white-space: nowrap; }
+        .perfil-container { position: relative; z-index: 2; text-align: center; margin-top: -65px; }
+        .perfil-img { width: 130px; height: 130px; border-radius: 50%; border: 4px solid var(--naranja); object-fit: cover; background: #fff; box-shadow: 0 0 18px rgba(255,117,24,0.7); }
+        .titulo { font-family: 'Creepster', 'Segoe UI', cursive; font-size: 36px; font-weight: 400; letter-spacing: 2px; color: var(--naranja); text-shadow: 0 0 10px rgba(255,117,24,0.55), 2px 2px 0 #000; margin: 10px 0 5px 0; }
+        .subtitulo { font-size: 15px; color: var(--texto-suave); margin-bottom: 20px; }
         
         /* Botones Generales */
-        .btn-main { background-color: #d66b8d; color: white; border: none; padding: 14px 20px; font-size: 16px; border-radius: 5px; width: 90%; margin: 0 auto; display: block; cursor: pointer; font-weight: bold; transition: background 0.3s; }
-        .btn-main:disabled { background-color: #ccc; cursor: not-allowed; }
+        .btn-main { background: linear-gradient(135deg, var(--naranja), var(--naranja-osc)); color: #1a0b2e; border: none; padding: 14px 20px; font-size: 16px; border-radius: 30px; width: 90%; margin: 0 auto; display: block; cursor: pointer; font-weight: bold; transition: transform 0.2s, box-shadow 0.3s; box-shadow: 0 0 14px rgba(255,117,24,0.5); }
+        .btn-main:hover { transform: scale(1.03); box-shadow: 0 0 22px rgba(255,117,24,0.85); }
+        .btn-main:disabled { background: #4a3b57; color: #888; cursor: not-allowed; box-shadow: none; }
         
         /* Sistema de Reservas */
-        .reserva-container { text-align: center; padding: 20px; margin-top: 10px; border-top: 1px solid #eee; background: #fdfdfd; }
+        .reserva-container { position: relative; z-index: 2; text-align: center; padding: 20px; margin-top: 10px; border-top: 1px dashed var(--naranja); background: var(--noche-2); }
+        .reserva-container > p { color: var(--texto-suave) !important; }
         
         /* Lista de Multiselección (Checkboxes) */
-        .checkbox-group { text-align: left; margin-bottom: 20px; background: #fff; border: 1px solid #ccc; border-radius: 5px; max-height: 220px; overflow-y: auto; padding: 15px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
-        .grupo-titulo { font-weight: bold; color: #b85273; margin: 15px 0 8px 0; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        .checkbox-group { text-align: left; margin-bottom: 20px; background: var(--noche); border: 1px solid var(--morado); border-radius: 8px; max-height: 220px; overflow-y: auto; padding: 15px; box-shadow: inset 0 2px 8px rgba(0,0,0,0.5); }
+        .grupo-titulo { font-weight: bold; color: var(--naranja); margin: 15px 0 8px 0; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px dashed var(--morado); padding-bottom: 5px; }
         .grupo-titulo:first-child { margin-top: 0; }
-        .checkbox-label { display: block; padding: 8px 0; font-size: 15px; color: #555; cursor: pointer; }
-        .checkbox-label input[type="checkbox"] { margin-right: 12px; transform: scale(1.3); accent-color: #d66b8d; cursor: pointer; }
+        .checkbox-label { display: block; padding: 8px 0; font-size: 15px; color: var(--texto); cursor: pointer; }
+        .checkbox-label span { color: var(--texto-suave) !important; }
+        .checkbox-label input[type="checkbox"] { margin-right: 12px; transform: scale(1.3); accent-color: var(--naranja); cursor: pointer; }
         
         /* Carrusel de Fechas y Horas */
         .carrusel-dias { display: flex; justify-content: space-between; align-items: center; margin: 20px auto; width: 90%; }
-        .btn-flecha { background: none; border: none; font-size: 35px; color: #d66b8d; cursor: pointer; padding: 0 10px; font-weight: bold; }
-        .btn-flecha:disabled { color: #e0e0e0; cursor: not-allowed; }
-        #fecha-actual-texto { font-size: 18px; color: #555; margin: 0; font-weight: 500; flex-grow: 1; text-align: center; text-transform: capitalize; }
+        .btn-flecha { background: none; border: none; font-size: 35px; color: var(--naranja); cursor: pointer; padding: 0 10px; font-weight: bold; }
+        .btn-flecha:disabled { color: #4a3b57; cursor: not-allowed; }
+        #fecha-actual-texto { font-size: 18px; color: var(--texto); margin: 0; font-weight: 500; flex-grow: 1; text-align: center; text-transform: capitalize; }
         .opciones-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 20px; }
-        .chip { padding: 10px 18px; background: #d66b8d; color: white; border-radius: 5px; cursor: pointer; user-select: none; font-size: 14px; opacity: 0.6; transition: 0.2s; }
-        .chip.activo { opacity: 1; transform: scale(1.05); font-weight: bold; box-shadow: 0 3px 6px rgba(214, 107, 141, 0.4); }
+        .chip { padding: 10px 18px; background: var(--morado); color: white; border-radius: 20px; cursor: pointer; user-select: none; font-size: 14px; opacity: 0.7; transition: 0.2s; border: 1px solid transparent; }
+        .chip.activo { opacity: 1; transform: scale(1.05); font-weight: bold; background: var(--naranja); color: #1a0b2e; box-shadow: 0 0 12px rgba(255,117,24,0.7); }
         
         /* Input Nombre */
-        .input-nombre { width: 90%; padding: 12px; border: 1px solid #ccc; border-radius: 5px; margin-bottom: 15px; font-size: 15px; box-sizing: border-box; text-align: center; background: #fff; }
-        #mensaje-error { color: #ff4d4d; text-align: center; display: none; margin-top: 10px; font-size: 14px; font-weight: bold; }
+        .input-nombre { width: 90%; padding: 12px; border: 1px solid var(--morado); border-radius: 8px; margin-bottom: 15px; font-size: 15px; box-sizing: border-box; text-align: center; background: var(--noche); color: var(--texto); }
+        .input-nombre::placeholder { color: #7d6a91; }
+        .input-nombre:focus { outline: none; border-color: var(--naranja); box-shadow: 0 0 8px rgba(255,117,24,0.5); }
+        #mensaje-error { color: #ff6b6b; text-align: center; display: none; margin-top: 10px; font-size: 14px; font-weight: bold; }
         
        /* Secciones de Información (DISEÑO MEJORADO) */
-        .seccion { padding: 25px 30px; border-top: 1px solid #f0f0f0; }
-        .seccion-titulo { font-size: 19px; color: #b85273; text-align: center; margin-bottom: 20px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+        .seccion { position: relative; z-index: 2; padding: 25px 30px; border-top: 1px dashed var(--morado); }
+        .seccion-titulo { font-family: 'Creepster', 'Segoe UI', cursive; font-size: 24px; color: var(--naranja); text-align: center; margin-bottom: 20px; font-weight: 400; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 8px rgba(255,117,24,0.45); }
         
-        .info-card { background: #fff5f8; border-left: 4px solid #d66b8d; border-radius: 8px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        .info-card p { font-size: 14.5px; line-height: 1.7; color: #555; text-align: justify; margin: 0 0 15px 0; }
+        .info-card { background: var(--noche-3); border-left: 4px solid var(--naranja); border-radius: 8px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.4); margin-bottom: 20px; }
+        .info-card p { font-size: 14.5px; line-height: 1.7; color: var(--texto); text-align: justify; margin: 0 0 15px 0; }
         .info-card p:last-child { margin-bottom: 0; }
         
         .lista-indicaciones { list-style: none; padding: 0; margin: 0; }
-        .lista-indicaciones li { background: #ffffff; margin-bottom: 10px; padding: 12px 15px; border-radius: 6px; font-size: 14px; color: #555; box-shadow: 0 1px 3px rgba(0,0,0,0.04); display: flex; align-items: flex-start; gap: 10px; border: 1px solid #fae3ea; }
-        .lista-indicaciones li::before { content: "✨"; font-size: 14px; flex-shrink: 0; margin-top: 2px; }
+        .lista-indicaciones li { background: var(--noche-3); margin-bottom: 10px; padding: 12px 15px; border-radius: 6px; font-size: 14px; color: var(--texto); box-shadow: 0 1px 3px rgba(0,0,0,0.4); display: flex; align-items: flex-start; gap: 10px; border: 1px solid var(--morado); }
+        .lista-indicaciones li::before { content: "🎃"; font-size: 14px; flex-shrink: 0; margin-top: 2px; }
         /* MENÚ DE SERVICIOS Y PAQUETES */
         details.acordeon-servicios { margin-bottom: 15px; }
-        details.acordeon-servicios summary { font-size: 16px; color: #555; text-align: center; cursor: pointer; list-style: none; font-weight: bold; padding: 12px; background: #f9f9f9; border-radius: 5px; border: 1px solid #eee; }
+        details.acordeon-servicios summary { font-size: 16px; color: var(--naranja); text-align: center; cursor: pointer; list-style: none; font-weight: bold; padding: 12px; background: var(--noche-3); border-radius: 8px; border: 1px solid var(--naranja); }
         details.acordeon-servicios summary::-webkit-details-marker { display: none; }
-        .servicio-fila { display: flex; margin-top: 10px; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .Anuncio { display: flex; margin-top: 10px; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .servicio-nombre { background-color: #d66b8d; color: white; padding: 15px; flex-grow: 1; font-weight: 500; font-size: 14px; }
-        .anuncio-color { background-color: #b85273; color: white; padding: 15px; flex-grow: 1; font-weight: 500; font-size: 14px; }
-        .servicio-precio { background-color: #b85273; color: white; padding: 15px; min-width: 60px; text-align: center; font-weight: bold; font-size: 15px; }
+        details.acordeon-servicios[open] summary { box-shadow: 0 0 12px rgba(255,117,24,0.5); }
+        .servicio-fila { display: flex; margin-top: 10px; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.4); }
+        .Anuncio { display: flex; margin-top: 10px; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.4); }
+        .servicio-nombre { background-color: var(--morado); color: white; padding: 15px; flex-grow: 1; font-weight: 500; font-size: 14px; }
+        .anuncio-color { background-color: var(--morado-osc); color: white; padding: 15px; flex-grow: 1; font-weight: 500; font-size: 14px; border: 1px dashed var(--naranja); border-radius: 8px; }
+        .servicio-precio { background-color: var(--naranja); color: #1a0b2e; padding: 15px; min-width: 60px; text-align: center; font-weight: bold; font-size: 15px; }
 
         /* Listas y Tablas */
-        .horarios-tabla { width: 100%; font-size: 14px; color: #666; margin: 0 auto; max-width: 250px; }
+        .horarios-tabla { width: 100%; font-size: 14px; color: var(--texto-suave); margin: 0 auto; max-width: 250px; }
         .horarios-tabla td { padding: 6px 0; }
-        .horarios-tabla td:first-child { font-weight: bold; width: 45%; color: #444; }
+        .horarios-tabla td:first-child { font-weight: bold; width: 45%; color: var(--texto); }
         
         /* Contacto */
-        .contacto-item { display: flex; align-items: center; gap: 15px; padding: 12px 0; font-size: 14px; color: #444; border-bottom: 1px solid #f5f5f5; }
+        .contacto-item { display: flex; align-items: center; gap: 15px; padding: 12px 0; font-size: 14px; color: var(--texto); border-bottom: 1px solid var(--noche-3); }
         .contacto-item:last-child { border: none; }
-        .link-mapa { color: #d66b8d; text-decoration: none; display: block; text-align: center; margin-top: 5px; font-size: 14px; font-weight: bold; }
+        .link-mapa { color: var(--naranja); text-decoration: none; display: block; text-align: center; margin-top: 5px; font-size: 14px; font-weight: bold; }
+        .dir-titulo { font-weight: bold; margin-bottom: 5px; color: var(--texto); }
+        .dir-texto { font-size: 14px; margin-bottom: 5px; color: var(--texto-suave); }
+
+        /* Pie decorativo */
+        .pie-halloween { text-align: center; font-size: 26px; letter-spacing: 8px; padding-top: 10px; }
     </style>
 </head>
 <body>
 
 <div class="mobile-container">
+
+    <!-- Decoración Halloween -->
+    <div class="deco telaraña" style="top: 0; left: 0;">🕸️</div>
+    <div class="deco telaraña" style="top: 0; right: 0; transform: scaleX(-1);">🕸️</div>
+    <div class="deco murcielago" style="top: 30px; left: 70px;">🦇</div>
+    <div class="deco murcielago" style="top: 75px; left: 190px; animation-delay: 1.5s; font-size: 20px;">🦇</div>
+    <div class="deco murcielago" style="top: 20px; right: 90px; animation-delay: 3s; font-size: 18px;">🦇</div>
     
     <!-- Cabecera -->
     <header>
-        <div class="banner"></div>
+        <div class="banner">
+            <div class="luna"></div>
+        </div>
         <div class="perfil-container">
-          <img class="perfil-img" src="Logo.jpeg" alt="Foto de perfil">
+          <img class="perfil-img" src="Logo-halloween.jpeg" alt="Foto de perfil">
             <h1 class="titulo">Depilación con cera</h1>
             <p class="subtitulo">Facial y corporal<br><br>Exclusivo damas</p>
             <button id="btn-mostrar-reservas" class="btn-main">✓ Agendar una Cita</button>
@@ -171,8 +224,8 @@
             <div id="horarios-container" class="opciones-container"></div>
             
             <!-- NOTA 1: REVISIÓN DE TIEMPOS -->
-            <div style="background-color: #fcf8e3; border-left: 5px solid #f0ad4e; padding: 15px; margin: 25px auto 15px auto; width: 92%; text-align: left; box-sizing: border-box; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-                <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #66512c; font-weight: 500;">
+            <div style="background-color: #2a1640; border-left: 5px solid #ff7518; padding: 15px; margin: 25px auto 15px auto; width: 92%; text-align: left; box-sizing: border-box; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.4);">
+                <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #ffd9b8; font-weight: 500;">
                     <strong></strong> Nuestro equipo revisará los tiempos de la cita solicitada, si tu servicio puede realizarse, te enviamos los datos para que realices el anticipo.
                 </p>
             </div>
@@ -181,15 +234,15 @@
             <input type="text" id="nombre-cliente" class="input-nombre" placeholder="Ej. María Pérez" required>
 
             <!-- BURBUJA DE NOTAS OPTIMIZADA (NOTA 2 Y NOTA 3 JUNTAS) -->
-            <div style="background-color: #d66b8d; color: white; padding: 22px; border-radius: 12px; font-size: 15px; margin-top: 20px; margin-bottom: 25px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); line-height: 1.6; box-sizing: border-box; width: 95%; margin-left: auto; margin-right: auto;">
-                <strong style="color: #fff; font-size: 16px; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px;">⚠️ Nota importante:</strong> 
+            <div style="background: linear-gradient(135deg, #5a189a, #3c096c); border: 2px solid #ff7518; color: white; padding: 22px; border-radius: 12px; font-size: 15px; margin-top: 20px; margin-bottom: 25px; text-align: center; box-shadow: 0 0 16px rgba(255,117,24,0.4); line-height: 1.6; box-sizing: border-box; width: 95%; margin-left: auto; margin-right: auto;">
+                <strong style="color: #ff9a4d; font-size: 16px; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px;">⚠️ Nota importante:</strong> 
                 La cita quedará agendada una vez realizado el anticipo, con límite de 2 horas para enviar el comprobante, de lo contrario la cita se libera automáticamente.
                                     <br>Agenda con <strong>RESPONSABILIDAD</strong>. En caso de no llegar a tu cita el día y la hora separada, 
-                    <span style="background-color: rgba(0,0,0,0.15); padding: 3px 6px; border-radius: 4px; display: inline-block; margin-top: 5px; font-weight: bold;">*EL ANTICIPO NO ES REEMBOLSABLE, NI TRANSFERIBLE PARA OTRA CITA*</span>.
+                    <span style="background-color: rgba(255,117,24,0.25); padding: 3px 6px; border-radius: 4px; display: inline-block; margin-top: 5px; font-weight: bold;">*EL ANTICIPO NO ES REEMBOLSABLE, NI TRANSFERIBLE PARA OTRA CITA*</span>.
 
             </div>
 
-            <button id="btn-whatsapp" class="btn-main" style="margin-top: 5px; background-color: #25D366;">Confirmar por WhatsApp</button>
+            <button id="btn-whatsapp" class="btn-main" style="margin-top: 5px; background: #25D366; color: #fff; box-shadow: 0 0 14px rgba(37,211,102,0.45);">Confirmar por WhatsApp</button>
             <p id="mensaje-error">Por favor completa todos los pasos.</p>
         </div>
     </div>
@@ -200,10 +253,10 @@
         
         <div class="info-card">
             <p>La depilación con cera ha demostrado durante muchos años ser el método más efectivo que encontramos en el mercado, y por supuesto, súper accesible.</p>
-            <p style="font-weight: 500; color: #b85273;">Mi compromiso es ofrecerte un servicio en el que te sientas cómoda y bella.</p>
+            <p style="font-weight: 500; color: #ff9a4d;">Mi compromiso es ofrecerte un servicio en el que te sientas cómoda y bella.</p>
         </div>
 
-        <h4 style="color: #666; font-size: 15px; margin-bottom: 12px; text-align: center;">Indicaciones previas a tu cita:</h4>
+        <h4 style="color: var(--texto-suave); font-size: 15px; margin-bottom: 12px; text-align: center;">Indicaciones previas a tu cita:</h4>
         <ul class="lista-indicaciones">
             <li>Acudir con la piel completamente limpia (sin maquillaje, sin cremas y sin desodorante).</li>
             <li>Llevar ropa cómoda y holgada.</li>
@@ -272,9 +325,15 @@
         <div class="contacto-item">🅵 <span>Cecy Perales Depilacion</span></div>
         
         <div style="margin-top: 30px; text-align: center;">
-            <p style="font-weight: bold; margin-bottom: 5px; color: #444;">📍 Dirección</p>
-            <p style="font-size: 14px; margin-bottom: 5px;">Plutarco Elías Calles 3102, Riberas del Río<br>Guadalupe, Nuevo León</p>
+            <p class="dir-titulo">📍 Dirección</p>
+            <p class="dir-texto">Plutarco Elías Calles 3102, Riberas del Río<br>Guadalupe, Nuevo León</p>
             <a href="https://maps.app.goo.gl/12PVvMo1RKXYBcTF8" class="link-mapa">Ver en Google Maps</a>
+        </div>
+
+        <div class="pie-halloween">
+            <span class="fantasma-flota">👻</span>
+            <span class="fantasma-flota" style="animation-delay: .6s;">🎃</span>
+            <span class="fantasma-flota" style="animation-delay: 1.2s;">🕷️</span>
         </div>
     </section>
 
