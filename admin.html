@@ -3,372 +3,916 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Administración — Cecy Perales</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Panel de Administración | Cecy Perales</title>
+    <link rel="icon" type="image/jpeg" href="Logo.jpeg">
     <style>
-        body {
-            background-color: #0D0D12;
-            color: #ffffff;
-            font-family: system-ui, -apple-system, sans-serif;
+        /* Diseño General */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: #e9ecef; color: #444; }
+        .mobile-container { max-width: 420px; margin: 20px auto; background: white; min-height: 95vh; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 10px; overflow: hidden; }
+
+        /* Cabecera del Admin */
+        .header-admin { background-color: #333; color: white; text-align: center; padding: 25px 15px; }
+        .header-admin h2 { margin: 0; font-size: 24px; font-weight: 500; letter-spacing: 0.5px; }
+        .header-admin p { margin: 5px 0 0 0; font-size: 14px; color: #d66b8d; font-weight: bold; }
+
+        /* Utilidades */
+        .oculto { display: none !important; }
+        .pad-20 { padding: 20px; }
+
+        /* Pestañas (Tabs) */
+        .tabs { display: flex; gap: 4px; margin-bottom: 20px; background: #f5f5f5; padding: 4px; border-radius: 8px; }
+        .tab-btn { flex: 1; padding: 10px 2px; border: none; background: transparent; border-radius: 6px; cursor: pointer; font-weight: bold; color: #777; font-size: 11px; transition: 0.3s; text-align: center; }
+        .tab-btn.active { background: white; color: #d66b8d; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+
+        /* Formularios e Inputs */
+        label { display: block; font-size: 14px; font-weight: bold; color: #666; margin-bottom: 8px; margin-top: 15px; }
+        input[type="email"], input[type="password"], input[type="date"], input[type="time"], input[type="number"], select {
+            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 15px; background-color: #fcfcfc;
         }
-        .bg-card {
-            background-color: #181824;
-        }
-        .border-purple-custom {
-            border-color: rgba(147, 51, 234, 0.3);
-        }
-        .text-gradient {
-            background: linear-gradient(135deg, #EC4899 0%, #9333EA 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .btn-gradient {
-            background: linear-gradient(135deg, #9333EA 0%, #EC4899 100%);
-        }
-        .btn-gradient:hover {
-            opacity: 0.9;
-        }
+
+        /* Botones Generales */
+        .btn-main { background-color: #d66b8d; color: white; border: none; padding: 15px; font-size: 16px; border-radius: 6px; width: 100%; cursor: pointer; font-weight: bold; margin-top: 20px; transition: 0.2s; }
+        .btn-logout { background-color: #ffefef; color: #cc0000; border: 1px solid #ffcccc; padding: 10px; font-size: 14px; border-radius: 6px; width: 100%; cursor: pointer; margin-bottom: 20px; font-weight: bold; }
+
+        /* Vista de Calendario Diario (Agenda) */
+        .calendario-selector { background: #fdf2f5; padding: 15px; border-radius: 8px; border: 1px solid #fae3ea; margin-bottom: 20px; text-align: center; }
+        .calendario-selector h4 { margin: 0 0 10px 0; color: #b85273; font-size: 15px; }
+
+        /* Tarjetas de Citas */
+        .cita-card { background: white; border: 1px solid #eee; border-left: 5px solid #ffb3c6; padding: 15px; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 3px 6px rgba(0,0,0,0.04); }
+        .cita-card.confirmada { border-left-color: #25D366; background-color: #fbfffb; }
+        .cita-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; margin-bottom: 10px; }
+        .cita-nombre { font-size: 16px; font-weight: bold; color: #333; margin: 0; }
+        .cita-hora-badge { font-size: 14px; color: white; background: #d66b8d; padding: 4px 10px; border-radius: 20px; font-weight: bold; }
+        .cita-servicios { font-size: 14px; color: #555; margin: 0 0 8px 0; line-height: 1.5; }
+        .badge-pago { display: inline-block; padding: 3px 8px; font-size: 11px; font-weight: bold; border-radius: 4px; background: #eef2ff; color: #4f46e5; border: 1px solid #c7d2fe; margin-top: 4px; }
+        .badge-pago.sin-pago { background: #fff7ed; color: #c2410c; border-color: #fed7aa; }
+
+        /* Registro rápido de pago (Agenda) */
+        .pago-rapido { background: #f0fdf4; border: 1px solid #bbf7d0; padding: 10px; border-radius: 6px; margin-top: 12px; }
+        .pago-rapido label { margin-top: 0; font-size: 12px; color: #166534; }
+        .pago-rapido-fila { display: flex; gap: 6px; margin-bottom: 8px; }
+        .pago-rapido-fila input, .pago-rapido-fila select { padding: 8px; font-size: 13px; flex: 1; min-width: 0; }
+        .metodos-botones { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+        .metodo-btn.pend { flex-basis: 100%; border-color: #fdba74; color: #c2410c; }
+        .metodo-btn.pend.sel { background: #ea580c; color: white; border-color: #ea580c; }
+        .metodo-btn { flex: 1 1 28%; padding: 9px 4px; border: 1px solid #d1d5db; background: white; color: #555; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.15s; }
+        .metodo-btn.sel { background: #15803d; color: white; border-color: #15803d; }
+
+        /* Acciones de Citas */
+        .cita-acciones { display: flex; flex-direction: column; gap: 8px; margin-top: 15px; }
+        .btn-confirmar { background: #25D366; color: white; border: none; padding: 10px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 13px; }
+        .btn-editar { background: #007bff; color: white; border: none; padding: 10px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 12px; }
+        .acciones-rojas { display: flex; gap: 8px; }
+        .btn-cancelar { background: #ff4d4d; color: white; border: none; padding: 10px; border-radius: 5px; flex: 1; font-weight: bold; cursor: pointer; font-size: 12px; }
+        .btn-liberar { background: #ff9900; color: white; border: none; padding: 10px; border-radius: 5px; flex: 1; font-weight: bold; cursor: pointer; font-size: 12px; }
+
+        /* Panel Desplegable para Reasignar u Opciones */
+        .panel-editar-hora { background: #f0f7ff; border: 1px dashed #007bff; padding: 12px; border-radius: 6px; margin-top: 10px; }
+        .panel-editar-hora label { margin-top: 5px; font-size: 12px; color: #0056b3; }
+        .panel-editar-hora input, .panel-editar-hora select { padding: 8px; font-size: 13px; margin-bottom: 8px; }
+
+        /* Tarjetas de Ingresos */
+        .card-ingreso { background: #fcfcfc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin-bottom: 12px; }
+        .card-ingreso-titulo { font-size: 13px; color: #64748b; font-weight: bold; text-transform: uppercase; margin: 0 0 5px 0; }
+        .card-ingreso-monto { font-size: 24px; color: #0f172a; font-weight: 800; margin: 0; }
+        .card-ingreso-sub { font-size: 11px; color: #94a3b8; margin: 3px 0 0 0; }
+        .grid-metodos { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 8px; }
+        .box-metodo { background: #f8fafc; border: 1px solid #e2e8f0; padding: 8px; border-radius: 6px; text-align: center; }
+        .box-metodo span { display: block; font-size: 11px; color: #64748b; font-weight: bold; }
+        .box-metodo b { display: block; font-size: 14px; color: #1e293b; margin-top: 2px; }
+
+        /* Servicios y total automático */
+        .total-auto { background: white; border: 1px dashed #86efac; border-radius: 6px; padding: 8px 10px; margin-bottom: 8px; }
+        .total-auto b { font-size: 18px; color: #15803d; }
+        .total-auto small { display: block; font-size: 11px; color: #64748b; margin-top: 2px; line-height: 1.4; }
+        .total-auto .aviso { color: #c2410c; font-weight: bold; }
+        .serv-lista { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+        .serv-chip { display: inline-flex; align-items: center; gap: 5px; background: white; border: 1px solid #bfdbfe; color: #1e3a8a; border-radius: 16px; padding: 4px 4px 4px 10px; font-size: 12px; }
+        .serv-chip b { color: #15803d; }
+        .serv-chip button { border: none; background: #fee2e2; color: #b91c1c; width: 20px; height: 20px; border-radius: 50%; cursor: pointer; font-size: 11px; line-height: 1; padding: 0; }
+        .fila-agregar { display: flex; gap: 6px; }
+        .fila-agregar select { flex: 1; min-width: 0; margin-bottom: 0 !important; }
+        .fila-agregar button { background: #007bff; color: white; border: none; border-radius: 6px; padding: 0 14px; font-weight: bold; cursor: pointer; font-size: 13px; }
+
+        /* Desglose por periodo (Ingresos) */
+        .segmento { display: flex; background: #f1f5f9; padding: 3px; border-radius: 8px; margin-top: 8px; }
+        .seg-btn { flex: 1; border: none; background: transparent; padding: 9px 4px; border-radius: 6px; font-size: 13px; font-weight: bold; color: #64748b; cursor: pointer; }
+        .seg-btn.active { background: white; color: #d66b8d; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+        .lista-periodos { max-height: 420px; overflow-y: auto; margin-top: 12px; padding-right: 2px; }
+        .periodo-row { border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; background: white; }
+        .periodo-top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+        .periodo-label { font-size: 14px; font-weight: bold; color: #334155; }
+        .periodo-total { font-size: 16px; font-weight: 800; color: #15803d; white-space: nowrap; }
+        .periodo-det { display: flex; flex-wrap: wrap; gap: 4px 10px; margin-top: 6px; font-size: 11.5px; color: #64748b; }
+        .periodo-det b { color: #1e293b; }
+
+        /* GRILLA DE HORARIOS (Cuadritos) */
+        .opciones-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .chip { padding: 12px 10px; background: #f0f0f0; color: #777; border-radius: 6px; cursor: pointer; user-select: none; font-size: 15px; border: 1px solid #e0e0e0; flex-grow: 1; text-align: center; min-width: 25%; font-weight: 500; transition: 0.2s; }
+        .chip.activo { background: #d66b8d; color: white; border-color: #b85273; font-weight: bold; transform: scale(1.03); box-shadow: 0 2px 5px rgba(214, 107, 141, 0.3); }
+
+        .mensaje-vacio { text-align: center; color: #999; font-size: 14px; padding: 30px 0; font-style: italic; }
+        hr { border: 0; border-top: 1px solid #eee; margin: 20px 0; }
     </style>
 </head>
-<body class="min-h-screen p-4 md:p-8">
+<body>
 
-    <!-- ENCABEZADO -->
-    <header class="max-w-6xl mx-auto mb-8 border-b border-purple-900/40 pb-6 flex flex-col md:flex-row justify-between items-center gap-4">
-        <div>
-            <h1 class="text-3xl font-extrabold text-gradient">Panel de Administración</h1>
-            <p class="text-gray-400 text-sm mt-1">Cecy Perales — Depilación con Cera</p>
+<div class="mobile-container">
+    <div class="header-admin">
+        <h2>Panel de Control</h2>
+        <p>Sistema de Reservas</p>
+    </div>
+
+    <div class="pad-20">
+        <!-- SECCIÓN LOGIN -->
+        <div id="seccion-login">
+            <p style="text-align: center; color: #666; margin-bottom: 20px;">Ingresa para gestionar tu agenda</p>
+            <label>Correo Electrónico</label>
+            <input type="email" id="email" placeholder="ejemplo@correo.com">
+            <label>Contraseña</label>
+            <input type="password" id="password" placeholder="••••••••">
+            <button id="btn-login" class="btn-main">Entrar al Panel</button>
         </div>
 
-        <!-- NAVEGACIÓN PESTAÑAS -->
-        <div class="flex bg-card p-1.5 rounded-full border border-purple-900/50">
-            <button id="btn-agenda" onclick="switchTab('agenda')" class="px-6 py-2.5 rounded-full font-semibold text-sm btn-gradient text-white shadow-lg">
-                📅 Agenda
-            </button>
-            <button id="btn-ingresos" onclick="switchTab('ingresos')" class="px-6 py-2.5 rounded-full font-semibold text-sm text-gray-400 hover:text-white">
-                📈 Ingresos
-            </button>
+        <!-- PANEL PRINCIPAL -->
+        <div id="seccion-panel" class="oculto">
+            <button id="btn-logout" class="btn-logout">Cerrar Sesión</button>
+
+            <div class="tabs">
+                <button id="tab-agenda" class="tab-btn active">Agenda 📅</button>
+                <button id="tab-solicitudes" class="tab-btn">Pendientes ⏳</button>
+                <button id="tab-ingresos" class="tab-btn">Ingresos 💰</button>
+                <button id="tab-horarios" class="tab-btn">Horas ⏰</button>
+            </div>
+
+            <!-- PESTAÑA 1: AGENDA -->
+            <div id="vista-agenda">
+                <div class="calendario-selector">
+                    <h4>📅 Ver Agenda del día:</h4>
+                    <input type="date" id="filtro-fecha-agenda">
+                </div>
+                <div id="lista-agenda-container">
+                    <div class="mensaje-vacio">Selecciona una fecha para ver tus citas.</div>
+                </div>
+            </div>
+
+            <!-- PESTAÑA 2: PENDIENTES -->
+            <div id="vista-solicitudes" class="oculto">
+                <h3 style="margin-top: 0; color: #333; font-size: 18px;">Solicitudes Nuevas</h3>
+                <p style="font-size: 13px; color: #888; margin-top: -10px;">Estas clientas agendaron pero aún no confirman pago.</p>
+                <div id="lista-solicitudes-container">
+                    <div class="mensaje-vacio">Cargando solicitudes...</div>
+                </div>
+            </div>
+
+            <!-- PESTAÑA 3: INGRESOS -->
+            <div id="vista-ingresos" class="oculto">
+                <h3 style="margin-top: 0; color: #333; font-size: 18px;">Reporte de Ingresos</h3>
+
+                <div class="card-ingreso" style="background: #f0fdf4; border-color: #bbf7d0;">
+                    <p class="card-ingreso-titulo" style="color: #166534;">Ingresos Totales</p>
+                    <p class="card-ingreso-monto" id="ingreso-total" style="color: #15803d;">$0.00</p>
+                    <p class="card-ingreso-sub" id="ingreso-total-sub"></p>
+                </div>
+
+                <div class="card-ingreso" style="background: #fff7ed; border-color: #fed7aa;">
+                    <p class="card-ingreso-titulo" style="color: #9a3412;">⏳ Pendiente por cobrar</p>
+                    <p class="card-ingreso-monto" id="ingreso-pendiente" style="color: #c2410c;">$0.00</p>
+                    <p class="card-ingreso-sub" id="ingreso-pendiente-sub"></p>
+                </div>
+
+                <div style="display: flex; gap: 10px;">
+                    <div class="card-ingreso" style="flex: 1; margin-bottom: 0;">
+                        <p class="card-ingreso-titulo">Hoy</p>
+                        <p class="card-ingreso-monto" id="ingreso-diario" style="font-size: 18px;">$0.00</p>
+                    </div>
+                    <div class="card-ingreso" style="flex: 1; margin-bottom: 0;">
+                        <p class="card-ingreso-titulo">Esta Semana</p>
+                        <p class="card-ingreso-monto" id="ingreso-semanal" style="font-size: 18px;">$0.00</p>
+                    </div>
+                    <div class="card-ingreso" style="flex: 1; margin-bottom: 0;">
+                        <p class="card-ingreso-titulo">Este Mes</p>
+                        <p class="card-ingreso-monto" id="ingreso-mensual" style="font-size: 18px;">$0.00</p>
+                    </div>
+                </div>
+
+                <label>Por método de pago (total):</label>
+                <div class="grid-metodos">
+                    <div class="box-metodo"><span>💵 Efectivo</span><b id="monto-efectivo">$0</b></div>
+                    <div class="box-metodo"><span>🏦 BBVA</span><b id="monto-bbva">$0</b></div>
+                    <div class="box-metodo"><span>📱 MPago</span><b id="monto-mpago">$0</b></div>
+                </div>
+                <p id="aviso-sin-metodo" class="card-ingreso-sub oculto" style="color:#c2410c; margin-top:8px;"></p>
+
+                <hr>
+                <label style="margin-top:0;">Desglose de ingresos:</label>
+                <div class="segmento">
+                    <button class="seg-btn active" data-modo="cita">Por cita</button>
+                    <button class="seg-btn" data-modo="dia">Diario</button>
+                    <button class="seg-btn" data-modo="semana">Semanal</button>
+                    <button class="seg-btn" data-modo="mes">Mensual</button>
+                </div>
+                <div id="lista-periodos" class="lista-periodos">
+                    <div class="mensaje-vacio">Cargando...</div>
+                </div>
+            </div>
+
+            <!-- PESTAÑA 4: GESTIÓN DE HORARIOS -->
+            <div id="vista-horarios" class="oculto">
+                <h3 style="margin-top: 0; color: #333; font-size: 18px;">Gestión de Disponibilidad</h3>
+                <label>1. Elige el día que quieres abrir</label>
+                <input type="date" id="fecha-seleccionada">
+
+                <div id="seccion-plantilla" class="oculto" style="margin-top: 20px;">
+                    <label>2. Toca las horas para abrirlas (rosas) o cerrarlas (grises)</label>
+                    <div class="opciones-container" id="plantilla-chips"></div>
+
+                    <div style="margin-top: 15px; background: #fdfdfd; padding: 12px; border-radius: 8px; border: 1px dashed #d66b8d; box-sizing: border-box;">
+                        <label style="margin-top: 0; font-size: 13px; color: #555;">➕ Hora personalizada fuera de plantilla</label>
+                        <div style="display: flex; gap: 8px; margin-top: 5px;">
+                            <input type="time" id="nueva-hora" style="flex: 2; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 15px;">
+                            <button id="btn-agregar-manual" class="btn-main" style="margin-top: 0; padding: 10px; flex: 1; font-size: 14px; background-color: #555;">+ Añadir</button>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        <button id="btn-plantilla-completa" class="btn-main" style="margin-top: 0; background-color: #fff0f3; color: #d66b8d; border: 1px solid #ffb3c6; flex: 1; font-size: 14px;">☀️ Marcar Todo</button>
+                        <button id="btn-guardar-plantilla" class="btn-main" style="margin-top: 0; background-color: #25D366; flex: 1; font-size: 14px;">✓ Guardar Día</button>
+                    </div>
+
+                    <p id="mensaje-exito" style="color: #25D366; text-align: center; font-weight: bold; font-size: 14px; display: none; margin-top: 10px;">¡Horarios guardados y publicados!</p>
+
+                    <hr>
+                    <label>📋 Control general de la página web:</label>
+                    <button id="btn-toggle-dia" class="btn-main" style="margin-top: 0px; margin-bottom: 15px; display: none; padding: 12px; font-size: 15px;"></button>
+                    <div id="estado-visibilidad"></div>
+                </div>
+            </div>
         </div>
-    </header>
+    </div>
+</div>
 
-    <main class="max-w-6xl mx-auto">
-        <!-- ================= PESTAÑA: AGENDA ================= -->
-        <section id="tab-agenda" class="space-y-8">
-            <!-- Formulario de Registro -->
-            <div class="bg-card p-6 rounded-2xl border border-purple-custom">
-                <h2 class="text-xl font-bold text-pink-400 mb-4">➕ Registrar Nueva Cita</h2>
-                <form id="appointment-form" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                        <label class="text-xs text-gray-400 block mb-1">Cliente</label>
-                        <input type="text" id="clientName" required placeholder="Nombre de la cliente" class="w-full bg-[#0D0D12] border border-purple-900/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-pink-500">
-                    </div>
-                    <div>
-                        <label class="text-xs text-gray-400 block mb-1">Servicio</label>
-                        <input type="text" id="service" required placeholder="Servicio a realizar" class="w-full bg-[#0D0D12] border border-purple-900/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-pink-500">
-                    </div>
-                    <div>
-                        <label class="text-xs text-gray-400 block mb-1">Teléfono</label>
-                        <input type="text" id="phone" placeholder="8112345678" class="w-full bg-[#0D0D12] border border-purple-900/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-pink-500">
-                    </div>
-                    <div>
-                        <label class="text-xs text-gray-400 block mb-1">Fecha</label>
-                        <input type="date" id="date" required class="w-full bg-[#0D0D12] border border-purple-900/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-pink-500">
-                    </div>
-                    <div>
-                        <label class="text-xs text-gray-400 block mb-1">Hora</label>
-                        <input type="time" id="time" required value="10:00" class="w-full bg-[#0D0D12] border border-purple-900/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-pink-500">
-                    </div>
-                    <div>
-                        <label class="text-xs text-gray-400 block mb-1">Precio ($)</label>
-                        <input type="number" id="price" required placeholder="450" class="w-full bg-[#0D0D12] border border-purple-900/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-pink-500">
-                    </div>
-                    <div>
-                        <label class="text-xs text-gray-400 block mb-1">Método de Pago</label>
-                        <select id="paymentMethod" class="w-full bg-[#0D0D12] border border-purple-900/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-pink-500">
-                            <option value="Efectivo">💵 Efectivo</option>
-                            <option value="BBVA">🏦 BBVA</option>
-                            <option value="MPago">📱 Mercado Pago</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-xs text-gray-400 block mb-1">Estado Initial</label>
-                        <select id="status" class="w-full bg-[#0D0D12] border border-purple-900/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-pink-500">
-                            <option value="Pendiente">⏳ Pendiente</option>
-                            <option value="Confirmada">👍 Confirmada</option>
-                            <option value="Completada">✅ Completada</option>
-                        </select>
-                    </div>
-                    <div class="md:col-span-3 flex justify-end">
-                        <button type="submit" class="btn-gradient text-white font-bold px-6 py-2.5 rounded-lg text-sm">
-                            Guardar Cita
-                        </button>
-                    </div>
-                </form>
-            </div>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, getDocs, deleteDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
 
-            <!-- Lista de Citas -->
-            <div class="bg-card p-6 rounded-2xl border border-purple-custom">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                    <h2 class="text-xl font-bold text-white">📅 Citas Agendadas</h2>
-                    <div class="flex items-center gap-2">
-                        <span class="text-xs text-gray-400">Filtrar por fecha:</span>
-                        <input type="date" id="filter-date" onchange="renderAppointments()" class="bg-[#0D0D12] border border-purple-900/50 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none">
-                    </div>
-                </div>
+    const firebaseConfig = {
+        apiKey: "AIzaSyDNjqux_hDFWfflfF4FhDh7cNmh3W5oRVQ",
+        authDomain: "depilacion-reservas.firebaseapp.com",
+        projectId: "depilacion-reservas",
+        storageBucket: "depilacion-reservas.firebasestorage.app",
+        messagingSenderId: "246526216829",
+        appId: "1:246526216829:web:324c7887234eb9a9ce7f14",
+        measurementId: "G-5Q500M6E14"
+    };
 
-                <div id="appointments-container" class="space-y-4">
-                    <!-- Las citas se cargan dinámicamente -->
-                </div>
-            </div>
-        </section>
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-        <!-- ================= PESTAÑA: INGRESOS ================= -->
-        <section id="tab-ingresos" class="space-y-8 hidden">
-            <!-- Tarjetas de Resumen -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="bg-card p-5 rounded-2xl border border-purple-custom">
-                    <p class="text-xs text-gray-400">Ingresos Totales (Cobrados)</p>
-                    <h3 id="stat-total" class="text-2xl font-extrabold text-gradient mt-1">$0 MXN</h3>
-                </div>
-                <div class="bg-card p-5 rounded-2xl border border-purple-custom">
-                    <p class="text-xs text-gray-400">Ingreso Diario (Día Seleccionado)</p>
-                    <h3 id="stat-daily" class="text-2xl font-bold text-white mt-1">$0 MXN</h3>
-                </div>
-                <div class="bg-card p-5 rounded-2xl border border-purple-custom">
-                    <p class="text-xs text-gray-400">Ingreso Semanal</p>
-                    <h3 id="stat-weekly" class="text-2xl font-bold text-white mt-1">$0 MXN</h3>
-                </div>
-                <div class="bg-card p-5 rounded-2xl border border-purple-custom">
-                    <p class="text-xs text-gray-400">Ingreso Mensual</p>
-                    <h3 id="stat-monthly" class="text-2xl font-bold text-white mt-1">$0 MXN</h3>
-                </div>
-            </div>
+    // Elementos UI
+    const seccionLogin = document.getElementById('seccion-login');
+    const seccionPanel = document.getElementById('seccion-panel');
+    const btnLogin = document.getElementById('btn-login');
+    const btnLogout = document.getElementById('btn-logout');
 
-            <!-- SECCIÓN PENDIENTES DE COBRO -->
-            <div class="bg-card p-6 rounded-2xl border border-yellow-900/40">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-bold text-yellow-400">⏳ Pendientes por Cobrar</h2>
-                    <span id="stat-pending-total" class="text-sm font-semibold text-yellow-400 bg-yellow-950 px-3 py-1 rounded-full border border-yellow-800">
-                        Total Pendiente: $0 MXN
-                    </span>
-                </div>
-                <div id="pending-container" class="space-y-3">
-                    <!-- Citas pendientes dinámicas -->
-                </div>
-            </div>
+    const tabAgenda = document.getElementById('tab-agenda');
+    const tabSolicitudes = document.getElementById('tab-solicitudes');
+    const tabIngresos = document.getElementById('tab-ingresos');
+    const tabHorarios = document.getElementById('tab-horarios');
 
-            <!-- DESGLOSE MÉTODOS DE PAGO -->
-            <div class="bg-card p-6 rounded-2xl border border-purple-custom">
-                <h2 class="text-xl font-bold text-pink-400 mb-6">💳 Desglose por Método de Pago</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-[#0D0D12] p-5 rounded-xl border border-emerald-900/40 flex justify-between items-center">
-                        <div>
-                            <span class="text-xs text-gray-400">💵 Efectivo</span>
-                            <p id="stat-efectivo" class="text-2xl font-bold text-emerald-400 mt-2">$0 MXN</p>
-                        </div>
-                    </div>
-                    <div class="bg-[#0D0D12] p-5 rounded-xl border border-blue-900/40 flex justify-between items-center">
-                        <div>
-                            <span class="text-xs text-gray-400">🏦 BBVA</span>
-                            <p id="stat-bbva" class="text-2xl font-bold text-blue-400 mt-2">$0 MXN</p>
-                        </div>
-                    </div>
-                    <div class="bg-[#0D0D12] p-5 rounded-xl border border-cyan-900/40 flex justify-between items-center">
-                        <div>
-                            <span class="text-xs text-gray-400">📱 Mercado Pago</span>
-                            <p id="stat-mpago" class="text-2xl font-bold text-cyan-400 mt-2">$0 MXN</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
+    const vistaAgenda = document.getElementById('vista-agenda');
+    const vistaSolicitudes = document.getElementById('vista-solicitudes');
+    const vistaIngresos = document.getElementById('vista-ingresos');
+    const vistaHorarios = document.getElementById('vista-horarios');
 
-    <!-- JAVASCRIPT NATIVO -->
-    <script>
-        // Citas Iniciales (Guardadas en LocalStorage para no perderlas al recargar)
-        let appointments = JSON.parse(localStorage.getItem('cecy_appointments')) || [
-            { id: '1', clientName: 'María López', phone: '8112345678', service: 'Depilación Axilas y Pierna', date: getTodayStr(), time: '10:00', price: 450, paymentMethod: 'Efectivo', status: 'Completada' },
-            { id: '2', clientName: 'Ana García', phone: '8187654321', service: 'Depilación Rostro Completo', date: getTodayStr(), time: '12:00', price: 300, paymentMethod: 'BBVA', status: 'Pendiente' },
-            { id: '3', clientName: 'Carla Sofía', phone: '8119998877', service: 'Diseño de Cejas', date: getTodayStr(), time: '16:00', price: 200, paymentMethod: 'MPago', status: 'Completada' }
-        ];
+    const filtroFechaAgenda = document.getElementById('filtro-fecha-agenda');
+    const listaAgendaContainer = document.getElementById('lista-agenda-container');
+    const listaSolicitudesContainer = document.getElementById('lista-solicitudes-container');
 
-        function getTodayStr() {
-            return new Date().toISOString().split('T')[0];
-        }
+    const fechaInput = document.getElementById('fecha-seleccionada');
+    const seccionPlantilla = document.getElementById('seccion-plantilla');
+    const plantillaChips = document.getElementById('plantilla-chips');
+    const horaInput = document.getElementById('nueva-hora');
+    const btnAgregarManual = document.getElementById('btn-agregar-manual');
+    const btnPlantillaCompleta = document.getElementById('btn-plantilla-completa');
+    const btnGuardarPlantilla = document.getElementById('btn-guardar-plantilla');
+    const btnToggleDia = document.getElementById('btn-toggle-dia');
+    const estadoVisibilidad = document.getElementById('estado-visibilidad');
+    const mensajeExito = document.getElementById('mensaje-exito');
 
-        document.getElementById('date').value = getTodayStr();
-        document.getElementById('filter-date').value = getTodayStr();
+    const HORARIOS_BASE = ["10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30"];
+    const METODOS = ["Efectivo", "BBVA", "MPago"];
+    const PENDIENTE = "Pendiente";   // cita atendida/agendada pero aún sin cobrar
+    const esPendiente = (c) => c.metodoPago === PENDIENTE;
+    let diaActivo = true;
+    let citasPorId = {};          // citas cargadas, para no pasar texto por los onclick
+    let citasConfirmadas = [];    // base del reporte de ingresos
+    let modoDesglose = 'cita';
+    let editServicios = {};       // servicios en edición por cita
 
-        function saveData() {
-            localStorage.setItem('cecy_appointments', JSON.stringify(appointments));
-            renderAppointments();
-            calculateIncome();
-        }
+    /* ---------- Catálogo de precios (mismos precios de la página) ---------- */
+    const CATALOGO = {
+        "Depilación Facial": [["Ceja",100],["Bozo",60],["Frente",60],["Nariz",40],["Patillas",80],["Barbilla",50],["Cuello",50],["Mejillas",60]],
+        "Depilación Corporal": [["Axilas",100],["Brazos",350],["1/2 Brazo",280],["Manos",50],["Dedos",50],["Bikini Completo",300],["Línea de bikini",260],["Interglúteo",100],["Glúteos",280],["Piernas Completas",450],["1/2 Pierna",350],["Abdomen Completo",250],["1/2 Abdomen",150],["Caminito de ombligo",100],["Espalda Completa",350],["1/2 Espalda",250]],
+        "Paquetes Especiales": [["Paquete Playa",600],["Paquete Completo",680],["Paquete Facial",370]]
+    };
+    const sinAcentos = (t) => String(t).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+    const PRECIOS = {};
+    Object.values(CATALOGO).flat().forEach(([n, p]) => { PRECIOS[sinAcentos(n)] = p; });
+    PRECIOS['interglutea'] = 100; // así lo guarda la página de reservas
 
-        // Cambiar entre pestañas
-        function switchTab(tab) {
-            const btnAgenda = document.getElementById('btn-agenda');
-            const btnIngresos = document.getElementById('btn-ingresos');
-            const tabAgenda = document.getElementById('tab-agenda');
-            const tabIngresos = document.getElementById('tab-ingresos');
+    const parseServicios = (txt) => String(txt || '').split(',').map(s => s.trim()).filter(Boolean);
+    const precioServicio = (nombre) => { const p = PRECIOS[sinAcentos(nombre)]; return p === undefined ? null : p; };
 
-            if (tab === 'agenda') {
-                tabAgenda.classList.remove('hidden');
-                tabIngresos.classList.add('hidden');
-                btnAgenda.className = "px-6 py-2.5 rounded-full font-semibold text-sm btn-gradient text-white shadow-lg";
-                btnIngresos.className = "px-6 py-2.5 rounded-full font-semibold text-sm text-gray-400 hover:text-white";
-            } else {
-                tabAgenda.classList.add('hidden');
-                tabIngresos.classList.remove('hidden');
-                btnIngresos.className = "px-6 py-2.5 rounded-full font-semibold text-sm btn-gradient text-white shadow-lg";
-                btnAgenda.className = "px-6 py-2.5 rounded-full font-semibold text-sm text-gray-400 hover:text-white";
-                calculateIncome();
-            }
-        }
+    function resumenPrecio(lista, extra) {
+        let subtotal = 0; const desconocidos = [];
+        lista.forEach(s => { const p = precioServicio(s); if (p === null) desconocidos.push(s); else subtotal += p; });
+        extra = parseFloat(extra) || 0;
+        return { subtotal, extra, total: subtotal + extra, desconocidos, lista };
+    }
+    function totalAutoHTML(r) {
+        const det = r.lista.map(s => { const p = precioServicio(s); return `${esc(s)} ${p === null ? '(sin precio)' : '$' + p}`; }).join(' + ');
+        return `<b>${dinero(r.total)}</b><small>${det || 'Sin servicios'}${r.extra ? ' + Extra $' + r.extra : ''}</small>` +
+            (r.desconocidos.length ? `<small class="aviso">⚠️ Sin precio en el catálogo: ${esc(r.desconocidos.join(', '))}. Agrégalo en Editar o súmalo como Extra.</small>` : '');
+    }
+    function opcionesCatalogo() {
+        return `<option value="">➕ Agregar servicio…</option>` + Object.entries(CATALOGO).map(([g, items]) =>
+            `<optgroup label="${g}">` + items.map(([n, p]) => `<option value="${esc(n)}">${esc(n)} - $${p}</option>`).join('') + `</optgroup>`).join('');
+    }
 
-        // Agregar Nueva Cita
-        document.getElementById('appointment-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const newApp = {
-                id: Date.now().toString(),
-                clientName: document.getElementById('clientName').value,
-                service: document.getElementById('service').value,
-                phone: document.getElementById('phone').value,
-                date: document.getElementById('date').value,
-                time: document.getElementById('time').value,
-                price: Number(document.getElementById('price').value),
-                paymentMethod: document.getElementById('paymentMethod').value,
-                status: document.getElementById('status').value
+    /* ---------- Utilidades ---------- */
+    const esc = (t) => String(t ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const dinero = (n) => (Number(n) || 0).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
+
+    // Fecha local YYYY-MM-DD (toISOString usa UTC y de noche daba el día siguiente)
+    function fechaLocalStr(d) {
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
+    function parseFecha(str) {
+        const [y, m, d] = str.split('-').map(Number);
+        return new Date(y, m - 1, d);
+    }
+    function lunesDe(str) {
+        const d = parseFecha(str);
+        const dow = d.getDay();
+        d.setDate(d.getDate() - (dow === 0 ? 6 : dow - 1));
+        return fechaLocalStr(d);
+    }
+    const primeraMayus = (t) => t.charAt(0).toUpperCase() + t.slice(1);
+    function fmtCorta(d) {
+        return d.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' }).replace('.', '');
+    }
+
+    /* ---------- Navegación de pestañas ---------- */
+    tabAgenda.addEventListener('click', () => { activarPestaña(tabAgenda, vistaAgenda); cargarCitas(); });
+    tabSolicitudes.addEventListener('click', () => { activarPestaña(tabSolicitudes, vistaSolicitudes); cargarCitas(); });
+    tabIngresos.addEventListener('click', () => { activarPestaña(tabIngresos, vistaIngresos); calcularIngresos(); });
+    tabHorarios.addEventListener('click', () => { activarPestaña(tabHorarios, vistaHorarios); });
+
+    function activarPestaña(boton, vista) {
+        [tabAgenda, tabSolicitudes, tabIngresos, tabHorarios].forEach(b => b.classList.remove('active'));
+        [vistaAgenda, vistaSolicitudes, vistaIngresos, vistaHorarios].forEach(v => v.classList.add('oculto'));
+        boton.classList.add('active');
+        vista.classList.remove('oculto');
+    }
+
+    /* ---------- Autenticación ---------- */
+    async function iniciarSesion() {
+        const correo = document.getElementById('email').value.trim();
+        const clave = document.getElementById('password').value;
+        if (!correo || !clave) { alert("Escribe tu correo y contraseña."); return; }
+        try { await signInWithEmailAndPassword(auth, correo, clave); }
+        catch (e) {
+            console.error(e);
+            const msgs = {
+                'auth/invalid-credential': 'Correo o contraseña incorrectos.',
+                'auth/wrong-password': 'Contraseña incorrecta.',
+                'auth/user-not-found': 'Ese correo no está registrado.',
+                'auth/invalid-email': 'El correo no es válido.',
+                'auth/too-many-requests': 'Demasiados intentos. Espera unos minutos e intenta de nuevo.',
+                'auth/network-request-failed': 'Sin conexión o bloqueado. Revisa tu internet.',
+                'auth/unauthorized-domain': 'Este dominio no está autorizado en Firebase (Authentication > Settings > Authorized domains).',
+                'auth/operation-not-supported-in-this-environment': 'No funciona abriendo el archivo directo en tu computadora; ábrelo desde tu página web publicada.'
             };
-            appointments.push(newApp);
-            saveData();
-            this.reset();
-            document.getElementById('date').value = getTodayStr();
-        });
-
-        // Cambiar Método de Pago
-        function updatePayment(id, method) {
-            const app = appointments.find(a => a.id === id);
-            if (app) {
-                app.paymentMethod = method;
-                saveData();
-            }
+            alert((msgs[e.code] || 'No se pudo entrar.') + '\n\nCódigo: ' + (e.code || e.message));
         }
+    }
+    btnLogin.addEventListener('click', iniciarSesion);
+    document.getElementById('password').addEventListener('keydown', (e) => { if (e.key === 'Enter') iniciarSesion(); });
+    btnLogout.addEventListener('click', () => signOut(auth));
 
-        // Cambiar Estado
-        function updateStatus(id, status) {
-            const app = appointments.find(a => a.id === id);
-            if (app) {
-                app.status = status;
-                saveData();
-            }
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            seccionLogin.classList.add('oculto');
+            seccionPanel.classList.remove('oculto');
+            const hoy = fechaLocalStr(new Date());
+            filtroFechaAgenda.value = hoy;
+            fechaInput.value = hoy;
+            cargarCitas();
+            cargarHorariosDisponibles();
+        } else {
+            seccionLogin.classList.remove('oculto');
+            seccionPanel.classList.add('oculto');
         }
+    });
 
-        // Renderizar Citas
-        function renderAppointments() {
-            const selectedDate = document.getElementById('filter-date').value;
-            const container = document.getElementById('appointments-container');
-            const filtered = appointments.filter(a => a.date === selectedDate);
+    /* ---------- Citas ---------- */
+    async function cargarCitas() {
+        listaAgendaContainer.innerHTML = "<div class='mensaje-vacio'>Cargando...</div>";
+        listaSolicitudesContainer.innerHTML = "<div class='mensaje-vacio'>Cargando...</div>";
 
-            if (filtered.length === 0) {
-                container.innerHTML = `<p class="text-center text-gray-500 py-8 text-sm">No hay citas programadas para el ${selectedDate}.</p>`;
-                return;
-            }
+        try {
+            const snapshot = await getDocs(collection(db, "citas"));
+            let confirmadasDelDia = [];
+            let pendientesGlobales = [];
+            citasPorId = {};
 
-            container.innerHTML = filtered.map(app => `
-                <div class="bg-[#0D0D12] p-4 rounded-xl border border-purple-900/40 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <span class="font-bold text-pink-400">${app.clientName}</span>
-                            <span class="text-xs bg-purple-950 text-purple-300 px-2 py-0.5 rounded-full border border-purple-800">${app.time} hrs</span>
-                        </div>
-                        <p class="text-sm text-gray-300">${app.service}</p>
-                        <p class="text-xs text-gray-500">Tel: ${app.phone || 'N/A'}</p>
-                    </div>
-                    <div class="flex flex-wrap items-center gap-3">
-                        <span class="font-semibold text-green-400 text-base">$${app.price} MXN</span>
-                        <select onchange="updatePayment('${app.id}', this.value)" class="bg-card border border-purple-900/60 rounded-lg px-2.5 py-1 text-xs text-purple-200 focus:outline-none">
-                            <option value="Efectivo" ${app.paymentMethod === 'Efectivo' ? 'selected' : ''}>💵 Efectivo</option>
-                            <option value="BBVA" ${app.paymentMethod === 'BBVA' ? 'selected' : ''}>🏦 BBVA</option>
-                            <option value="MPago" ${app.paymentMethod === 'MPago' ? 'selected' : ''}>📱 MPago</option>
-                        </select>
-                        <select onchange="updateStatus('${app.id}', this.value)" class="text-xs px-2.5 py-1 rounded-lg font-medium border focus:outline-none ${
-                            app.status === 'Completada' ? 'bg-green-950 text-green-400 border-green-800' :
-                            app.status === 'Confirmada' ? 'bg-blue-950 text-blue-400 border-blue-800' :
-                            'bg-yellow-950 text-yellow-400 border-yellow-800'
-                        }">
-                            <option value="Pendiente" ${app.status === 'Pendiente' ? 'selected' : ''}>⏳ Pendiente</option>
-                            <option value="Confirmada" ${app.status === 'Confirmada' ? 'selected' : ''}>👍 Confirmada</option>
-                            <option value="Completada" ${app.status === 'Completada' ? 'selected' : ''}>✅ Completada</option>
-                        </select>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Calcular Ingresos y Pendientes
-        function calculateIncome() {
-            const selectedDate = document.getElementById('filter-date').value;
-            const today = new Date(selectedDate);
-
-            let total = 0, daily = 0, weekly = 0, monthly = 0, totalPending = 0;
-            let efectivo = 0, bbva = 0, mpago = 0;
-            let pendingApps = [];
-
-            appointments.forEach(app => {
-                const price = Number(app.price) || 0;
-                const appDate = new Date(app.date);
-
-                if (app.status === 'Pendiente') {
-                    totalPending += price;
-                    pendingApps.push(app);
-                } else if (app.status === 'Completada' || app.status === 'Confirmada') {
-                    total += price;
-
-                    if (app.paymentMethod === 'Efectivo') efectivo += price;
-                    if (app.paymentMethod === 'BBVA') bbva += price;
-                    if (app.paymentMethod === 'MPago') mpago += price;
-
-                    if (app.date === selectedDate) daily += price;
-                    if (appDate.getMonth() === today.getMonth() && appDate.getFullYear() === today.getFullYear()) monthly += price;
+            snapshot.forEach(d => {
+                const data = { id: d.id, ...d.data() };
+                citasPorId[d.id] = data;
+                if (data.estado === 'confirmado') {
+                    if (data.fecha === filtroFechaAgenda.value) confirmadasDelDia.push(data);
+                } else {
+                    pendientesGlobales.push(data);
                 }
             });
 
-            document.getElementById('stat-total').innerText = `$${total.toLocaleString()} MXN`;
-            document.getElementById('stat-daily').innerText = `$${daily.toLocaleString()} MXN`;
-            document.getElementById('stat-monthly').innerText = `$${monthly.toLocaleString()} MXN`;
-            document.getElementById('stat-pending-total').innerText = `Total Pendiente: $${totalPending.toLocaleString()} MXN`;
-
-            document.getElementById('stat-efectivo').innerText = `$${efectivo.toLocaleString()} MXN`;
-            document.getElementById('stat-bbva').innerText = `$${bbva.toLocaleString()} MXN`;
-            document.getElementById('stat-mpago').innerText = `$${mpago.toLocaleString()} MXN`;
-
-            // Renderizar Pendientes en la Pestaña Ingresos
-            const pendingContainer = document.getElementById('pending-container');
-            if (pendingApps.length === 0) {
-                pendingContainer.innerHTML = `<p class="text-gray-500 text-sm text-center py-4">No hay pagos ni citas pendientes.</p>`;
+            if (confirmadasDelDia.length === 0) {
+                listaAgendaContainer.innerHTML = `<div class='mensaje-vacio'>No tienes citas confirmadas para el día ${esc(filtroFechaAgenda.value)}.</div>`;
             } else {
-                pendingContainer.innerHTML = pendingApps.map(app => `
-                    <div class="bg-[#0D0D12] p-4 rounded-xl border border-yellow-900/30 flex justify-between items-center">
-                        <div>
-                            <p class="font-bold text-white">${app.clientName} — <span class="text-gray-400">${app.service}</span></p>
-                            <p class="text-xs text-gray-500">${app.date} a las ${app.time} hrs | Método: ${app.paymentMethod}</p>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <span class="text-yellow-400 font-bold">$${app.price} MXN</span>
-                            <button onclick="updateStatus('${app.id}', 'Completada')" class="bg-green-600 hover:bg-green-500 text-white text-xs px-3 py-1.5 rounded-lg font-medium transition-all">
-                                Marcar Pagada
-                            </button>
-                        </div>
-                    </div>
-                `).join('');
+                listaAgendaContainer.innerHTML = "";
+                confirmadasDelDia.sort((a, b) => (a.hora || '').localeCompare(b.hora || '')).forEach(cita => {
+                    listaAgendaContainer.innerHTML += generarHTMLTarjeta(cita, true);
+                });
+
             }
+
+            if (pendientesGlobales.length === 0) {
+                listaSolicitudesContainer.innerHTML = "<div class='mensaje-vacio'>No hay solicitudes pendientes.</div>";
+            } else {
+                listaSolicitudesContainer.innerHTML = "";
+                pendientesGlobales.sort((a, b) => (a.fecha || '').localeCompare(b.fecha || '')).forEach(cita => {
+                    listaSolicitudesContainer.innerHTML += generarHTMLTarjeta(cita, false);
+                });
+            }
+        } catch (e) { console.error(e); }
+    }
+
+    function opcionesMetodo(actual, conVacio) {
+        return (conVacio ? `<option value="" ${!actual ? 'selected' : ''}>Sin cambiar / sin método</option>` : '') +
+            METODOS.map(m => `<option value="${m}" ${actual === m ? 'selected' : ''}>${m}</option>`).join('') +
+            (conVacio ? `<option value="${PENDIENTE}" ${actual === PENDIENTE ? 'selected' : ''}>⏳ Pendiente (por cobrar)</option>` : '');
+    }
+
+    function chipsServiciosHTML(id) {
+        const lista = editServicios[id] || [];
+        if (!lista.length) return '<span style="font-size:12px; color:#999;">Sin servicios</span>';
+        return lista.map((s, i) => {
+            const p = precioServicio(s);
+            return `<span class="serv-chip">${esc(s)} <b>${p === null ? '¿$?' : '$' + p}</b><button type="button" onclick="quitarServicio('${id}', ${i})">✕</button></span>`;
+        }).join('');
+    }
+
+    function generarHTMLTarjeta(cita, esAgenda) {
+        const id = esc(cita.id);
+        const tieneMetodo = METODOS.includes(cita.metodoPago);
+        const pendiente = esPendiente(cita);
+        const metodoPagoText = pendiente ? '⏳ Pago pendiente' : tieneMetodo ? `💳 Pago: ${esc(cita.metodoPago)}` : '💳 Pago: Sin registrar';
+        editServicios[cita.id] = parseServicios(cita.servicios);
+        const r = resumenPrecio(editServicios[cita.id], cita.extra);
+        const precioMostrar = (cita.estado === 'confirmado' && cita.precio) ? cita.precio : r.total;
+
+        return `
+            <div class="cita-card ${esAgenda ? 'confirmada' : ''}">
+                <div class="cita-header">
+                    <h4 class="cita-nombre">👤 ${esc(cita.nombre)}</h4>
+                    <span class="cita-hora-badge">${esc(cita.hora)}</span>
+                </div>
+                ${!esAgenda ? `<p style="font-size:12px; color:#d66b8d; font-weight:bold; margin-bottom:5px;">📅 Fecha: ${esc(cita.fecha)}</p>` : ''}
+                <p class="cita-servicios">✨ <b>Servicios:</b> ${esc(cita.servicios)}</p>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span class="badge-pago ${tieneMetodo ? '' : 'sin-pago'}">${metodoPagoText}</span>
+                    <b style="color:#25D366; font-size:15px;">${dinero(precioMostrar)}</b>
+                </div>
+
+                <div class="cita-acciones">
+                    ${!esAgenda ? `
+                        <div style="background:#f9f9f9; padding:8px; border-radius:6px; border:1px solid #eee;">
+                            <label style="margin-top:0; font-size:11px;">Total a cobrar (automático) y método de pago:</label>
+                            <div class="total-auto">${totalAutoHTML(r)}</div>
+                            <select id="metodo-pago-${id}" style="padding:6px; font-size:13px; margin-bottom:5px;">
+                                ${opcionesMetodo(cita.metodoPago, false)}
+                            </select>
+                            <button class="btn-confirmar" style="width:100%;" onclick="confirmarPago('${id}')">✓ Confirmar Pago</button>
+                        </div>
+                    ` : `
+                        <div class="pago-rapido">
+                            <label>💳 Pago realizado con:</label>
+                            <div class="metodos-botones" id="metodos-${id}" data-sel="${(tieneMetodo || pendiente) ? esc(cita.metodoPago) : ''}">
+                                ${METODOS.map(m => `<button type="button" class="metodo-btn ${cita.metodoPago === m ? 'sel' : ''}" onclick="elegirMetodo('${id}','${m}')">${m === 'Efectivo' ? '💵' : m === 'BBVA' ? '🏦' : '📱'} ${m}</button>`).join('')}
+                                <button type="button" class="metodo-btn pend ${pendiente ? 'sel' : ''}" onclick="elegirMetodo('${id}','${PENDIENTE}')">⏳ Pendiente (aún no pagan)</button>
+                            </div>
+                            <div class="total-auto">${totalAutoHTML(r)}</div>
+                            <button class="btn-confirmar" style="width:100%;" onclick="guardarPagoRapido('${id}')">✓ Guardar pago</button>
+                        </div>
+                    `}
+                    <button class="btn-editar" onclick="mostrarReasignar('${id}')">✏️ Editar Cita / Servicios / Pago / Hora</button>
+
+                    <!-- Panel desplegable -->
+                    <div id="edit-panel-${id}" class="panel-editar-hora oculto">
+                        <label>Servicios de la cita:</label>
+                        <div class="serv-lista" id="edit-servs-${id}">${chipsServiciosHTML(id)}</div>
+                        <div class="fila-agregar">
+                            <select id="edit-add-${id}">${opcionesCatalogo()}</select>
+                            <button type="button" onclick="agregarServicio('${id}')">Añadir</button>
+                        </div>
+
+                        <label>Cargo extra ($) — ej. vello grueso (opcional):</label>
+                        <input type="number" id="edit-extra-${id}" value="${esc(parseFloat(cita.extra) || 0)}" min="0" oninput="refrescarEdicion('${id}')">
+
+                        <label>Total (automático):</label>
+                        <div class="total-auto" id="edit-total-${id}">${totalAutoHTML(r)}</div>
+
+                        <label>Método de Pago:</label>
+                        <select id="edit-metodo-${id}">
+                            ${opcionesMetodo(cita.metodoPago, true)}
+                        </select>
+
+                        <label>Nueva Fecha:</label>
+                        <input type="date" id="nueva-fecha-${id}" value="${esc(cita.fecha)}">
+
+                        <label>Nueva Hora:</label>
+                        <input type="time" id="nueva-hora-${id}" value="${esc(cita.hora)}">
+
+                        <button class="btn-confirmar" style="width: 100%; margin-top: 5px;" onclick="guardarReasignacion('${id}')">✓ Guardar Cambios</button>
+                    </div>
+
+                    <div class="acciones-rojas">
+                        <button class="btn-cancelar" onclick="eliminarCita('${id}')">❌ Borrar</button>
+                        <button class="btn-liberar" onclick="liberarCita('${id}')">🔓 Liberar Hora</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    /* ---------- Acciones de citas ---------- */
+    window.mostrarReasignar = (id) => {
+        document.getElementById(`edit-panel-${id}`).classList.toggle('oculto');
+    };
+
+    window.elegirMetodo = (id, metodo) => {
+        const cont = document.getElementById(`metodos-${id}`);
+        cont.dataset.sel = metodo;
+        cont.querySelectorAll('.metodo-btn').forEach(b => {
+            b.classList.toggle('sel', b.textContent.includes(metodo));
+        });
+    };
+
+    // Edición de servicios (el total se recalcula solo)
+    window.refrescarEdicion = (id) => {
+        document.getElementById(`edit-servs-${id}`).innerHTML = chipsServiciosHTML(id);
+        const extra = document.getElementById(`edit-extra-${id}`).value;
+        document.getElementById(`edit-total-${id}`).innerHTML = totalAutoHTML(resumenPrecio(editServicios[id] || [], extra));
+    };
+    window.agregarServicio = (id) => {
+        const sel = document.getElementById(`edit-add-${id}`);
+        if (!sel.value) return;
+        (editServicios[id] = editServicios[id] || []).push(sel.value);
+        sel.value = '';
+        refrescarEdicion(id);
+    };
+    window.quitarServicio = (id, i) => {
+        (editServicios[id] || []).splice(i, 1);
+        refrescarEdicion(id);
+    };
+
+    function avisarSinPrecio(r) {
+        return r.desconocidos.length === 0 ||
+            confirm(`Estos servicios no tienen precio en el catálogo y se cobrarán en $0:\n${r.desconocidos.join(', ')}\n\n¿Guardar de todos modos?`);
+    }
+
+    window.guardarPagoRapido = async (id) => {
+        const cita = citasPorId[id];
+        if (!cita) return;
+        const metodo = document.getElementById(`metodos-${id}`).dataset.sel;
+        if (!METODOS.includes(metodo) && metodo !== PENDIENTE) { alert("Elige con qué se realizó el pago (Efectivo, BBVA o MPago) o marca Pendiente."); return; }
+        const r = resumenPrecio(parseServicios(cita.servicios), cita.extra);
+        if (!avisarSinPrecio(r)) return;
+        try {
+            await updateDoc(doc(db, "citas", id), { metodoPago: metodo, precio: r.total });
+            cargarCitas();
+        } catch (e) { alert("No se pudo guardar el pago."); console.error(e); }
+    };
+
+    window.confirmarPago = async (id) => {
+        const cita = citasPorId[id];
+        if (!cita) return;
+        const metodo = document.getElementById(`metodo-pago-${id}`).value;
+        const r = resumenPrecio(parseServicios(cita.servicios), cita.extra);
+        if (!avisarSinPrecio(r)) return;
+        if (!confirm(`¿Confirmar pago de ${dinero(r.total)} con ${metodo}?`)) return;
+
+        await updateDoc(doc(db, "citas", id), {
+            estado: "confirmado",
+            metodoPago: metodo,
+            precio: r.total
+        });
+        cargarCitas();
+    };
+
+    window.guardarReasignacion = async (id) => {
+        const cita = citasPorId[id];
+        if (!cita) return;
+        const nuevaFecha = document.getElementById(`nueva-fecha-${id}`).value;
+        const nuevaHora = document.getElementById(`nueva-hora-${id}`).value;
+        const nuevoMetodo = document.getElementById(`edit-metodo-${id}`).value;
+        const extra = parseFloat(document.getElementById(`edit-extra-${id}`).value) || 0;
+        const lista = editServicios[id] || [];
+
+        if (!nuevaFecha || !nuevaHora) { alert("Selecciona fecha y hora válidas."); return; }
+        if (lista.length === 0) { alert("La cita debe tener al menos un servicio."); return; }
+        const r = resumenPrecio(lista, extra);
+        if (!avisarSinPrecio(r)) return;
+
+        try {
+            const cambios = { fecha: nuevaFecha, hora: nuevaHora, servicios: lista.join(', '), extra: extra, precio: r.total };
+            if (nuevoMetodo) cambios.metodoPago = nuevoMetodo;
+            await updateDoc(doc(db, "citas", id), cambios);
+
+            if (cita.fecha !== nuevaFecha || cita.hora !== nuevaHora) {
+                await setDoc(doc(db, "disponibilidad", cita.fecha), {
+                    horarios: arrayUnion(cita.hora)
+                }, { merge: true });
+            }
+
+            alert("Cita actualizada correctamente.");
+            cargarCitas();
+            cargarHorariosDisponibles();
+        } catch (e) {
+            alert("Error al actualizar la cita.");
+            console.error(e);
+        }
+    };
+
+    window.eliminarCita = async (id) => {
+        const cita = citasPorId[id];
+        if (!confirm(`¿Borrar cita de ${cita ? cita.nombre : ''}?`)) return;
+        await deleteDoc(doc(db, "citas", id));
+        cargarCitas();
+    };
+
+    window.liberarCita = async (id) => {
+        const cita = citasPorId[id];
+        if (!cita) return;
+        if (!confirm(`¿Cancelar cita de ${cita.nombre} y abrir la hora ${cita.hora} en la web?`)) return;
+        await deleteDoc(doc(db, "citas", id));
+        await setDoc(doc(db, "disponibilidad", cita.fecha), { horarios: arrayUnion(cita.hora), activo: true }, { merge: true });
+        cargarCitas();
+        cargarHorariosDisponibles();
+    };
+
+    /* ---------- Ingresos ---------- */
+    // Agrupa las citas confirmadas por día, semana (lunes a domingo) o mes
+    function agruparIngresos(citas, modo) {
+        const grupos = {};
+        citas.forEach(c => {
+            if (!c.fecha) return;
+            const key = modo === 'dia' ? c.fecha : modo === 'semana' ? lunesDe(c.fecha) : c.fecha.slice(0, 7);
+            const g = grupos[key] || (grupos[key] = { key, total: 0, n: 0, Efectivo: 0, BBVA: 0, MPago: 0, sin: 0, pend: 0 });
+            const m = parseFloat(c.precio) || 0;
+            g.n += 1;
+            if (esPendiente(c)) { g.pend += m; return; }
+            g.total += m;
+            if (METODOS.includes(c.metodoPago)) g[c.metodoPago] += m; else g.sin += m;
+        });
+        return Object.values(grupos).sort((a, b) => b.key.localeCompare(a.key));
+    }
+
+    function etiquetaPeriodo(key, modo) {
+        if (modo === 'dia') {
+            return parseFecha(key).toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' }).replace('.', '');
+        }
+        if (modo === 'semana') {
+            const ini = parseFecha(key);
+            const fin = new Date(ini); fin.setDate(ini.getDate() + 6);
+            return `Semana ${fmtCorta(ini)} – ${fmtCorta(fin)}`;
+        }
+        const [y, m] = key.split('-').map(Number);
+        return new Date(y, m - 1, 1).toLocaleDateString('es-MX', { month: 'long', year: 'numeric' });
+    }
+
+    function pintarDesglose() {
+        const cont = document.getElementById('lista-periodos');
+        if (citasConfirmadas.length === 0) {
+            cont.innerHTML = "<div class='mensaje-vacio'>Aún no hay ingresos confirmados.</div>";
+            return;
         }
 
-        // Inicializar
-        renderAppointments();
-        calculateIncome();
-    </script>
+        if (modoDesglose === 'cita') {
+            const lista = [...citasConfirmadas].sort((a, b) =>
+                (b.fecha || '').localeCompare(a.fecha || '') || (b.hora || '').localeCompare(a.hora || ''));
+            cont.innerHTML = lista.map(c => {
+                const fecha = c.fecha ? primeraMayus(parseFecha(c.fecha).toLocaleDateString('es-MX', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }).replace(/\./g, '')) : 'Sin fecha';
+                const metodo = esPendiente(c) ? '<span style="color:#c2410c;">⏳ Pendiente de pago</span>' : METODOS.includes(c.metodoPago) ? esc(c.metodoPago) : '<span style="color:#c2410c;">Sin método</span>';
+                return `
+                <div class="periodo-row">
+                    <div class="periodo-top">
+                        <span class="periodo-label">👤 ${esc(c.nombre)}</span>
+                        <span class="periodo-total" ${esPendiente(c) ? 'style="color:#c2410c;"' : ''}>${dinero(c.precio)}</span>
+                    </div>
+                    <div class="periodo-det"><span>✨ ${esc(c.servicios)}</span></div>
+                    <div class="periodo-det"><span>📅 ${esc(fecha)} · ${esc(c.hora || '')}</span><span>💳 <b>${metodo}</b></span></div>
+                </div>`;
+            }).join('');
+            return;
+        }
+
+        const grupos = agruparIngresos(citasConfirmadas, modoDesglose);
+        cont.innerHTML = grupos.map(g => `
+            <div class="periodo-row">
+                <div class="periodo-top">
+                    <span class="periodo-label">${esc(primeraMayus(etiquetaPeriodo(g.key, modoDesglose)))}</span>
+                    <span class="periodo-total">${dinero(g.total)}</span>
+                </div>
+                <div class="periodo-det">
+                    <span>${g.n} cita${g.n === 1 ? '' : 's'}</span>
+                    <span>💵 <b>${dinero(g.Efectivo)}</b></span>
+                    <span>🏦 <b>${dinero(g.BBVA)}</b></span>
+                    <span>📱 <b>${dinero(g.MPago)}</b></span>
+                    ${g.sin ? `<span style="color:#c2410c;">⚠️ Sin método <b>${dinero(g.sin)}</b></span>` : ''}
+                    ${g.pend ? `<span style="color:#c2410c;">⏳ Pendiente <b>${dinero(g.pend)}</b></span>` : ''}
+                </div>
+            </div>`).join('');
+    }
+
+    document.querySelectorAll('.seg-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            modoDesglose = btn.dataset.modo;
+            document.querySelectorAll('.seg-btn').forEach(b => b.classList.toggle('active', b === btn));
+            pintarDesglose();
+        });
+    });
+
+    async function calcularIngresos() {
+        try {
+            const snapshot = await getDocs(collection(db, "citas"));
+            citasConfirmadas = [];
+            snapshot.forEach(d => {
+                const c = d.data();
+                if (c.estado === 'confirmado') citasConfirmadas.push(c);
+            });
+
+            const hoyStr = fechaLocalStr(new Date());
+            const sumar = (lista) => lista.reduce((s, c) => s + (parseFloat(c.precio) || 0), 0);
+            const cobradas = citasConfirmadas.filter(c => !esPendiente(c));
+            const porCobrar = citasConfirmadas.filter(esPendiente);
+            const total = sumar(cobradas);
+            const diario = sumar(cobradas.filter(c => c.fecha === hoyStr));
+            const semanal = sumar(cobradas.filter(c => c.fecha && lunesDe(c.fecha) === lunesDe(hoyStr)));
+            const mensual = sumar(cobradas.filter(c => c.fecha && c.fecha.slice(0, 7) === hoyStr.slice(0, 7)));
+
+            const porMetodo = { Efectivo: 0, BBVA: 0, MPago: 0, sin: 0 };
+            cobradas.forEach(c => {
+                const m = parseFloat(c.precio) || 0;
+                if (METODOS.includes(c.metodoPago)) porMetodo[c.metodoPago] += m; else porMetodo.sin += m;
+            });
+
+            document.getElementById('ingreso-total').textContent = dinero(total);
+            document.getElementById('ingreso-total-sub').textContent = `${cobradas.length} cita${cobradas.length === 1 ? '' : 's'} cobrada${cobradas.length === 1 ? '' : 's'}`;
+            document.getElementById('ingreso-pendiente').textContent = dinero(sumar(porCobrar));
+            document.getElementById('ingreso-pendiente-sub').textContent = porCobrar.length ? `${porCobrar.length} cita${porCobrar.length === 1 ? '' : 's'} sin cobrar (no suman a tus ingresos hasta que se paguen)` : 'No hay cobros pendientes';
+            document.getElementById('ingreso-diario').textContent = dinero(diario);
+            document.getElementById('ingreso-semanal').textContent = dinero(semanal);
+            document.getElementById('ingreso-mensual').textContent = dinero(mensual);
+            document.getElementById('monto-efectivo').textContent = dinero(porMetodo.Efectivo);
+            document.getElementById('monto-bbva').textContent = dinero(porMetodo.BBVA);
+            document.getElementById('monto-mpago').textContent = dinero(porMetodo.MPago);
+
+            const aviso = document.getElementById('aviso-sin-metodo');
+            if (porMetodo.sin > 0) {
+                aviso.textContent = `⚠️ ${dinero(porMetodo.sin)} sin método de pago registrado (edítalos en Agenda).`;
+                aviso.classList.remove('oculto');
+            } else {
+                aviso.classList.add('oculto');
+            }
+
+            pintarDesglose();
+        } catch (e) {
+            console.error("Error al calcular ingresos:", e);
+            document.getElementById('lista-periodos').innerHTML = "<div class='mensaje-vacio'>No se pudieron cargar los ingresos.</div>";
+        }
+    }
+
+    /* ---------- Horarios ---------- */
+    async function cargarHorariosDisponibles() {
+        const f = fechaInput.value;
+        if (!f) { seccionPlantilla.classList.add('oculto'); return; }
+
+        seccionPlantilla.classList.remove('oculto');
+        plantillaChips.innerHTML = "Cargando...";
+        btnToggleDia.style.display = 'none';
+        estadoVisibilidad.innerHTML = "";
+        mensajeExito.style.display = "none";
+
+        const snap = await getDoc(doc(db, "disponibilidad", f));
+        let horasAbiertas = [];
+
+        if (snap.exists()) {
+            diaActivo = snap.data().activo !== false;
+            horasAbiertas = snap.data().horarios || [];
+
+            btnToggleDia.style.display = 'block';
+            if (diaActivo) {
+                btnToggleDia.innerHTML = "👁️ Ocultar todo este día al público";
+                btnToggleDia.style.backgroundColor = "#555";
+            } else {
+                btnToggleDia.innerHTML = "👁️‍🗨️ Volver a mostrar este día";
+                btnToggleDia.style.backgroundColor = "#25D366";
+                estadoVisibilidad.innerHTML = `<div class="mensaje-vacio" style="color: #ff4d4d; padding: 5px 0 15px 0; font-weight: bold;">⚠️ Día oculto. Las clientas no pueden agendar hoy.</div>`;
+            }
+        } else {
+            diaActivo = true;
+        }
+
+        let todasLasHorasMostrar = [...HORARIOS_BASE];
+        horasAbiertas.forEach(h => {
+            if (!todasLasHorasMostrar.includes(h)) todasLasHorasMostrar.push(h);
+        });
+        todasLasHorasMostrar.sort();
+
+        plantillaChips.innerHTML = "";
+        todasLasHorasMostrar.forEach(hora => {
+            const chip = document.createElement('div');
+            chip.className = 'chip';
+            if (horasAbiertas.includes(hora)) chip.classList.add('activo');
+            chip.textContent = hora;
+            chip.onclick = () => { chip.classList.toggle('activo'); };
+            plantillaChips.appendChild(chip);
+        });
+    }
+
+    btnAgregarManual.addEventListener('click', () => {
+        const nuevaHora = horaInput.value;
+        if (!nuevaHora) return;
+
+        let existe = false;
+        document.querySelectorAll('#plantilla-chips .chip').forEach(chip => {
+            if (chip.textContent === nuevaHora) {
+                chip.classList.add('activo');
+                existe = true;
+            }
+        });
+
+        if (!existe) {
+            const chip = document.createElement('div');
+            chip.className = 'chip activo';
+            chip.textContent = nuevaHora;
+            chip.onclick = () => { chip.classList.toggle('activo'); };
+            plantillaChips.appendChild(chip);
+        }
+        horaInput.value = "";
+    });
+
+    btnPlantillaCompleta.addEventListener('click', () => {
+        document.querySelectorAll('#plantilla-chips .chip').forEach(chip => chip.classList.add('activo'));
+    });
+
+    btnGuardarPlantilla.addEventListener('click', async () => {
+        const f = fechaInput.value;
+        if (!f) return;
+
+        let horasSeleccionadas = [];
+        document.querySelectorAll('#plantilla-chips .chip.activo').forEach(chip => {
+            horasSeleccionadas.push(chip.textContent);
+        });
+
+        horasSeleccionadas.sort();
+
+        btnGuardarPlantilla.textContent = "Guardando...";
+        await setDoc(doc(db, "disponibilidad", f), {
+            horarios: horasSeleccionadas,
+            activo: diaActivo
+        }, { merge: true });
+
+        btnGuardarPlantilla.textContent = "✓ Guardar Día";
+        mensajeExito.style.display = "block";
+        setTimeout(() => { mensajeExito.style.display = "none"; }, 3000);
+        cargarHorariosDisponibles();
+    });
+
+    btnToggleDia.addEventListener('click', async () => {
+        const f = fechaInput.value;
+        if (!f) return;
+        await updateDoc(doc(db, "disponibilidad", f), { activo: !diaActivo });
+        cargarHorariosDisponibles();
+    });
+
+    filtroFechaAgenda.addEventListener('change', cargarCitas);
+    fechaInput.addEventListener('change', cargarHorariosDisponibles);
+</script>
 </body>
 </html>
