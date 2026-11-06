@@ -1,494 +1,481 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Administración | Cecy Perales</title>
-    <link rel="icon" type="image/jpeg" href="Logo.jpeg">
-    <style>
-        /* Diseño General */
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: #e9ecef; color: #444; }
-        .mobile-container { max-width: 420px; margin: 20px auto; background: white; min-height: 95vh; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 10px; overflow: hidden; }
+import React, { useState, useEffect, useMemo } from 'react';
+import { 
+  Calendar, Clock, DollarSign, CreditCard, Wallet, 
+  TrendingUp, CheckCircle, XCircle, ChevronLeft, ChevronRight, User, Phone, Plus, Filter
+} from 'lucide-react';
 
-        /* Cabecera del Admin */
-        .header-admin { background-color: #333; color: white; text-align: center; padding: 25px 15px; }
-        .header-admin h2 { margin: 0; font-size: 24px; font-weight: 500; letter-spacing: 0.5px; }
-        .header-admin p { margin: 5px 0 0 0; font-size: 14px; color: #d66b8d; font-weight: bold; }
+export default function AdminDashboard() {
+  // Estado para la pestaña activa ('agenda' | 'ingresos')
+  const [activeTab, setActiveTab] = useState('agenda');
 
-        /* Utilidades */
-        .oculto { display: none !important; }
-        .pad-20 { padding: 20px; }
+  // Estado de citas (ejemplo/simulación o sync con Firestore)
+  const [appointments, setAppointments] = useState([
+    {
+      id: '1',
+      clientName: 'María López',
+      phone: '8112345678',
+      service: 'Depilación Axilas y Pierna Completa',
+      date: '2026-11-06',
+      time: '10:00',
+      price: 450,
+      paymentMethod: 'Efectivo', // 'Efectivo' | 'BBVA' | 'MPago'
+      status: 'Completada'
+    },
+    {
+      id: '2',
+      clientName: 'Ana García',
+      phone: '8187654321',
+      service: 'Depilación Rostro Completo',
+      date: '2026-11-06',
+      time: '12:00',
+      price: 300,
+      paymentMethod: 'BBVA',
+      status: 'Completada'
+    },
+    {
+      id: '3',
+      clientName: 'Carla Sofía',
+      phone: '8119998877',
+      service: 'Diseño de Cejas',
+      date: '2026-11-05',
+      time: '16:00',
+      price: 200,
+      paymentMethod: 'MPago',
+      status: 'Completada'
+    }
+  ]);
 
-        /* Pestañas (Tabs) */
-        .tabs { display: flex; gap: 5px; margin-bottom: 25px; background: #f5f5f5; padding: 5px; border-radius: 8px; }
-        .tab-btn { flex: 1; padding: 10px 5px; border: none; background: transparent; border-radius: 6px; cursor: pointer; font-weight: bold; color: #777; font-size: 13px; transition: 0.3s; text-align: center; }
-        .tab-btn.active { background: white; color: #d66b8d; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+  // Formulario para nueva cita / editar pago
+  const [newAppointment, setNewAppointment] = useState({
+    clientName: '',
+    phone: '',
+    service: '',
+    date: new Date().toISOString().split('T')[0],
+    time: '10:00',
+    price: 0,
+    paymentMethod: 'Efectivo',
+    status: 'Confirmada'
+  });
 
-        /* Formularios e Inputs */
-        label { display: block; font-size: 14px; font-weight: bold; color: #666; margin-bottom: 8px; margin-top: 20px; }
-        input[type="email"], input[type="password"], input[type="date"], input[type="time"] {
-            width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 16px; background-color: #fcfcfc;
+  // Filtro de fecha para la agenda
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+
+  // Agregar cita con método de pago
+  const handleAddAppointment = (e) => {
+    e.preventDefault();
+    const created = {
+      ...newAppointment,
+      id: Date.now().toString(),
+      price: Number(newAppointment.price)
+    };
+    setAppointments(prev => [...prev, created]);
+    setNewAppointment({
+      clientName: '',
+      phone: '',
+      service: '',
+      date: new Date().toISOString().split('T')[0],
+      time: '10:00',
+      price: 0,
+      paymentMethod: 'Efectivo',
+      status: 'Confirmada'
+    });
+  };
+
+  // Cambiar método de pago de una cita existente
+  const handlePaymentMethodChange = (id, method) => {
+    setAppointments(prev =>
+      prev.map(item => item.id === id ? { ...item, paymentMethod: method } : item)
+    );
+  };
+
+  // --- CÁLCULOS DE INGRESOS ---
+  const incomeStats = useMemo(() => {
+    const todayStr = new Date().toISOString().split('T')[0];
+    const today = new Date(todayStr);
+
+    // Inicio y fin de la semana actual (Lunes a Domingo)
+    const dayOfWeek = today.getDay() || 7; 
+    const startOfWeek = new Date(today);
+    startOfWeek.setDate(today.getDate() - (dayOfWeek - 1));
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 6);
+
+    // Mes actual
+    const currentYear = today.getFullYear();
+    const currentMonth = today.getMonth();
+
+    let total = 0;
+    let daily = 0;
+    let weekly = 0;
+    let monthly = 0;
+
+    const byMethod = {
+      Efectivo: 0,
+      BBVA: 0,
+      MPago: 0
+    };
+
+    appointments.forEach(app => {
+      // Solo contar citas completadas o confirmadas
+      if (app.status === 'Completada' || app.status === 'Confirmada') {
+        const appPrice = Number(app.price) || 0;
+        const appDate = new Date(app.date);
+
+        // Total general
+        total += appPrice;
+
+        // Desglose por método de pago
+        if (byMethod[app.paymentMethod] !== undefined) {
+          byMethod[app.paymentMethod] += appPrice;
         }
 
-        /* Botones Generales */
-        .btn-main { background-color: #d66b8d; color: white; border: none; padding: 15px; font-size: 16px; border-radius: 6px; width: 100%; cursor: pointer; font-weight: bold; margin-top: 20px; transition: 0.2s; }
-        .btn-logout { background-color: #ffefef; color: #cc0000; border: 1px solid #ffcccc; padding: 10px; font-size: 14px; border-radius: 6px; width: 100%; cursor: pointer; margin-bottom: 25px; font-weight: bold; }
+        // Diario (día seleccionado o hoy)
+        if (app.date === selectedDate) {
+          daily += appPrice;
+        }
 
-        /* Vista de Calendario Diario (Agenda) */
-        .calendario-selector { background: #fdf2f5; padding: 15px; border-radius: 8px; border: 1px solid #fae3ea; margin-bottom: 20px; text-align: center; }
-        .calendario-selector h4 { margin: 0 0 10px 0; color: #b85273; font-size: 15px; }
+        // Semanal
+        if (appDate >= startOfWeek && appDate <= endOfWeek) {
+          weekly += appPrice;
+        }
 
-        /* Tarjetas de Citas */
-        .cita-card { background: white; border: 1px solid #eee; border-left: 5px solid #ffb3c6; padding: 15px; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 3px 6px rgba(0,0,0,0.04); }
-        .cita-card.confirmada { border-left-color: #25D366; background-color: #fbfffb; }
-        .cita-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; margin-bottom: 10px; }
-        .cita-nombre { font-size: 16px; font-weight: bold; color: #333; margin: 0; }
-        .cita-hora-badge { font-size: 15px; color: white; background: #d66b8d; padding: 4px 10px; border-radius: 20px; font-weight: bold; }
-        .cita-servicios { font-size: 14px; color: #555; margin: 0 0 10px 0; line-height: 1.5; }
-        
-        /* Acciones de Citas */
-        .cita-acciones { display: flex; flex-direction: column; gap: 8px; margin-top: 15px; }
-        .btn-confirmar { background: #25D366; color: white; border: none; padding: 10px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 13px; }
-        .btn-editar { background: #007bff; color: white; border: none; padding: 10px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 12px; }
-        .acciones-rojas { display: flex; gap: 8px; }
-        .btn-cancelar { background: #ff4d4d; color: white; border: none; padding: 10px; border-radius: 5px; flex: 1; font-weight: bold; cursor: pointer; font-size: 12px; }
-        .btn-liberar { background: #ff9900; color: white; border: none; padding: 10px; border-radius: 5px; flex: 1; font-weight: bold; cursor: pointer; font-size: 12px; }
+        // Mensual
+        if (appDate.getFullYear() === currentYear && appDate.getMonth() === currentMonth) {
+          monthly += appPrice;
+        }
+      }
+    });
 
-        /* Panel Desplegable para Reasignar Hora */
-        .panel-editar-hora { background: #f0f7ff; border: 1px dashed #007bff; padding: 12px; border-radius: 6px; margin-top: 10px; }
-        .panel-editar-hora label { margin-top: 5px; font-size: 12px; color: #0056b3; }
-        .panel-editar-hora input { padding: 8px; font-size: 14px; margin-bottom: 8px; }
+    return { total, daily, weekly, monthly, byMethod };
+  }, [appointments, selectedDate]);
 
-        /* GRILLA DE HORARIOS (Cuadritos) */
-        .opciones-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-        .chip { padding: 12px 10px; background: #f0f0f0; color: #777; border-radius: 6px; cursor: pointer; user-select: none; font-size: 15px; border: 1px solid #e0e0e0; flex-grow: 1; text-align: center; min-width: 25%; font-weight: 500; transition: 0.2s; }
-        .chip.activo { background: #d66b8d; color: white; border-color: #b85273; font-weight: bold; transform: scale(1.03); box-shadow: 0 2px 5px rgba(214, 107, 141, 0.3); }
+  return (
+    <div className="min-h-screen bg-[#0D0D12] text-white p-4 md:p-8 font-sans">
+      {/* ENCABEZADO Y PESTAÑAS */}
+      <header className="max-w-6xl mx-auto mb-8">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-purple-900/40 pb-6">
+          <div>
+            <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-400">
+              Panel de Administración
+            </h1>
+            <p className="text-gray-400 text-sm mt-1">Cecy Perales — Depilación con Cera</p>
+          </div>
 
-        .mensaje-vacio { text-align: center; color: #999; font-size: 14px; padding: 40px 0; font-style: italic; }
-        hr { border: 0; border-top: 1px solid #eee; margin: 25px 0; }
-    </style>
-</head>
-<body>
-
-<div class="mobile-container">
-    <div class="header-admin">
-        <h2>Panel de Control</h2>
-        <p>Sistema de Reservas</p>
-    </div>
-
-    <div class="pad-20">
-        <!-- SECCIÓN LOGIN -->
-        <div id="seccion-login">
-            <p style="text-align: center; color: #666; margin-bottom: 20px;">Ingresa para gestionar tu agenda</p>
-            <label>Correo Electrónico</label>
-            <input type="email" id="email" placeholder="ejemplo@correo.com">
-            <label>Contraseña</label>
-            <input type="password" id="password" placeholder="••••••••">
-            <button id="btn-login" class="btn-main">Entrar al Panel</button>
+          {/* Navegación por Pestañas */}
+          <div className="flex bg-[#181824] p-1.5 rounded-full border border-purple-900/50">
+            <button
+              onClick={() => setActiveTab('agenda')}
+              className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-semibold text-sm transition-all ${
+                activeTab === 'agenda'
+                  ? 'bg-gradient-to-r from-purple-600 to-pink-500 text-white shadow-lg shadow-pink-500/20'
+                  : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              <Calendar className="w-4 h-4" />
+              Agenda
+            </button>
+            <button
+              onClick={() => setActiveTab('ingresos')}
+              className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-semibold text-sm transition-all ${
+                activeTab === 'ingresos'
+                  ? 'bg-gradient-to-r from-purple-600 to-pink-500 text-white shadow-lg shadow-pink-500/20'
+                  : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              <TrendingUp className="w-4 h-4" />
+              Ingresos
+            </button>
+          </div>
         </div>
+      </header>
 
-        <!-- PANEL PRINCIPAL -->
-        <div id="seccion-panel" class="oculto">
-            <button id="btn-logout" class="btn-logout">Cerrar Sesión</button>
-            
-            <div class="tabs">
-                <button id="tab-agenda" class="tab-btn active">Agenda 📅</button>
-                <button id="tab-solicitudes" class="tab-btn">Pendientes ⏳</button>
-                <button id="tab-horarios" class="tab-btn">Abrir Horas ⏰</button>
+      <main className="max-w-6xl mx-auto">
+        {/* ==================== PESTAÑA: AGENDA ==================== */}
+        {activeTab === 'agenda' && (
+          <div className="space-y-8">
+            {/* Formulario de Registro / Agendar */}
+            <div className="bg-[#181824] p-6 rounded-2xl border border-purple-900/30">
+              <h2 className="text-xl font-bold text-pink-400 mb-4 flex items-center gap-2">
+                <Plus className="w-5 h-5" /> Registrar Nueva Cita
+              </h2>
+              <form onSubmit={handleAddAppointment} className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="text-xs text-gray-400 block mb-1">Cliente</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Nombre de la cliente"
+                    value={newAppointment.clientName}
+                    onChange={e => setNewAppointment({...newAppointment, clientName: e.target.value})}
+                    className="w-full bg-[#0D0D12] border border-purple-900/50 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pink-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs text-gray-400 block mb-1">Servicio</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Servicio a realizar"
+                    value={newAppointment.service}
+                    onChange={e => setNewAppointment({...newAppointment, service: e.target.value})}
+                    className="w-full bg-[#0D0D12] border border-purple-900/50 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pink-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs text-gray-400 block mb-1">Fecha</label>
+                  <input
+                    type="date"
+                    required
+                    value={newAppointment.date}
+                    onChange={e => setNewAppointment({...newAppointment, date: e.target.value})}
+                    className="w-full bg-[#0D0D12] border border-purple-900/50 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pink-500 text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs text-gray-400 block mb-1">Hora</label>
+                  <input
+                    type="time"
+                    required
+                    value={newAppointment.time}
+                    onChange={e => setNewAppointment({...newAppointment, time: e.target.value})}
+                    className="w-full bg-[#0D0D12] border border-purple-900/50 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pink-500 text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs text-gray-400 block mb-1">Precio ($)</label>
+                  <input
+                    type="number"
+                    required
+                    placeholder="450"
+                    value={newAppointment.price || ''}
+                    onChange={e => setNewAppointment({...newAppointment, price: e.target.value})}
+                    className="w-full bg-[#0D0D12] border border-purple-900/50 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pink-500"
+                  />
+                </div>
+
+                {/* Selección de Método de Pago */}
+                <div>
+                  <label className="text-xs text-gray-400 block mb-1">Método de Pago</label>
+                  <select
+                    value={newAppointment.paymentMethod}
+                    onChange={e => setNewAppointment({...newAppointment, paymentMethod: e.target.value})}
+                    className="w-full bg-[#0D0D12] border border-purple-900/50 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pink-500 text-white"
+                  >
+                    <option value="Efectivo">💵 Efectivo</option>
+                    <option value="BBVA">🏦 BBVA</option>
+                    <option value="MPago">📱 Mercado Pago</option>
+                  </select>
+                </div>
+
+                <div className="md:col-span-3 flex justify-end">
+                  <button
+                    type="submit"
+                    className="bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-500 hover:to-pink-400 text-white font-bold px-6 py-2.5 rounded-lg text-sm transition-all"
+                  >
+                    Guardar Cita
+                  </button>
+                </div>
+              </form>
             </div>
 
-            <!-- PESTAÑA 1: AGENDA -->
-            <div id="vista-agenda">
-                <div class="calendario-selector">
-                    <h4>📅 Ver Agenda del día:</h4>
-                    <input type="date" id="filtro-fecha-agenda">
-                </div>
-                <div id="lista-agenda-container">
-                    <div class="mensaje-vacio">Selecciona una fecha para ver tus citas.</div>
-                </div>
-            </div>
-
-            <!-- PESTAÑA 2: PENDIENTES -->
-            <div id="vista-solicitudes" class="oculto">
-                <h3 style="margin-top: 0; color: #333; font-size: 18px;">Solicitudes Nuevas</h3>
-                <p style="font-size: 13px; color: #888; margin-top: -10px;">Estas clientas agendaron pero aún no confirman pago.</p>
-                <div id="lista-solicitudes-container">
-                    <div class="mensaje-vacio">Cargando solicitudes...</div>
-                </div>
-            </div>
-
-            <!-- PESTAÑA 3: GESTIÓN DE HORARIOS HÍBRIDA -->
-            <div id="vista-horarios" class="oculto">
-                <h3 style="margin-top: 0; color: #333; font-size: 18px;">Gestión de Disponibilidad</h3>
-                <label>1. Elige el día que quieres abrir</label>
-                <input type="date" id="fecha-seleccionada">
+            {/* Lista y Filtro de Citas */}
+            <div className="bg-[#181824] p-6 rounded-2xl border border-purple-900/30">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                  <Calendar className="w-5 h-5 text-purple-400" /> Citas Agendadas
+                </h2>
                 
-                <div id="seccion-plantilla" class="oculto" style="margin-top: 20px;">
-                    <label>2. Toca las horas para abrirlas (rosas) o cerrarlas (grises)</label>
-                    <div class="opciones-container" id="plantilla-chips">
-                        <!-- Aquí se inyectan las horas de la plantilla -->
-                    </div>
-                    
-                    <!-- NUEVA SECCIÓN DE AGREGADO MANUAL / PERSONALIZADO -->
-                    <div style="margin-top: 15px; background: #fdfdfd; padding: 12px; border-radius: 8px; border: 1px dashed #d66b8d; box-sizing: border-box;">
-                        <label style="margin-top: 0; font-size: 13px; color: #555;">➕ ¿Agregar una hora personalizada fuera de la plantilla?</label>
-                        <div style="display: flex; gap: 8px; margin-top: 5px;">
-                            <input type="time" id="nueva-hora" style="flex: 2; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 15px;">
-                            <button id="btn-agregar-manual" class="btn-main" style="margin-top: 0; padding: 10px; flex: 1; font-size: 14px; background-color: #555;">+ Añadir</button>
+                {/* Filtrar Citas por Día */}
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-gray-400">Filtrar por fecha:</span>
+                  <input
+                    type="date"
+                    value={selectedDate}
+                    onChange={e => setSelectedDate(e.target.value)}
+                    className="bg-[#0D0D12] border border-purple-900/50 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-pink-500"
+                  />
+                </div>
+              </div>
+
+              {/* Tarjetas de Citas */}
+              <div className="space-y-4">
+                {appointments
+                  .filter(app => app.date === selectedDate)
+                  .map(app => (
+                    <div
+                      key={app.id}
+                      className="bg-[#0D0D12] p-4 rounded-xl border border-purple-900/40 flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
+                    >
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-pink-400">{app.clientName}</span>
+                          <span className="text-xs bg-purple-950 text-purple-300 px-2 py-0.5 rounded-full border border-purple-800">
+                            {app.time} hrs
+                          </span>
                         </div>
-                    </div>
-                    
-                    <div style="display: flex; gap: 10px; margin-top: 15px;">
-                        <button id="btn-plantilla-completa" class="btn-main" style="margin-top: 0; background-color: #fff0f3; color: #d66b8d; border: 1px solid #ffb3c6; flex: 1; font-size: 14px;">☀️ Marcar Todo</button>
-                        <button id="btn-guardar-plantilla" class="btn-main" style="margin-top: 0; background-color: #25D366; flex: 1; font-size: 14px;">✓ Guardar Día</button>
-                    </div>
+                        <p className="text-sm text-gray-300">{app.service}</p>
+                        <p className="text-xs text-gray-500">Tel: {app.phone}</p>
+                      </div>
 
-                    <p id="mensaje-exito" style="color: #25D366; text-align: center; font-weight: bold; font-size: 14px; display: none; margin-top: 10px;">¡Horarios guardados y publicados!</p>
+                      <div className="flex flex-wrap items-center gap-3">
+                        <span className="font-semibold text-green-400 text-base">${app.price} MXN</span>
 
-                    <hr>
-                    <label>📋 Control general de la página web:</label>
-                    <button id="btn-toggle-dia" class="btn-main" style="margin-top: 0px; margin-bottom: 15px; display: none; padding: 12px; font-size: 15px;"></button>
-                    <div id="estado-visibilidad"></div>
-                </div>
+                        {/* Cambiar Método de Pago Directamente */}
+                        <select
+                          value={app.paymentMethod}
+                          onChange={e => handlePaymentMethodChange(app.id, e.target.value)}
+                          className="bg-[#181824] border border-purple-900/60 rounded-lg px-2.5 py-1 text-xs text-purple-200 focus:outline-none focus:border-pink-500"
+                        >
+                          <option value="Efectivo">💵 Efectivo</option>
+                          <option value="BBVA">🏦 BBVA</option>
+                          <option value="MPago">📱 MPago</option>
+                        </select>
+
+                        <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
+                          app.status === 'Completada' ? 'bg-green-950 text-green-400 border border-green-800' : 'bg-yellow-950 text-yellow-400 border border-yellow-800'
+                        }`}>
+                          {app.status}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+
+                {appointments.filter(app => app.date === selectedDate).length === 0 && (
+                  <p className="text-center text-gray-500 py-8 text-sm">
+                    No hay citas programadas para el {selectedDate}.
+                  </p>
+                )}
+              </div>
             </div>
-        </div>
+          </div>
+        )}
+
+        {/* ==================== PESTAÑA NUEVA: INGRESOS ==================== */}
+        {activeTab === 'ingresos' && (
+          <div className="space-y-8">
+            {/* Tarjetas resumen de ingresos */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* Total Acumulado */}
+              <div className="bg-[#181824] p-5 rounded-2xl border border-purple-900/40 relative overflow-hidden">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="text-xs text-gray-400 font-medium">Ingresos Totales</p>
+                    <h3 className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-300 mt-1">
+                      ${incomeStats.total.toLocaleString()} MXN
+                    </h3>
+                  </div>
+                  <div className="p-2.5 bg-pink-500/10 rounded-xl text-pink-400 border border-pink-500/20">
+                    <DollarSign className="w-5 h-5" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Día Selección / HOY */}
+              <div className="bg-[#181824] p-5 rounded-2xl border border-purple-900/40">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="text-xs text-gray-400 font-medium">Ingreso Diario ({selectedDate})</p>
+                    <h3 className="text-2xl font-bold text-white mt-1">
+                      ${incomeStats.daily.toLocaleString()} MXN
+                    </h3>
+                  </div>
+                  <div className="p-2.5 bg-purple-500/10 rounded-xl text-purple-400 border border-purple-500/20">
+                    <Calendar className="w-5 h-5" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Semanal */}
+              <div className="bg-[#181824] p-5 rounded-2xl border border-purple-900/40">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="text-xs text-gray-400 font-medium">Ingreso Semanal (Semana actual)</p>
+                    <h3 className="text-2xl font-bold text-white mt-1">
+                      ${incomeStats.weekly.toLocaleString()} MXN
+                    </h3>
+                  </div>
+                  <div className="p-2.5 bg-blue-500/10 rounded-xl text-blue-400 border border-blue-500/20">
+                    <TrendingUp className="w-5 h-5" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Mensual */}
+              <div className="bg-[#181824] p-5 rounded-2xl border border-purple-900/40">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="text-xs text-gray-400 font-medium">Ingreso Mensual (Mes actual)</p>
+                    <h3 className="text-2xl font-bold text-white mt-1">
+                      ${incomeStats.monthly.toLocaleString()} MXN
+                    </h3>
+                  </div>
+                  <div className="p-2.5 bg-green-500/10 rounded-xl text-green-400 border border-green-500/20">
+                    <Clock className="w-5 h-5" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Desglose por Método de Pago */}
+            <div className="bg-[#181824] p-6 rounded-2xl border border-purple-900/30">
+              <h2 className="text-xl font-bold text-pink-400 mb-6 flex items-center gap-2">
+                <Wallet className="w-5 h-5" /> Desglose por Método de Pago
+              </h2>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Efectivo */}
+                <div className="bg-[#0D0D12] p-5 rounded-xl border border-emerald-900/40 flex items-center justify-between">
+                  <div>
+                    <span className="text-xs text-gray-400 font-medium flex items-center gap-1.5">
+                      💵 Efectivo
+                    </span>
+                    <p className="text-2xl font-bold text-emerald-400 mt-2">
+                      ${incomeStats.byMethod.Efectivo.toLocaleString()} MXN
+                    </p>
+                  </div>
+                  <span className="text-xs text-emerald-400 bg-emerald-950 px-2.5 py-1 rounded-full border border-emerald-800 font-semibold">
+                    {incomeStats.total > 0 ? Math.round((incomeStats.byMethod.Efectivo / incomeStats.total) * 100) : 0}%
+                  </span>
+                </div>
+
+                {/* BBVA */}
+                <div className="bg-[#0D0D12] p-5 rounded-xl border border-blue-900/40 flex items-center justify-between">
+                  <div>
+                    <span className="text-xs text-gray-400 font-medium flex items-center gap-1.5">
+                      🏦 BBVA (Transferencia)
+                    </span>
+                    <p className="text-2xl font-bold text-blue-400 mt-2">
+                      ${incomeStats.byMethod.BBVA.toLocaleString()} MXN
+                    </p>
+                  </div>
+                  <span className="text-xs text-blue-400 bg-blue-950 px-2.5 py-1 rounded-full border border-blue-800 font-semibold">
+                    {incomeStats.total > 0 ? Math.round((incomeStats.byMethod.BBVA / incomeStats.total) * 100) : 0}%
+                  </span>
+                </div>
+
+                {/* Mercado Pago */}
+                <div className="bg-[#0D0D12] p-5 rounded-xl border border-cyan-900/40 flex items-center justify-between">
+                  <div>
+                    <span className="text-xs text-gray-400 font-medium flex items-center gap-1.5">
+                      📱 Mercado Pago
+                    </span>
+                    <p className="text-2xl font-bold text-cyan-400 mt-2">
+                      ${incomeStats.byMethod.MPago.toLocaleString()} MXN
+                    </p>
+                  </div>
+                  <span className="text-xs text-cyan-400 bg-cyan-950 px-2.5 py-1 rounded-full border border-cyan-800 font-semibold">
+                    {incomeStats.total > 0 ? Math.round((incomeStats.byMethod.MPago / incomeStats.total) * 100) : 0}%
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </main>
     </div>
-</div>
-
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, getDocs, deleteDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyDNjqux_hDFWfflfF4FhDh7cNmh3W5oRVQ",
-        authDomain: "depilacion-reservas.firebaseapp.com",
-        projectId: "depilacion-reservas",
-        storageBucket: "depilacion-reservas.firebasestorage.app",
-        messagingSenderId: "246526216829",
-        appId: "1:246526216829:web:324c7887234eb9a9ce7f14",
-        measurementId: "G-5Q500M6E14"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    // Elementos de la interfaz
-    const seccionLogin = document.getElementById('seccion-login');
-    const seccionPanel = document.getElementById('seccion-panel');
-    const btnLogin = document.getElementById('btn-login');
-    const btnLogout = document.getElementById('btn-logout');
-    
-    const tabAgenda = document.getElementById('tab-agenda');
-    const tabSolicitudes = document.getElementById('tab-solicitudes');
-    const tabHorarios = document.getElementById('tab-horarios');
-    
-    const vistaAgenda = document.getElementById('vista-agenda');
-    const vistaSolicitudes = document.getElementById('vista-solicitudes');
-    const vistaHorarios = document.getElementById('vista-horarios');
-
-    const filtroFechaAgenda = document.getElementById('filtro-fecha-agenda');
-    const listaAgendaContainer = document.getElementById('lista-agenda-container');
-    const listaSolicitudesContainer = document.getElementById('lista-solicitudes-container');
-
-    const fechaInput = document.getElementById('fecha-seleccionada');
-    const seccionPlantilla = document.getElementById('seccion-plantilla');
-    const plantillaChips = document.getElementById('plantilla-chips');
-    const horaInput = document.getElementById('nueva-hora');
-    const btnAgregarManual = document.getElementById('btn-agregar-manual');
-    const btnPlantillaCompleta = document.getElementById('btn-plantilla-completa');
-    const btnGuardarPlantilla = document.getElementById('btn-guardar-plantilla');
-    const btnToggleDia = document.getElementById('btn-toggle-dia');
-    const estadoVisibilidad = document.getElementById('estado-visibilidad');
-    const mensajeExito = document.getElementById('mensaje-exito');
-
-    // Plantilla base solicitada
-    const HORARIOS_BASE = ["10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30"];
-    let diaActivo = true;
-
-    // Control de pestañas
-    tabAgenda.addEventListener('click', () => { activarPestaña(tabAgenda, vistaAgenda); cargarCitas(); });
-    tabSolicitudes.addEventListener('click', () => { activarPestaña(tabSolicitudes, vistaSolicitudes); cargarCitas(); });
-    tabHorarios.addEventListener('click', () => { activarPestaña(tabHorarios, vistaHorarios); });
-
-    function activarPestaña(boton, vista) {
-        [tabAgenda, tabSolicitudes, tabHorarios].forEach(b => b.classList.remove('active'));
-        [vistaAgenda, vistaSolicitudes, vistaHorarios].forEach(v => v.classList.add('oculto'));
-        boton.classList.add('active');
-        vista.classList.remove('oculto');
-    }
-
-    // Sesión
-    btnLogin.addEventListener('click', async () => {
-        try { await signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('password').value); } 
-        catch (e) { alert("Acceso denegado."); }
-    });
-    btnLogout.addEventListener('click', () => signOut(auth));
-
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            seccionLogin.classList.add('oculto');
-            seccionPanel.classList.remove('oculto');
-            const hoy = new Date().toISOString().split('T')[0];
-            filtroFechaAgenda.value = hoy;
-            fechaInput.value = hoy;
-            cargarCitas();
-            cargarHorariosDisponibles();
-        } else {
-            seccionLogin.classList.remove('oculto');
-            seccionPanel.classList.add('oculto');
-        }
-    });
-
-    // Lógica de Citas
-    async function cargarCitas() {
-        listaAgendaContainer.innerHTML = "<div class='mensaje-vacio'>Cargando...</div>";
-        listaSolicitudesContainer.innerHTML = "<div class='mensaje-vacio'>Cargando...</div>";
-
-        try {
-            const snapshot = await getDocs(collection(db, "citas"));
-            let confirmadasDelDia = [];
-            let pendientesGlobales = [];
-
-            snapshot.forEach(doc => {
-                const data = { id: doc.id, ...doc.data() };
-                if (data.estado === 'confirmado') {
-                    if (data.fecha === filtroFechaAgenda.value) confirmadasDelDia.push(data);
-                } else {
-                    pendientesGlobales.push(data);
-                }
-            });
-
-            if (confirmadasDelDia.length === 0) {
-                listaAgendaContainer.innerHTML = `<div class='mensaje-vacio'>No tienes citas confirmadas para el día ${filtroFechaAgenda.value}.</div>`;
-            } else {
-                listaAgendaContainer.innerHTML = "";
-                confirmadasDelDia.sort((a,b) => a.hora.localeCompare(b.hora)).forEach(cita => {
-                    listaAgendaContainer.innerHTML += generarHTMLTarjeta(cita, true);
-                });
-            }
-
-            if (pendientesGlobales.length === 0) {
-                listaSolicitudesContainer.innerHTML = "<div class='mensaje-vacio'>No hay solicitudes de pago pendientes.</div>";
-            } else {
-                listaSolicitudesContainer.innerHTML = "";
-                pendientesGlobales.sort((a,b) => a.fecha.localeCompare(b.fecha)).forEach(cita => {
-                    listaSolicitudesContainer.innerHTML += generarHTMLTarjeta(cita, false);
-                });
-            }
-        } catch (e) { console.error(e); }
-    }
-
-    function generarHTMLTarjeta(cita, esAgenda) {
-        return `
-            <div class="cita-card ${esAgenda ? 'confirmada' : ''}">
-                <div class="cita-header">
-                    <h4 class="cita-nombre">👤 ${cita.nombre}</h4>
-                    <span class="cita-hora-badge">${cita.hora}</span>
-                </div>
-                ${!esAgenda ? `<p style="font-size:12px; color:#d66b8d; font-weight:bold; margin-bottom:5px;">📅 Fecha: ${cita.fecha}</p>` : ''}
-                <p class="cita-servicios">✨ <b>Servicios:</b> ${cita.servicios}</p>
-                <div class="cita-acciones">
-                    ${!esAgenda ? `<button class="btn-confirmar" onclick="confirmarPago('${cita.id}')">✓ Confirmar Pago</button>` : ''}
-                    <button class="btn-editar" onclick="mostrarReasignar('${cita.id}')">✏️ Reasignar Fecha / Hora</button>
-                    
-                    <!-- Panel oculto para cambiar fecha/hora -->
-                    <div id="edit-panel-${cita.id}" class="panel-editar-hora oculto">
-                        <label>Nueva Fecha:</label>
-                        <input type="date" id="nueva-fecha-${cita.id}" value="${cita.fecha}">
-                        <label>Nueva Hora:</label>
-                        <input type="time" id="nueva-hora-${cita.id}" value="${cita.hora}">
-                        <button class="btn-confirmar" style="width: 100%; margin-top: 5px;" onclick="guardarReasignacion('${cita.id}', '${cita.fecha}', '${cita.hora}')">✓ Guardar Cambio</button>
-                    </div>
-
-                    <div class="acciones-rojas">
-                        <button class="btn-cancelar" onclick="eliminarCita('${cita.id}', '${cita.nombre}')">❌ Borrar</button>
-                        <button class="btn-liberar" onclick="liberarCita('${cita.id}', '${cita.fecha}', '${cita.hora}', '${cita.nombre}')">🔓 Cancelar y Liberar Hora</button>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    // Mostrar u ocultar el panel de edición
-    window.mostrarReasignar = (id) => {
-        const panel = document.getElementById(`edit-panel-${id}`);
-        panel.classList.toggle('oculto');
-    };
-
-    // Guardar el cambio de fecha/hora en Firebase
-    window.guardarReasignacion = async (id, fechaVieja, horaVieja) => {
-        const nuevaFecha = document.getElementById(`nueva-fecha-${id}`).value;
-        const nuevaHora = document.getElementById(`nueva-hora-${id}`).value;
-
-        if (!nuevaFecha || !nuevaHora) {
-            alert("Selecciona fecha y hora válidas.");
-            return;
-        }
-
-        try {
-            // 1. Actualizar el documento de la cita con los nuevos datos
-            await updateDoc(doc(db, "citas", id), {
-                fecha: nuevaFecha,
-                hora: nuevaHora
-            });
-
-            // 2. Liberar la hora anterior en la colección de disponibilidad para que otra clienta la pueda tomar
-            await setDoc(doc(db, "disponibilidad", fechaVieja), { 
-                horarios: arrayUnion(horaVieja) 
-            }, { merge: true });
-
-            alert(" Cita reasignada correctamente.");
-            cargarCitas();
-            cargarHorariosDisponibles();
-        } catch (e) {
-            alert("Error al reasignar cita.");
-            console.error(e);
-        }
-    };
-
-    window.confirmarPago = async (id) => {
-        if (!confirm("¿Confirmas que ya recibiste el anticipo?")) return;
-        await updateDoc(doc(db, "citas", id), { estado: "confirmado" });
-        cargarCitas();
-    };
-
-    window.eliminarCita = async (id, nombre) => {
-        if (!confirm(`¿Borrar cita de ${nombre}? No se abrirá el horario en la web.`)) return;
-        await deleteDoc(doc(db, "citas", id));
-        cargarCitas();
-    };
-
-    window.liberarCita = async (id, fecha, hora, nombre) => {
-        if (!confirm(`¿Cancelar cita de ${nombre} y abrir la hora ${hora} en la web?`)) return;
-        await deleteDoc(doc(db, "citas", id));
-        await setDoc(doc(db, "disponibilidad", fecha), { horarios: arrayUnion(hora), activo: true }, { merge: true });
-        cargarCitas();
-        cargarHorariosDisponibles();
-    };
-
-    // LÓGICA DE LA PLANTILLA E INGRESO MANUAL
-    async function cargarHorariosDisponibles() {
-        const f = fechaInput.value;
-        if (!f) { seccionPlantilla.classList.add('oculto'); return; }
-        
-        seccionPlantilla.classList.remove('oculto');
-        plantillaChips.innerHTML = "Cargando...";
-        btnToggleDia.style.display = 'none';
-        estadoVisibilidad.innerHTML = "";
-        mensajeExito.style.display = "none";
-        
-        const snap = await getDoc(doc(db, "disponibilidad", f));
-        let horasAbiertas = [];
-        
-        if (snap.exists()) {
-            diaActivo = snap.data().activo !== false;
-            horasAbiertas = snap.data().horarios || [];
-            
-            btnToggleDia.style.display = 'block';
-            if (diaActivo) {
-                btnToggleDia.innerHTML = "👁️ Ocultar todo este día al público";
-                btnToggleDia.style.backgroundColor = "#555";
-            } else {
-                btnToggleDia.innerHTML = "👁️‍🗨️ Volver a mostrar este día";
-                btnToggleDia.style.backgroundColor = "#25D366";
-                estadoVisibilidad.innerHTML = `<div class="mensaje-vacio" style="color: #ff4d4d; padding: 5px 0 15px 0; font-weight: bold;">⚠️ Día oculto. Las clientas no pueden agendar hoy.</div>`;
-            }
-        } else {
-            diaActivo = true;
-        }
-
-        // 1. Unir las horas base con cualquier hora extra guardada en Firebase que no esté en la base
-        let todasLasHorasMostrar = [...HORARIOS_BASE];
-        horasAbiertas.forEach(h => {
-            if (!todasLasHorasMostrar.includes(h)) {
-                todasLasHorasMostrar.push(h);
-            }
-        });
-        todasLasHorasMostrar.sort(); // Ordenar cronológicamente
-
-        // 2. Renderizar los cuadritos
-        plantillaChips.innerHTML = "";
-        todasLasHorasMostrar.forEach(hora => {
-            const chip = document.createElement('div');
-            chip.className = 'chip';
-            if (horasAbiertas.includes(hora)) {
-                chip.classList.add('activo');
-            }
-            chip.textContent = hora;
-            chip.onclick = () => { chip.classList.toggle('activo'); };
-            plantillaChips.appendChild(chip);
-        });
-    }
-
-    // Evento para añadir hora manual personalizada
-    btnAgregarManual.addEventListener('click', () => {
-        const nuevaHora = horaInput.value;
-        if (!nuevaHora) return;
-
-        let existe = false;
-        document.querySelectorAll('#plantilla-chips .chip').forEach(chip => {
-            if (chip.textContent === nuevaHora) {
-                chip.classList.add('activo'); // Si ya existía el cuadrito, solo lo pintamos
-                existe = true;
-            }
-        });
-
-        if (!existe) {
-            // Si es una hora totalmente rara/nueva, creamos su cuadrito rosa activo al instante
-            const chip = document.createElement('div');
-            chip.className = 'chip activo';
-            chip.textContent = nuevaHora;
-            chip.onclick = () => { chip.classList.toggle('activo'); };
-            plantillaChips.appendChild(chip);
-        }
-        
-        horaInput.value = ""; // Limpiar el reloj manual
-    });
-
-    // Botón de Marcar Todo
-    btnPlantillaCompleta.addEventListener('click', () => {
-        document.querySelectorAll('#plantilla-chips .chip').forEach(chip => {
-            chip.classList.add('activo');
-        });
-    });
-
-    // Botón de Guardar Día (Ordena y procesa todo junto)
-    btnGuardarPlantilla.addEventListener('click', async () => {
-        const f = fechaInput.value;
-        if (!f) return;
-        
-        let horasSeleccionadas = [];
-        document.querySelectorAll('#plantilla-chips .chip.activo').forEach(chip => {
-            horasSeleccionadas.push(chip.textContent);
-        });
-
-        horasSeleccionadas.sort(); // Super importante ordenar antes de subir para las clientas
-
-        btnGuardarPlantilla.textContent = "Guardando...";
-        await setDoc(doc(db, "disponibilidad", f), { 
-            horarios: horasSeleccionadas, 
-            activo: diaActivo 
-        }, { merge: true });
-        
-        btnGuardarPlantilla.textContent = "✓ Guardar Día";
-        mensajeExito.style.display = "block";
-        
-        setTimeout(() => { mensajeExito.style.display = "none"; }, 3000);
-        cargarHorariosDisponibles();
-    });
-
-    // Botón Maestro Ocultar/Mostrar
-    btnToggleDia.addEventListener('click', async () => {
-        const f = fechaInput.value;
-        if (!f) return;
-        await updateDoc(doc(db, "disponibilidad", f), { activo: !diaActivo });
-        cargarHorariosDisponibles();
-    });
-
-    filtroFechaAgenda.addEventListener('change', cargarCitas);
-    fechaInput.addEventListener('change', cargarHorariosDisponibles);
-</script>
-</body>
-</html>
+  );
+}
