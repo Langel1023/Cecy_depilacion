@@ -1,214 +1,292 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Administración | Cecy Perales</title>
+    <title>Reserva tu Cita</title>
     <link rel="icon" type="image/jpeg" href="Logo.jpeg">
+    <!-- Metaetiquetas para que el link se vea bonito en WhatsApp -->
+    <meta property="og:title" content="Cecy Perales | Depilación con Cera">
+    <meta property="og:description" content="Agenda tu cita de depilación facial y corporal. Servicio higiénico y seguro, exclusivo para damas.">
+    <meta property="og:image" content="https://main.d30cuqwqnc3p7f.amplifyapp.com/Logo.jpeg">
+    <meta property="og:url" content="https://main.d30cuqwqnc3p7f.amplifyapp.com/">
+    <meta property="og:type" content="website">
     <style>
-        /* Diseño General */
+        /* Diseño General Mobile-First */
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: #e9ecef; color: #444; }
-        .mobile-container { max-width: 420px; margin: 20px auto; background: white; min-height: 95vh; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 10px; overflow: hidden; }
-
-        /* Cabecera del Admin */
-        .header-admin { background-color: #333; color: white; text-align: center; padding: 25px 15px; }
-        .header-admin h2 { margin: 0; font-size: 24px; font-weight: 500; letter-spacing: 0.5px; }
-        .header-admin p { margin: 5px 0 0 0; font-size: 14px; color: #d66b8d; font-weight: bold; }
-
-        /* Utilidades */
-        .oculto { display: none !important; }
-        .pad-20 { padding: 20px; }
-
-        /* Pestañas (Tabs) */
-        .tabs { display: flex; gap: 4px; margin-bottom: 20px; background: #f5f5f5; padding: 4px; border-radius: 8px; }
-        .tab-btn { flex: 1; padding: 10px 2px; border: none; background: transparent; border-radius: 6px; cursor: pointer; font-weight: bold; color: #777; font-size: 11px; transition: 0.3s; text-align: center; }
-        .tab-btn.active { background: white; color: #d66b8d; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-
-        /* Formularios e Inputs */
-        label { display: block; font-size: 14px; font-weight: bold; color: #666; margin-bottom: 8px; margin-top: 15px; }
-        input[type="email"], input[type="password"], input[type="date"], input[type="time"], input[type="number"], select {
-            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 15px; background-color: #fcfcfc;
-        }
-
+        .mobile-container { max-width: 420px; margin: auto; background: white; min-height: 100vh; box-shadow: 0 0 15px rgba(0,0,0,0.1); padding-bottom: 40px; }
+        
+        /* Cabecera y Foto de Perfil */
+        .banner { background-color: #d66b8d; height: 130px; width: 100%; }
+        .perfil-container { text-align: center; margin-top: -65px; }
+        .perfil-img { width: 130px; height: 130px; border-radius: 50%; border: 4px solid white; object-fit: cover; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .titulo { font-size: 28px; font-weight: 300; color: #333; margin: 10px 0 5px 0; }
+        .subtitulo { font-size: 15px; color: #666; margin-bottom: 20px; }
+        
         /* Botones Generales */
-        .btn-main { background-color: #d66b8d; color: white; border: none; padding: 15px; font-size: 16px; border-radius: 6px; width: 100%; cursor: pointer; font-weight: bold; margin-top: 20px; transition: 0.2s; }
-        .btn-logout { background-color: #ffefef; color: #cc0000; border: 1px solid #ffcccc; padding: 10px; font-size: 14px; border-radius: 6px; width: 100%; cursor: pointer; margin-bottom: 20px; font-weight: bold; }
+        .btn-main { background-color: #d66b8d; color: white; border: none; padding: 14px 20px; font-size: 16px; border-radius: 5px; width: 90%; margin: 0 auto; display: block; cursor: pointer; font-weight: bold; transition: background 0.3s; }
+        .btn-main:disabled { background-color: #ccc; cursor: not-allowed; }
+        
+        /* Sistema de Reservas */
+        .reserva-container { text-align: center; padding: 20px; margin-top: 10px; border-top: 1px solid #eee; background: #fdfdfd; }
+        
+        /* Lista de Multiselección (Checkboxes) */
+        .checkbox-group { text-align: left; margin-bottom: 20px; background: #fff; border: 1px solid #ccc; border-radius: 5px; max-height: 220px; overflow-y: auto; padding: 15px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+        .grupo-titulo { font-weight: bold; color: #b85273; margin: 15px 0 8px 0; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        .grupo-titulo:first-child { margin-top: 0; }
+        .checkbox-label { display: block; padding: 8px 0; font-size: 15px; color: #555; cursor: pointer; }
+        .checkbox-label input[type="checkbox"] { margin-right: 12px; transform: scale(1.3); accent-color: #d66b8d; cursor: pointer; }
+        
+        /* Carrusel de Fechas y Horas */
+        .carrusel-dias { display: flex; justify-content: space-between; align-items: center; margin: 20px auto; width: 90%; }
+        .btn-flecha { background: none; border: none; font-size: 35px; color: #d66b8d; cursor: pointer; padding: 0 10px; font-weight: bold; }
+        .btn-flecha:disabled { color: #e0e0e0; cursor: not-allowed; }
+        #fecha-actual-texto { font-size: 18px; color: #555; margin: 0; font-weight: 500; flex-grow: 1; text-align: center; text-transform: capitalize; }
+        .opciones-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 20px; }
+        .chip { padding: 10px 18px; background: #d66b8d; color: white; border-radius: 5px; cursor: pointer; user-select: none; font-size: 14px; opacity: 0.6; transition: 0.2s; }
+        .chip.activo { opacity: 1; transform: scale(1.05); font-weight: bold; box-shadow: 0 3px 6px rgba(214, 107, 141, 0.4); }
+        
+        /* Input Nombre */
+        .input-nombre { width: 90%; padding: 12px; border: 1px solid #ccc; border-radius: 5px; margin-bottom: 15px; font-size: 15px; box-sizing: border-box; text-align: center; background: #fff; }
+        #mensaje-error { color: #ff4d4d; text-align: center; display: none; margin-top: 10px; font-size: 14px; font-weight: bold; }
+        
+       /* Secciones de Información (DISEÑO MEJORADO) */
+        .seccion { padding: 25px 30px; border-top: 1px solid #f0f0f0; }
+        .seccion-titulo { font-size: 19px; color: #b85273; text-align: center; margin-bottom: 20px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .info-card { background: #fff5f8; border-left: 4px solid #d66b8d; border-radius: 8px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .info-card p { font-size: 14.5px; line-height: 1.7; color: #555; text-align: justify; margin: 0 0 15px 0; }
+        .info-card p:last-child { margin-bottom: 0; }
+        
+        .lista-indicaciones { list-style: none; padding: 0; margin: 0; }
+        .lista-indicaciones li { background: #ffffff; margin-bottom: 10px; padding: 12px 15px; border-radius: 6px; font-size: 14px; color: #555; box-shadow: 0 1px 3px rgba(0,0,0,0.04); display: flex; align-items: flex-start; gap: 10px; border: 1px solid #fae3ea; }
+        .lista-indicaciones li::before { content: "✨"; font-size: 14px; flex-shrink: 0; margin-top: 2px; }
+        /* MENÚ DE SERVICIOS Y PAQUETES */
+        details.acordeon-servicios { margin-bottom: 15px; }
+        details.acordeon-servicios summary { font-size: 16px; color: #555; text-align: center; cursor: pointer; list-style: none; font-weight: bold; padding: 12px; background: #f9f9f9; border-radius: 5px; border: 1px solid #eee; }
+        details.acordeon-servicios summary::-webkit-details-marker { display: none; }
+        .servicio-fila { display: flex; margin-top: 10px; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .Anuncio { display: flex; margin-top: 10px; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .servicio-nombre { background-color: #d66b8d; color: white; padding: 15px; flex-grow: 1; font-weight: 500; font-size: 14px; }
+        .anuncio-color { background-color: #b85273; color: white; padding: 15px; flex-grow: 1; font-weight: 500; font-size: 14px; }
+        .servicio-precio { background-color: #b85273; color: white; padding: 15px; min-width: 60px; text-align: center; font-weight: bold; font-size: 15px; }
 
-        /* Vista de Calendario Diario (Agenda) */
-        .calendario-selector { background: #fdf2f5; padding: 15px; border-radius: 8px; border: 1px solid #fae3ea; margin-bottom: 20px; text-align: center; }
-        .calendario-selector h4 { margin: 0 0 10px 0; color: #b85273; font-size: 15px; }
-
-        /* Tarjetas de Citas */
-        .cita-card { background: white; border: 1px solid #eee; border-left: 5px solid #ffb3c6; padding: 15px; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 3px 6px rgba(0,0,0,0.04); }
-        .cita-card.confirmada { border-left-color: #25D366; background-color: #fbfffb; }
-        .cita-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; margin-bottom: 10px; }
-        .cita-nombre { font-size: 16px; font-weight: bold; color: #333; margin: 0; }
-        .cita-hora-badge { font-size: 14px; color: white; background: #d66b8d; padding: 4px 10px; border-radius: 20px; font-weight: bold; }
-        .cita-servicios { font-size: 14px; color: #555; margin: 0 0 8px 0; line-height: 1.5; }
-        .badge-pago { display: inline-block; padding: 3px 8px; font-size: 11px; font-weight: bold; border-radius: 4px; background: #eef2ff; color: #4f46e5; border: 1px solid #c7d2fe; margin-top: 4px; }
-
-        /* Acciones de Citas */
-        .cita-acciones { display: flex; flex-direction: column; gap: 8px; margin-top: 15px; }
-        .btn-confirmar { background: #25D366; color: white; border: none; padding: 10px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 13px; }
-        .btn-editar { background: #007bff; color: white; border: none; padding: 10px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 12px; }
-        .acciones-rojas { display: flex; gap: 8px; }
-        .btn-cancelar { background: #ff4d4d; color: white; border: none; padding: 10px; border-radius: 5px; flex: 1; font-weight: bold; cursor: pointer; font-size: 12px; }
-        .btn-liberar { background: #ff9900; color: white; border: none; padding: 10px; border-radius: 5px; flex: 1; font-weight: bold; cursor: pointer; font-size: 12px; }
-
-        /* Panel Desplegable para Reasignar u Opciones */
-        .panel-editar-hora { background: #f0f7ff; border: 1px dashed #007bff; padding: 12px; border-radius: 6px; margin-top: 10px; }
-        .panel-editar-hora label { margin-top: 5px; font-size: 12px; color: #0056b3; }
-        .panel-editar-hora input, .panel-editar-hora select { padding: 8px; font-size: 13px; margin-bottom: 8px; }
-
-        /* Tarjetas de Ingresos */
-        .card-ingreso { background: #fcfcfc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin-bottom: 12px; }
-        .card-ingreso-titulo { font-size: 13px; color: #64748b; font-weight: bold; text-transform: uppercase; margin: 0 0 5px 0; }
-        .card-ingreso-monto { font-size: 24px; color: #0f172a; font-weight: 800; margin: 0; }
-        .grid-metodos { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 15px; }
-        .box-metodo { background: #f8fafc; border: 1px solid #e2e8f0; padding: 8px; border-radius: 6px; text-align: center; }
-        .box-metodo span { display: block; font-size: 11px; color: #64748b; font-weight: bold; }
-        .box-metodo b { display: block; font-size: 14px; color: #1e293b; margin-top: 2px; }
-
-        /* GRILLA DE HORARIOS (Cuadritos) */
-        .opciones-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-        .chip { padding: 12px 10px; background: #f0f0f0; color: #777; border-radius: 6px; cursor: pointer; user-select: none; font-size: 15px; border: 1px solid #e0e0e0; flex-grow: 1; text-align: center; min-width: 25%; font-weight: 500; transition: 0.2s; }
-        .chip.activo { background: #d66b8d; color: white; border-color: #b85273; font-weight: bold; transform: scale(1.03); box-shadow: 0 2px 5px rgba(214, 107, 141, 0.3); }
-
-        .mensaje-vacio { text-align: center; color: #999; font-size: 14px; padding: 30px 0; font-style: italic; }
-        hr { border: 0; border-top: 1px solid #eee; margin: 20px 0; }
+        /* Listas y Tablas */
+        .horarios-tabla { width: 100%; font-size: 14px; color: #666; margin: 0 auto; max-width: 250px; }
+        .horarios-tabla td { padding: 6px 0; }
+        .horarios-tabla td:first-child { font-weight: bold; width: 45%; color: #444; }
+        
+        /* Contacto */
+        .contacto-item { display: flex; align-items: center; gap: 15px; padding: 12px 0; font-size: 14px; color: #444; border-bottom: 1px solid #f5f5f5; }
+        .contacto-item:last-child { border: none; }
+        .link-mapa { color: #d66b8d; text-decoration: none; display: block; text-align: center; margin-top: 5px; font-size: 14px; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="mobile-container">
-    <div class="header-admin">
-        <h2>Panel de Control</h2>
-        <p>Sistema de Reservas</p>
-    </div>
-
-    <div class="pad-20">
-        <!-- SECCIÓN LOGIN -->
-        <div id="seccion-login">
-            <p style="text-align: center; color: #666; margin-bottom: 20px;">Ingresa para gestionar tu agenda</p>
-            <label>Correo Electrónico</label>
-            <input type="email" id="email" placeholder="ejemplo@correo.com">
-            <label>Contraseña</label>
-            <input type="password" id="password" placeholder="••••••••">
-            <button id="btn-login" class="btn-main">Entrar al Panel</button>
+    
+    <!-- Cabecera -->
+    <header>
+        <div class="banner"></div>
+        <div class="perfil-container">
+          <img class="perfil-img" src="Logo.jpeg" alt="Foto de perfil">
+            <h1 class="titulo">Depilación con cera</h1>
+            <p class="subtitulo">Facial y corporal<br><br>Exclusivo damas</p>
+            <button id="btn-mostrar-reservas" class="btn-main">✓ Agendar una Cita</button>
         </div>
+    </header>
 
-        <!-- PANEL PRINCIPAL -->
-        <div id="seccion-panel" class="oculto">
-            <button id="btn-logout" class="btn-logout">Cerrar Sesión</button>
+    <!-- Zona interactiva -->
+    <div id="zona-reservas" class="reserva-container" style="display: none;">
+        
+        <p style="color: #666; font-size: 14px; margin-bottom: 10px;">1. Selecciona uno o más servicios:</p>
+        
+        <div class="checkbox-group">
+            <div class="grupo-titulo">Depilación Facial</div>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Ceja ($100)"> Ceja - $100</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Bozo ($60)"> Bozo - $60</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Frente ($60)"> Frente - $60</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Nariz ($40)"> Nariz - $40</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Patillas ($80)"> Patillas - $80</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Barbilla ($50)"> Barbilla - $50</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Cuello ($50)"> Cuello - $50</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Mejillas ($60)"> Mejillas - $60</label>
+
+            <div class="grupo-titulo" style="margin-top: 15px;">Depilación Corporal</div>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Axilas ($100)"> Axilas - $100</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Brazos ($350)"> Brazos - $350</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="1/2 Brazo ($280)"> 1/2 Brazo - $280</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Manos ($50)"> Manos - $50</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Dedos ($50)"> Dedos - $50</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Bikini Completo ($300)"> Bikini Completo - $300</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Línea de bikini ($260)"> Línea de bikini - $260</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Interglútea ($100)"> Interglúteo - $100</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Glúteos ($280)"> Glúteos - $280</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Piernas Completas ($450)"> Piernas Completas - $450</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="1/2 Pierna ($350)"> 1/2 Pierna - $350</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Abdomen Completo ($250)"> Abdomen Completo - $250</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="1/2 Abdomen ($150)"> 1/2 Abdomen - $150</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Caminito de ombligo ($100)"> Caminito de ombligo - $100</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Espalda Completa ($350)"> Espalda Completa - $350</label>
+            <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="1/2 Espalda ($250)"> 1/2 Espalda - $250</label>
             
-            <div class="tabs">
-                <button id="tab-agenda" class="tab-btn active">Agenda 📅</button>
-                <button id="tab-solicitudes" class="tab-btn">Pendientes ⏳</button>
-                <button id="tab-ingresos" class="tab-btn">Ingresos 💰</button>
-                <button id="tab-horarios" class="tab-btn">Horas ⏰</button>
-            </div>
-
-            <!-- PESTAÑA 1: AGENDA -->
-            <div id="vista-agenda">
-                <div class="calendario-selector">
-                    <h4>📅 Ver Agenda del día:</h4>
-                    <input type="date" id="filtro-fecha-agenda">
+            <div class="grupo-titulo" style="margin-top: 15px;">Paquetes Especiales</div>
+                        
+            <label class="checkbox-label" style="display: flex; align-items: flex-start; margin-bottom: 10px;">
+                <input type="checkbox" class="servicio-checkbox" value="Paquete Playa ($600)" style="margin-top: 2px;"> 
+                <div style="line-height: 1.3;">
+                    <strong>Paquete Playa - $600</strong><br>
+                    <span style="font-size: 12.5px; color: #888;">Cejas, Bozo, Axilas, Piernas completas y Línea de bikini</span>
                 </div>
-                <div id="lista-agenda-container">
-                    <div class="mensaje-vacio">Selecciona una fecha para ver tus citas.</div>
-                </div>
-            </div>
+            </label>
 
-            <!-- PESTAÑA 2: PENDIENTES -->
-            <div id="vista-solicitudes" class="oculto">
-                <h3 style="margin-top: 0; color: #333; font-size: 18px;">Solicitudes Nuevas</h3>
-                <p style="font-size: 13px; color: #888; margin-top: -10px;">Estas clientas agendaron pero aún no confirman pago.</p>
-                <div id="lista-solicitudes-container">
-                    <div class="mensaje-vacio">Cargando solicitudes...</div>
+            <label class="checkbox-label" style="display: flex; align-items: flex-start; margin-bottom: 10px;">
+                <input type="checkbox" class="servicio-checkbox" value="Paquete Completo ($680)" style="margin-top: 2px;"> 
+                <div style="line-height: 1.3;">
+                    <strong>Paquete Completo - $680</strong><br>
+                    <span style="font-size: 12.5px; color: #888;">Cejas, Bozo, Axilas, Piernas completas y Bikini completo</span>
                 </div>
-            </div>
+            </label>
 
-            <!-- PESTAÑA 3: INGRESOS -->
-            <div id="vista-ingresos" class="oculto">
-                <h3 style="margin-top: 0; color: #333; font-size: 18px;">Reporte de Ingresos</h3>
+            <label class="checkbox-label" style="display: flex; align-items: flex-start; margin-bottom: 10px;">
+                <input type="checkbox" class="servicio-checkbox" value="Paquete Facial ($370)" style="margin-top: 2px;"> 
+                <div style="line-height: 1.3;">
+                    <strong>Paquete Facial - $370</strong><br>
+                    <span style="font-size: 12.5px; color: #888;">Cejas, Frente, Patillas, Mejillas, Nariz, Bozo, Barbilla y Cuello</span>
+                </div>
+            </label>        
+        </div>
+
+        <p style="color: #666; font-size: 14px; margin-top: 20px;">2. Selecciona la fecha y hora:</p>
+
+        <div class="carrusel-dias">
+            <button id="btn-prev" class="btn-flecha" onclick="cambiarDia(-1)" disabled>←</button>
+            <h3 id="fecha-actual-texto">Buscando días...</h3>
+            <button id="btn-next" class="btn-flecha" onclick="cambiarDia(1)" disabled>→</button>
+        </div>
+
+        <div id="seccion-horarios">
+            <div id="horarios-container" class="opciones-container"></div>
+            
+            <!-- NOTA 1: REVISIÓN DE TIEMPOS -->
+            <div style="background-color: #fcf8e3; border-left: 5px solid #f0ad4e; padding: 15px; margin: 25px auto 15px auto; width: 92%; text-align: left; box-sizing: border-box; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #66512c; font-weight: 500;">
+                    <strong>NOTA:</strong> Nuestro equipo revisará los tiempos de la cita solicitada, si tu servicio puede realizarse, te enviamos los datos para que realices el anticipo.
+                </p>
+            </div>
+            
+            <p style="color: #666; font-size: 14px; margin-top: 20px;">3. Ingresa tu nombre:</p>
+            <input type="text" id="nombre-cliente" class="input-nombre" placeholder="Ej. María Pérez" required>
+
+            <!-- BURBUJA DE NOTAS OPTIMIZADA (NOTA 2 Y NOTA 3 JUNTAS) -->
+            <div style="background-color: #d66b8d; color: white; padding: 22px; border-radius: 12px; font-size: 15px; margin-top: 20px; margin-bottom: 25px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); line-height: 1.6; box-sizing: border-box; width: 95%; margin-left: auto; margin-right: auto;">
+                <strong style="color: #fff; font-size: 16px; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px;">⚠️ Nota de Anticipo:</strong> 
+                La cita quedará agendada una vez realizado el anticipo, con límite de 2 horas para enviar el comprobante, de lo contrario la cita se libera automáticamente.
                 
-                <div class="card-ingreso" style="background: #f0fdf4; border-color: #bbf7d0;">
-                    <p class="card-ingreso-titulo" style="color: #166534;">Total Histórico Confirmado</p>
-                    <p class="card-ingreso-monto" id="ingreso-total" style="color: #15803d;">$0.00</p>
-                </div>
-
-                <div style="display: flex; gap: 10px;">
-                    <div class="card-ingreso" style="flex: 1;">
-                        <p class="card-ingreso-titulo">Ingreso Hoy</p>
-                        <p class="card-ingreso-monto" id="ingreso-diario" style="font-size: 20px;">$0.00</p>
-                    </div>
-                    <div class="card-ingreso" style="flex: 1;">
-                        <p class="card-ingreso-titulo">Esta Semana</p>
-                        <p class="card-ingreso-monto" id="ingreso-semanal" style="font-size: 20px;">$0.00</p>
-                    </div>
-                </div>
-
-                <div class="card-ingreso">
-                    <p class="card-ingreso-titulo">Ingresos del Mes</p>
-                    <p class="card-ingreso-monto" id="ingreso-mensual">$0.00</p>
-                </div>
-
-                <label>Desglose por Método de Pago (Histórico):</label>
-                <div class="grid-metodos">
-                    <div class="box-metodo">
-                        <span>💵 Efectivo</span>
-                        <b id="monto-efectivo">$0</b>
-                    </div>
-                    <div class="box-metodo">
-                        <span>🏦 BBVA</span>
-                        <b id="monto-bbva">$0</b>
-                    </div>
-                    <div class="box-metodo">
-                        <span>📱 MPago</span>
-                        <b id="monto-mpago">$0</b>
-                    </div>
+                <div style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed rgba(255,255,255,0.4);">
+                    <strong style="color: #fff; font-size: 16px; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px;">🛑 NOTA IMPORTANTE:</strong> 
+                    Agenda con <strong>RESPONSABILIDAD</strong>. En caso de no llegar a tu cita el día y la hora separada, 
+                    <span style="background-color: rgba(0,0,0,0.15); padding: 3px 6px; border-radius: 4px; display: inline-block; margin-top: 5px; font-weight: bold;">*EL ANTICIPO NO ES REEMBOLSABLE, NI TRANSFERIBLE PARA OTRA CITA*</span>.
                 </div>
             </div>
 
-            <!-- PESTAÑA 4: GESTIÓN DE HORARIOS -->
-            <div id="vista-horarios" class="oculto">
-                <h3 style="margin-top: 0; color: #333; font-size: 18px;">Gestión de Disponibilidad</h3>
-                <label>1. Elige el día que quieres abrir</label>
-                <input type="date" id="fecha-seleccionada">
-                
-                <div id="seccion-plantilla" class="oculto" style="margin-top: 20px;">
-                    <label>2. Toca las horas para abrirlas (rosas) o cerrarlas (grises)</label>
-                    <div class="opciones-container" id="plantilla-chips"></div>
-                    
-                    <div style="margin-top: 15px; background: #fdfdfd; padding: 12px; border-radius: 8px; border: 1px dashed #d66b8d; box-sizing: border-box;">
-                        <label style="margin-top: 0; font-size: 13px; color: #555;">➕ Hora personalizada fuera de plantilla</label>
-                        <div style="display: flex; gap: 8px; margin-top: 5px;">
-                            <input type="time" id="nueva-hora" style="flex: 2; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 15px;">
-                            <button id="btn-agregar-manual" class="btn-main" style="margin-top: 0; padding: 10px; flex: 1; font-size: 14px; background-color: #555;">+ Añadir</button>
-                        </div>
-                    </div>
-                    
-                    <div style="display: flex; gap: 10px; margin-top: 15px;">
-                        <button id="btn-plantilla-completa" class="btn-main" style="margin-top: 0; background-color: #fff0f3; color: #d66b8d; border: 1px solid #ffb3c6; flex: 1; font-size: 14px;">☀️ Marcar Todo</button>
-                        <button id="btn-guardar-plantilla" class="btn-main" style="margin-top: 0; background-color: #25D366; flex: 1; font-size: 14px;">✓ Guardar Día</button>
-                    </div>
-
-                    <p id="mensaje-exito" style="color: #25D366; text-align: center; font-weight: bold; font-size: 14px; display: none; margin-top: 10px;">¡Horarios guardados y publicados!</p>
-
-                    <hr>
-                    <label>📋 Control general de la página web:</label>
-                    <button id="btn-toggle-dia" class="btn-main" style="margin-top: 0px; margin-bottom: 15px; display: none; padding: 12px; font-size: 15px;"></button>
-                    <div id="estado-visibilidad"></div>
-                </div>
-            </div>
+            <button id="btn-whatsapp" class="btn-main" style="margin-top: 5px; background-color: #25D366;">Confirmar por WhatsApp</button>
+            <p id="mensaje-error">Por favor completa todos los pasos.</p>
         </div>
     </div>
+
+    <!-- Sección Acerca de -->
+    <section class="seccion">
+        <h3 class="seccion-titulo">📋 Información </h3>
+        
+        <div class="info-card">
+            <p>La depilación con cera ha demostrado durante muchos años ser el método más efectivo que encontramos en el mercado, y por supuesto, súper accesible.</p>
+            <p style="font-weight: 500; color: #b85273;">Mi compromiso es ofrecerte un servicio en el que te sientas cómoda y bella.</p>
+        </div>
+
+        <h4 style="color: #666; font-size: 15px; margin-bottom: 12px; text-align: center;">Indicaciones previas a tu cita:</h4>
+        <ul class="lista-indicaciones">
+            <li>Acudir con la piel completamente limpia (sin maquillaje, sin cremas y sin desodorante).</li>
+            <li>Llevar ropa cómoda y holgada.</li>
+            <li>Si eres menor de edad, deberás acudir acompañada de un adulto.</li>
+        </ul>
+    </section>
+
+    <!-- MENÚS DESPLEGABLES -->
+    <section class="seccion" style="padding-top: 10px; padding-bottom: 5px;">
+        <details class="acordeon-servicios">
+            <summary>≡ Depilación Facial ▼</summary>
+            <div class="servicio-fila"><div class="servicio-nombre">Ceja</div><div class="servicio-precio">$100</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Bozo</div><div class="servicio-precio">$60</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Frente</div><div class="servicio-precio">$60</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Nariz</div><div class="servicio-precio">$40</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Patillas</div><div class="servicio-precio">$80</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Barbilla</div><div class="servicio-precio">$50</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Cuello</div><div class="servicio-precio">$50</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Mejillas</div><div class="servicio-precio">$60</div></div>
+            <div class="Anuncio"><div class="anuncio-color"><p style="text-align: center; color: white; margin: 0;"> En caso de vello muy grueso o abundante se cobra extra.</p></div></div>
+        </details>
+        
+        <details class="acordeon-servicios">
+            <summary>≡ Depilación Corporal ▼</summary>
+            <div class="servicio-fila"><div class="servicio-nombre">Axilas</div><div class="servicio-precio">$100</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Brazos</div><div class="servicio-precio">$350</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">1/2 Brazo</div><div class="servicio-precio">$280</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Manos</div><div class="servicio-precio">$50</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Dedos</div><div class="servicio-precio">$50</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Bikini Completo</div><div class="servicio-precio">$300</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Línea de bikini</div><div class="servicio-precio">$260</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Interglúteo</div><div class="servicio-precio">$100</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Glúteos</div><div class="servicio-precio">$280</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Piernas Completas</div><div class="servicio-precio">$450</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">1/2 Pierna</div><div class="servicio-precio">$350</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Abdomen Completo</div><div class="servicio-precio">$250</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">1/2 Abdomen</div><div class="servicio-precio">$150</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Caminito de ombligo</div><div class="servicio-precio">$100</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Espalda Completa</div><div class="servicio-precio">$350</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">1/2 Espalda</div><div class="servicio-precio">$250</div></div>
+            <div class="Anuncio"><div class="anuncio-color"><p style="text-align: center; color: white; margin: 0;"> En caso de vello muy grueso o abundante se cobra extra.</p></div></div>
+        </details>
+
+        <details class="acordeon-servicios">
+            <summary>≡ Paquetes Especiales ▼</summary>
+            <div class="servicio-fila"><div class="servicio-nombre">Paquete playa:<br>Cejas + Bozo + Axilas + Piernas completas + Línea de bikini</div><div class="servicio-precio"><br>$600</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Paquete completo:<br>Cejas + Bozo + Axilas + Piernas completas + Bikini completo</div><div class="servicio-precio"><br>$680</div></div>
+            <div class="servicio-fila"><div class="servicio-nombre">Paquete Facial: <br>Cejas + Frente + Patillas + Mejillas + Nariz + Bozo + Barbilla + Cuello</div><div class="servicio-precio"><br>$370</div></div>
+            <div class="Anuncio"><div class="anuncio-color"><p style="text-align: center; color: white; margin: 0;">No se hacen cambios de áreas.<br> En caso de vello muy grueso o abundante se cobra extra.</p></div></div>
+        </details>
+    </section>
+
+    <!-- Sección Horarios Generales -->
+    <section class="seccion">
+        <h3 class="seccion-titulo">🕒 Horarios de atención</h3>
+        <table class="horarios-tabla">
+            <tr><td>Lunes a Viernes</td><td>10:00 a 13:00 <br> 15:00 a 20:00</td></tr>
+            <tr><td>Sábados</td><td>10:00 a las 15:00</td></tr>
+            <tr><td>Domingos</td><td>Cerrado</td></tr>
+        </table>
+    </section>
+
+    <!-- Sección Contacto -->
+    <section class="seccion">
+        <div class="contacto-item">📞 <span>81 3273 1350</span></div>
+        <div class="contacto-item">🅵 <span>Cecy Perales Depilacion</span></div>
+        
+        <div style="margin-top: 30px; text-align: center;">
+            <p style="font-weight: bold; margin-bottom: 5px; color: #444;">📍 Dirección</p>
+            <p style="font-size: 14px; margin-bottom: 5px;">Plutarco Elías Calles 3102, Riberas del Río<br>Guadalupe, Nuevo León</p>
+            <a href="https://maps.app.goo.gl/12PVvMo1RKXYBcTF8" class="link-mapa">Ver en Google Maps</a>
+        </div>
+    </section>
+
 </div>
 
+<!-- Conexión con Firebase -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, getDocs, deleteDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, addDoc, doc, updateDoc, arrayRemove } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyDNjqux_hDFWfflfF4FhDh7cNmh3W5oRVQ",
@@ -221,415 +299,155 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Elementos UI
-    const seccionLogin = document.getElementById('seccion-login');
-    const seccionPanel = document.getElementById('seccion-panel');
-    const btnLogin = document.getElementById('btn-login');
-    const btnLogout = document.getElementById('btn-logout');
-    
-    const tabAgenda = document.getElementById('tab-agenda');
-    const tabSolicitudes = document.getElementById('tab-solicitudes');
-    const tabIngresos = document.getElementById('tab-ingresos');
-    const tabHorarios = document.getElementById('tab-horarios');
-    
-    const vistaAgenda = document.getElementById('vista-agenda');
-    const vistaSolicitudes = document.getElementById('vista-solicitudes');
-    const vistaIngresos = document.getElementById('vista-ingresos');
-    const vistaHorarios = document.getElementById('vista-horarios');
+    let fechasDisponiblesArray = []; 
+    let indiceDiaActual = 0; 
+    let diasDisponiblesObj = {}; 
+    let horaSeleccionada = null;
 
-    const filtroFechaAgenda = document.getElementById('filtro-fecha-agenda');
-    const listaAgendaContainer = document.getElementById('lista-agenda-container');
-    const listaSolicitudesContainer = document.getElementById('lista-solicitudes-container');
+    const btnMostrarReservas = document.getElementById('btn-mostrar-reservas');
+    const zonaReservas = document.getElementById('zona-reservas');
+    const fechaActualTexto = document.getElementById('fecha-actual-texto');
+    const btnPrev = document.getElementById('btn-prev');
+    const btnNext = document.getElementById('btn-next');
+    const horariosContainer = document.getElementById('horarios-container');
+    const btnWhatsapp = document.getElementById('btn-whatsapp');
+    const inputNombre = document.getElementById('nombre-cliente');
+    const mensajeError = document.getElementById('mensaje-error');
 
-    const fechaInput = document.getElementById('fecha-seleccionada');
-    const seccionPlantilla = document.getElementById('seccion-plantilla');
-    const plantillaChips = document.getElementById('plantilla-chips');
-    const horaInput = document.getElementById('nueva-hora');
-    const btnAgregarManual = document.getElementById('btn-agregar-manual');
-    const btnPlantillaCompleta = document.getElementById('btn-plantilla-completa');
-    const btnGuardarPlantilla = document.getElementById('btn-guardar-plantilla');
-    const btnToggleDia = document.getElementById('btn-toggle-dia');
-    const estadoVisibilidad = document.getElementById('estado-visibilidad');
-    const mensajeExito = document.getElementById('mensaje-exito');
-
-    const HORARIOS_BASE = ["10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30"];
-    let diaActivo = true;
-
-    // Navegación Pestañas
-    tabAgenda.addEventListener('click', () => { activarPestaña(tabAgenda, vistaAgenda); cargarCitas(); });
-    tabSolicitudes.addEventListener('click', () => { activarPestaña(tabSolicitudes, vistaSolicitudes); cargarCitas(); });
-    tabIngresos.addEventListener('click', () => { activarPestaña(tabIngresos, vistaIngresos); calcularIngresos(); });
-    tabHorarios.addEventListener('click', () => { activarPestaña(tabHorarios, vistaHorarios); });
-
-    function activarPestaña(boton, vista) {
-        [tabAgenda, tabSolicitudes, tabIngresos, tabHorarios].forEach(b => b.classList.remove('active'));
-        [vistaAgenda, vistaSolicitudes, vistaIngresos, vistaHorarios].forEach(v => v.classList.add('oculto'));
-        boton.classList.add('active');
-        vista.classList.remove('oculto');
-    }
-
-    // Autenticación
-    btnLogin.addEventListener('click', async () => {
-        try { await signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('password').value); } 
-        catch (e) { alert("Acceso denegado."); }
-    });
-    btnLogout.addEventListener('click', () => signOut(auth));
-
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            seccionLogin.classList.add('oculto');
-            seccionPanel.classList.remove('oculto');
-            const hoy = new Date().toISOString().split('T')[0];
-            filtroFechaAgenda.value = hoy;
-            fechaInput.value = hoy;
-            cargarCitas();
-            cargarHorariosDisponibles();
-        } else {
-            seccionLogin.classList.remove('oculto');
-            seccionPanel.classList.add('oculto');
-        }
+    btnMostrarReservas.addEventListener('click', () => {
+        zonaReservas.style.display = 'block';
+        zonaReservas.scrollIntoView({ behavior: 'smooth' });
     });
 
-    // Cargar Citas
-    async function cargarCitas() {
-        listaAgendaContainer.innerHTML = "<div class='mensaje-vacio'>Cargando...</div>";
-        listaSolicitudesContainer.innerHTML = "<div class='mensaje-vacio'>Cargando...</div>";
-
+    async function cargarDisponibilidad() {
         try {
-            const snapshot = await getDocs(collection(db, "citas"));
-            let confirmadasDelDia = [];
-            let pendientesGlobales = [];
+            const querySnapshot = await getDocs(collection(db, "disponibilidad"));
+            diasDisponiblesObj = {}; 
+            
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                
+                const dateObj = new Date(doc.id + "T00:00:00");
+                const esDomingo = dateObj.getDay() === 0;
 
-            snapshot.forEach(doc => {
-                const data = { id: doc.id, ...doc.data() };
-                if (data.estado === 'confirmado') {
-                    if (data.fecha === filtroFechaAgenda.value) confirmadasDelDia.push(data);
-                } else {
-                    pendientesGlobales.push(data);
+                if (!esDomingo && data.activo !== false && data.horarios && data.horarios.length > 0) {
+                    diasDisponiblesObj[doc.id] = data.horarios.sort(); 
                 }
             });
 
-            if (confirmadasDelDia.length === 0) {
-                listaAgendaContainer.innerHTML = `<div class='mensaje-vacio'>No tienes citas confirmadas para el día ${filtroFechaAgenda.value}.</div>`;
-            } else {
-                listaAgendaContainer.innerHTML = "";
-                confirmadasDelDia.sort((a,b) => a.hora.localeCompare(b.hora)).forEach(cita => {
-                    listaAgendaContainer.innerHTML += generarHTMLTarjeta(cita, true);
-                });
-            }
+            fechasDisponiblesArray = Object.keys(diasDisponiblesObj).sort();
 
-            if (pendientesGlobales.length === 0) {
-                listaSolicitudesContainer.innerHTML = "<div class='mensaje-vacio'>No hay solicitudes pendientes.</div>";
+            if (fechasDisponiblesArray.length > 0) {
+                indiceDiaActual = 0; 
+                actualizarVistaCarrusel();
             } else {
-                listaSolicitudesContainer.innerHTML = "";
-                pendientesGlobales.sort((a,b) => a.fecha.localeCompare(b.fecha)).forEach(cita => {
-                    listaSolicitudesContainer.innerHTML += generarHTMLTarjeta(cita, false);
-                });
+                fechaActualTexto.textContent = "Sin fechas disponibles";
+                horariosContainer.innerHTML = "";
             }
-        } catch (e) { console.error(e); }
+        } catch (error) {
+            fechaActualTexto.textContent = "Error de conexión";
+        }
     }
 
-    function generarHTMLTarjeta(cita, esAgenda) {
-        const metodoPagoText = cita.metodoPago ? `💳 Pago: ${cita.metodoPago}` : '💳 Pago: Sin registrar';
-        const precioText = cita.precio ? `$${cita.precio}` : '$0';
-
-        return `
-            <div class="cita-card ${esAgenda ? 'confirmada' : ''}">
-                <div class="cita-header">
-                    <h4 class="cita-nombre">👤 ${cita.nombre}</h4>
-                    <span class="cita-hora-badge">${cita.hora}</span>
-                </div>
-                ${!esAgenda ? `<p style="font-size:12px; color:#d66b8d; font-weight:bold; margin-bottom:5px;">📅 Fecha: ${cita.fecha}</p>` : ''}
-                <p class="cita-servicios">✨ <b>Servicios:</b> ${cita.servicios}</p>
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span class="badge-pago">${metodoPagoText}</span>
-                    <b style="color:#25D366; font-size:15px;">${precioText}</b>
-                </div>
-
-                <div class="cita-acciones">
-                    ${!esAgenda ? `
-                        <div style="background:#f9f9f9; padding:8px; border-radius:6px; border:1px solid #eee;">
-                            <label style="margin-top:0; font-size:11px;">Monto total y Método de Pago:</label>
-                            <div style="display:flex; gap:5px; margin-bottom:5px;">
-                                <input type="number" id="monto-pago-${cita.id}" placeholder="Monto $" value="${cita.precio || ''}" style="padding:6px; font-size:13px; flex:1;">
-                                <select id="metodo-pago-${cita.id}" style="padding:6px; font-size:13px; flex:1;">
-                                    <option value="Efectivo" ${cita.metodoPago === 'Efectivo' ? 'selected' : ''}>Efectivo</option>
-                                    <option value="BBVA" ${cita.metodoPago === 'BBVA' ? 'selected' : ''}>BBVA</option>
-                                    <option value="MPago" ${cita.metodoPago === 'MPago' ? 'selected' : ''}>MPago</option>
-                                </select>
-                            </div>
-                            <button class="btn-confirmar" style="width:100%;" onclick="confirmarPago('${cita.id}')">✓ Confirmar Pago</button>
-                        </div>
-                    ` : `
-                        <button class="btn-editar" onclick="mostrarReasignar('${cita.id}')">✏️ Editar Cita / Pago / Hora</button>
-                    `}
-                    
-                    <!-- Panel desplegable -->
-                    <div id="edit-panel-${cita.id}" class="panel-editar-hora oculto">
-                        <label>Método de Pago:</label>
-                        <select id="edit-metodo-${cita.id}">
-                            <option value="Efectivo" ${cita.metodoPago === 'Efectivo' ? 'selected' : ''}>Efectivo</option>
-                            <option value="BBVA" ${cita.metodoPago === 'BBVA' ? 'selected' : ''}>BBVA</option>
-                            <option value="MPago" ${cita.metodoPago === 'MPago' ? 'selected' : ''}>MPago</option>
-                        </select>
-
-                        <label>Monto de la Cita ($):</label>
-                        <input type="number" id="edit-monto-${cita.id}" value="${cita.precio || 0}">
-
-                        <label>Nueva Fecha:</label>
-                        <input type="date" id="nueva-fecha-${cita.id}" value="${cita.fecha}">
-                        
-                        <label>Nueva Hora:</label>
-                        <input type="time" id="nueva-hora-${cita.id}" value="${cita.hora}">
-                        
-                        <button class="btn-confirmar" style="width: 100%; margin-top: 5px;" onclick="guardarReasignacion('${cita.id}', '${cita.fecha}', '${cita.hora}')">✓ Guardar Cambios</button>
-                    </div>
-
-                    <div class="acciones-rojas">
-                        <button class="btn-cancelar" onclick="eliminarCita('${cita.id}', '${cita.nombre}')">❌ Borrar</button>
-                        <button class="btn-liberar" onclick="liberarCita('${cita.id}', '${cita.fecha}', '${cita.hora}', '${cita.nombre}')">🔓 Liberar Hora</button>
-                    </div>
-                </div>
-            </div>
-        `;
+    window.cambiarDia = function(direccion) {
+        indiceDiaActual += direccion;
+        actualizarVistaCarrusel();
     }
 
-    // Funciones globales de Citas
-    window.mostrarReasignar = (id) => {
-        const panel = document.getElementById(`edit-panel-${id}`);
-        panel.classList.toggle('oculto');
-    };
-
-    window.confirmarPago = async (id) => {
-        const metodoSelect = document.getElementById(`metodo-pago-${id}`);
-        const montoInput = document.getElementById(`monto-pago-${id}`);
+    function actualizarVistaCarrusel() {
+        btnPrev.disabled = (indiceDiaActual === 0);
+        btnNext.disabled = (indiceDiaActual === fechasDisponiblesArray.length - 1);
+        const fechaStr = fechasDisponiblesArray[indiceDiaActual];
         
-        const metodo = metodoSelect ? metodoSelect.value : 'Efectivo';
-        const monto = montoInput ? parseFloat(montoInput.value) || 0 : 0;
+        const dateObj = new Date(fechaStr + "T00:00:00");
+        let fechaFormateada = dateObj.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
+        fechaFormateada = fechaFormateada.replace(',', ''); 
+        const fechaVista = fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
+        
+        fechaActualTexto.textContent = fechaVista;
+        horaSeleccionada = null; 
 
-        if (!confirm(`¿Confirmar pago de $${monto} con ${metodo}?`)) return;
-
-        await updateDoc(doc(db, "citas", id), { 
-            estado: "confirmado",
-            metodoPago: metodo,
-            precio: monto
+        horariosContainer.innerHTML = "";
+        diasDisponiblesObj[fechaStr].forEach(hora => {
+            const chip = document.createElement('div');
+            chip.className = 'chip';
+            chip.textContent = hora;
+            chip.onclick = () => seleccionarHora(hora, chip);
+            horariosContainer.appendChild(chip);
         });
-        cargarCitas();
-    };
+    }
 
-    window.guardarReasignacion = async (id, fechaVieja, horaVieja) => {
-        const nuevaFecha = document.getElementById(`nueva-fecha-${id}`).value;
-        const nuevaHora = document.getElementById(`nueva-hora-${id}`).value;
-        const nuevoMetodo = document.getElementById(`edit-metodo-${id}`).value;
-        const nuevoMonto = parseFloat(document.getElementById(`edit-monto-${id}`).value) || 0;
+    window.seleccionarHora = function(hora, elementoChip) {
+        horaSeleccionada = hora;
+        document.querySelectorAll('#horarios-container .chip').forEach(c => c.classList.remove('activo'));
+        elementoChip.classList.add('activo');
+    }
 
-        if (!nuevaFecha || !nuevaHora) {
-            alert("Selecciona fecha y hora válidas.");
+    btnWhatsapp.addEventListener('click', async () => {
+        const casillasMarcadas = document.querySelectorAll('.servicio-checkbox:checked');
+        const diaSeleccionado = fechasDisponiblesArray[indiceDiaActual]; 
+        const nombreCliente = inputNombre.value.trim();
+
+        if (casillasMarcadas.length === 0 || !diaSeleccionado || !horaSeleccionada || nombreCliente === "") {
+            mensajeError.textContent = "Por favor selecciona servicio, hora y escribe tu nombre.";
+            mensajeError.style.display = 'block';
+            setTimeout(() => mensajeError.style.display = 'none', 3000);
             return;
         }
 
+        let listaServicios = [];
+        casillasMarcadas.forEach(casilla => {
+            let servicioSinPrecio = casilla.value.split(" (")[0];
+            listaServicios.push(servicioSinPrecio);
+        });        
+        const textoServicios = listaServicios.join(', ');
+
+        btnWhatsapp.textContent = "Procesando...";
+        btnWhatsapp.disabled = true;
+
         try {
-            await updateDoc(doc(db, "citas", id), {
-                fecha: nuevaFecha,
-                hora: nuevaHora,
-                metodoPago: nuevoMetodo,
-                precio: nuevoMonto
+            await addDoc(collection(db, "citas"), {
+                nombre: nombreCliente,
+                servicios: textoServicios,
+                fecha: diaSeleccionado,
+                hora: horaSeleccionada,
+                estado: "pendiente", 
+                creada: new Date().toISOString()
             });
 
-            if (fechaVieja !== nuevaFecha || horaVieja !== nuevaHora) {
-                await setDoc(doc(db, "disponibilidad", fechaVieja), { 
-                    horarios: arrayUnion(horaVieja) 
-                }, { merge: true });
-            }
-
-            alert("Cita actualizada correctamente.");
-            cargarCitas();
-            cargarHorariosDisponibles();
-        } catch (e) {
-            alert("Error al actualizar la cita.");
-            console.error(e);
-        }
-    };
-
-    window.eliminarCita = async (id, nombre) => {
-        if (!confirm(`¿Borrar cita de ${nombre}?`)) return;
-        await deleteDoc(doc(db, "citas", id));
-        cargarCitas();
-    };
-
-    window.liberarCita = async (id, fecha, hora, nombre) => {
-        if (!confirm(`¿Cancelar cita de ${nombre} y abrir la hora ${hora} en la web?`)) return;
-        await deleteDoc(doc(db, "citas", id));
-        await setDoc(doc(db, "disponibilidad", fecha), { horarios: arrayUnion(hora), activo: true }, { merge: true });
-        cargarCitas();
-        cargarHorariosDisponibles();
-    };
-
-    // Lógica de Ingresos (Cálculos por Diario, Semanal y Mensual)
-    async function calcularIngresos() {
-        try {
-            const snapshot = await getDocs(collection(db, "citas"));
-            let total = 0, diario = 0, semanal = 0, mensual = 0;
-            let efectivo = 0, bbva = 0, mpago = 0;
-
-            const hoyObj = new Date();
-            const hoyStr = hoyObj.toISOString().split('T')[0];
-
-            // Rango para la semana actual
-            const diaSemana = hoyObj.getDay(); // 0 es domingo
-            const inicioSemana = new Date(hoyObj);
-            inicioSemana.setDate(hoyObj.getDate() - (diaSemana === 0 ? 6 : diaSemana - 1));
-            inicioSemana.setHours(0,0,0,0);
-
-            const mesActual = hoyObj.getMonth();
-            const anioActual = hoyObj.getFullYear();
-
-            snapshot.forEach(doc => {
-                const cita = doc.data();
-                if (cita.estado === 'confirmado') {
-                    const monto = parseFloat(cita.precio) || 0;
-                    total += monto;
-
-                    // Desglose Métodos
-                    if (cita.metodoPago === 'Efectivo') efectivo += monto;
-                    else if (cita.metodoPago === 'BBVA') bbva += monto;
-                    else if (cita.metodoPago === 'MPago') mpago += monto;
-
-                    // Fechas
-                    if (cita.fecha) {
-                        const [year, month, day] = cita.fecha.split('-').map(Number);
-                        const fechaCita = new Date(year, month - 1, day);
-
-                        if (cita.fecha === hoyStr) diario += monto;
-                        if (fechaCita >= inicioSemana && fechaCita <= hoyObj) semanal += monto;
-                        if (month - 1 === mesActual && year === anioActual) mensual += monto;
-                    }
-                }
+            const docRef = doc(db, "disponibilidad", diaSeleccionado);
+            await updateDoc(docRef, {
+                horarios: arrayRemove(horaSeleccionada)
             });
 
-            document.getElementById('ingreso-total').textContent = `$${total.toFixed(2)}`;
-            document.getElementById('ingreso-diario').textContent = `$${diario.toFixed(2)}`;
-            document.getElementById('ingreso-semanal').textContent = `$${semanal.toFixed(2)}`;
-            document.getElementById('ingreso-mensual').textContent = `$${mensual.toFixed(2)}`;
+            const dateObj = new Date(diaSeleccionado + "T00:00:00");
+            let fechaFormateada = dateObj.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
+            fechaFormateada = fechaFormateada.replace(',', ''); 
+            const fechaFinal = fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
 
-            document.getElementById('monto-efectivo').textContent = `$${efectivo.toFixed(2)}`;
-            document.getElementById('monto-bbva').textContent = `$${bbva.toFixed(2)}`;
-            document.getElementById('monto-mpago').textContent = `$${mpago.toFixed(2)}`;
-
-        } catch (e) {
-            console.error("Error al calcular ingresos:", e);
-        }
-    }
-
-    // Horarios
-    async function cargarHorariosDisponibles() {
-        const f = fechaInput.value;
-        if (!f) { seccionPlantilla.classList.add('oculto'); return; }
-        
-        seccionPlantilla.classList.remove('oculto');
-        plantillaChips.innerHTML = "Cargando...";
-        btnToggleDia.style.display = 'none';
-        estadoVisibilidad.innerHTML = "";
-        mensajeExito.style.display = "none";
-        
-        const snap = await getDoc(doc(db, "disponibilidad", f));
-        let horasAbiertas = [];
-        
-        if (snap.exists()) {
-            diaActivo = snap.data().activo !== false;
-            horasAbiertas = snap.data().horarios || [];
+            const telefono = "528132731350"; 
             
-            btnToggleDia.style.display = 'block';
-            if (diaActivo) {
-                btnToggleDia.innerHTML = "👁️ Ocultar todo este día al público";
-                btnToggleDia.style.backgroundColor = "#555";
-            } else {
-                btnToggleDia.innerHTML = "👁️‍🗨️ Volver a mostrar este día";
-                btnToggleDia.style.backgroundColor = "#25D366";
-                estadoVisibilidad.innerHTML = `<div class="mensaje-vacio" style="color: #ff4d4d; padding: 5px 0 15px 0; font-weight: bold;">⚠️ Día oculto. Las clientas no pueden agendar hoy.</div>`;
-            }
-        } else {
-            diaActivo = true;
+            // NUEVO MENSAJE AUTOMÁTICO EN MAYÚSCULAS Y NEGRITAS COMO SE SOLICITÓ
+            const textoMensaje = `*${nombreCliente}, Está solicitando la siguiente cita disponible:*%0A%0ADía: ${fechaFinal}%0AHora: ${horaSeleccionada}%0AÁreas a depilar: ${textoServicios}%0A%0A*FAVOR DE CONFIRMAR SI ESE HORARIO ESTA DISPONIBLE PARA LAS ÁREAS QUE SOLICITO A DEPILAR*`;
+            
+            window.location.href = `https://wa.me/${telefono}?text=${textoMensaje}`;
+            inputNombre.value = "";
+            document.querySelectorAll('.servicio-checkbox:checked').forEach(c => c.checked = false);
+            btnWhatsapp.textContent = "Confirmar por WhatsApp";
+            btnWhatsapp.disabled = false;
+            cargarDisponibilidad(); 
+
+        } catch (error) {
+            mensajeError.textContent = "Hubo un error al procesar tu cita. Intenta de nuevo.";
+            mensajeError.style.display = 'block';
+            btnWhatsapp.textContent = "Confirmar por WhatsApp";
+            btnWhatsapp.disabled = false;
         }
-
-        let todasLasHorasMostrar = [...HORARIOS_BASE];
-        horasAbiertas.forEach(h => {
-            if (!todasLasHorasMostrar.includes(h)) todasLasHorasMostrar.push(h);
-        });
-        todasLasHorasMostrar.sort();
-
-        plantillaChips.innerHTML = "";
-        todasLasHorasMostrar.forEach(hora => {
-            const chip = document.createElement('div');
-            chip.className = 'chip';
-            if (horasAbiertas.includes(hora)) chip.classList.add('activo');
-            chip.textContent = hora;
-            chip.onclick = () => { chip.classList.toggle('activo'); };
-            plantillaChips.appendChild(chip);
-        });
-    }
-
-    btnAgregarManual.addEventListener('click', () => {
-        const nuevaHora = horaInput.value;
-        if (!nuevaHora) return;
-
-        let existe = false;
-        document.querySelectorAll('#plantilla-chips .chip').forEach(chip => {
-            if (chip.textContent === nuevaHora) {
-                chip.classList.add('activo');
-                existe = true;
-            }
-        });
-
-        if (!existe) {
-            const chip = document.createElement('div');
-            chip.className = 'chip activo';
-            chip.textContent = nuevaHora;
-            chip.onclick = () => { chip.classList.toggle('activo'); };
-            plantillaChips.appendChild(chip);
-        }
-        horaInput.value = "";
     });
 
-    btnPlantillaCompleta.addEventListener('click', () => {
-        document.querySelectorAll('#plantilla-chips .chip').forEach(chip => chip.classList.add('activo'));
-    });
-
-    btnGuardarPlantilla.addEventListener('click', async () => {
-        const f = fechaInput.value;
-        if (!f) return;
-        
-        let horasSeleccionadas = [];
-        document.querySelectorAll('#plantilla-chips .chip.activo').forEach(chip => {
-            horasSeleccionadas.push(chip.textContent);
-        });
-
-        horasSeleccionadas.sort();
-
-        btnGuardarPlantilla.textContent = "Guardando...";
-        await setDoc(doc(db, "disponibilidad", f), { 
-            horarios: horasSeleccionadas, 
-            activo: diaActivo 
-        }, { merge: true });
-        
-        btnGuardarPlantilla.textContent = "✓ Guardar Día";
-        mensajeExito.style.display = "block";
-        setTimeout(() => { mensajeExito.style.display = "none"; }, 3000);
-        cargarHorariosDisponibles();
-    });
-
-    btnToggleDia.addEventListener('click', async () => {
-        const f = fechaInput.value;
-        if (!f) return;
-        await updateDoc(doc(db, "disponibilidad", f), { activo: !diaActivo });
-        cargarHorariosDisponibles();
-    });
-
-    filtroFechaAgenda.addEventListener('change', cargarCitas);
-    fechaInput.addEventListener('change', cargarHorariosDisponibles);
+    cargarDisponibilidad();
 </script>
 </body>
 </html>
