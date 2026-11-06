@@ -1,502 +1,374 @@
-import React, { useState, useMemo } from 'react';
-import { 
-  Calendar, Clock, DollarSign, Wallet, 
-  TrendingUp, Plus, AlertCircle
-} from 'lucide-react';
-
-export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState('agenda');
-
-  // Estado inicial con citas de prueba
-  const [appointments, setAppointments] = useState([
-    {
-      id: '1',
-      clientName: 'María López',
-      phone: '8112345678',
-      service: 'Depilación Axilas y Pierna Completa',
-      date: '2026-11-06',
-      time: '10:00',
-      price: 450,
-      paymentMethod: 'Efectivo',
-      status: 'Completada'
-    },
-    {
-      id: '2',
-      clientName: 'Ana García',
-      phone: '8187654321',
-      service: 'Depilación Rostro Completo',
-      date: '2026-11-06',
-      time: '12:00',
-      price: 300,
-      paymentMethod: 'BBVA',
-      status: 'Pendiente'
-    },
-    {
-      id: '3',
-      clientName: 'Carla Sofía',
-      phone: '8119998877',
-      service: 'Diseño de Cejas',
-      date: '2026-11-05',
-      time: '16:00',
-      price: 200,
-      paymentMethod: 'MPago',
-      status: 'Completada'
-    }
-  ]);
-
-  const [newAppointment, setNewAppointment] = useState({
-    clientName: '',
-    phone: '',
-    service: '',
-    date: new Date().toISOString().split('T')[0],
-    time: '10:00',
-    price: 0,
-    paymentMethod: 'Efectivo',
-    status: 'Pendiente'
-  });
-
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
-
-  // Agregar cita
-  const handleAddAppointment = (e) => {
-    e.preventDefault();
-    const created = {
-      ...newAppointment,
-      id: Date.now().toString(),
-      price: Number(newAppointment.price)
-    };
-    setAppointments(prev => [...prev, created]);
-    setNewAppointment({
-      clientName: '',
-      phone: '',
-      service: '',
-      date: new Date().toISOString().split('T')[0],
-      time: '10:00',
-      price: 0,
-      paymentMethod: 'Efectivo',
-      status: 'Pendiente'
-    });
-  };
-
-  // Cambiar método de pago
-  const handlePaymentMethodChange = (id, method) => {
-    setAppointments(prev =>
-      prev.map(item => item.id === id ? { ...item, paymentMethod: method } : item)
-    );
-  };
-
-  // Cambiar estado de la cita (Completada, Confirmada, Pendiente)
-  const handleStatusChange = (id, status) => {
-    setAppointments(prev =>
-      prev.map(item => item.id === id ? { ...item, status } : item)
-    );
-  };
-
-  // Cálculos de ingresos y cobros pendientes
-  const incomeStats = useMemo(() => {
-    const todayStr = new Date().toISOString().split('T')[0];
-    const today = new Date(todayStr);
-
-    const dayOfWeek = today.getDay() || 7; 
-    const startOfWeek = new Date(today);
-    startOfWeek.setDate(today.getDate() - (dayOfWeek - 1));
-    const endOfWeek = new Date(startOfWeek);
-    endOfWeek.setDate(startOfWeek.getDate() + 6);
-
-    const currentYear = today.getFullYear();
-    const currentMonth = today.getMonth();
-
-    let total = 0;
-    let daily = 0;
-    let weekly = 0;
-    let monthly = 0;
-    let totalPending = 0;
-
-    const byMethod = {
-      Efectivo: 0,
-      BBVA: 0,
-      MPago: 0
-    };
-
-    const pendingAppointments = [];
-
-    appointments.forEach(app => {
-      const appPrice = Number(app.price) || 0;
-      const appDate = new Date(app.date);
-
-      if (app.status === 'Pendiente') {
-        totalPending += appPrice;
-        pendingAppointments.push(app);
-      } else if (app.status === 'Completada' || app.status === 'Confirmada') {
-        total += appPrice;
-
-        if (byMethod[app.paymentMethod] !== undefined) {
-          byMethod[app.paymentMethod] += appPrice;
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración — Cecy Perales</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #0D0D12;
+            color: #ffffff;
+            font-family: system-ui, -apple-system, sans-serif;
         }
-
-        if (app.date === selectedDate) {
-          daily += appPrice;
+        .bg-card {
+            background-color: #181824;
         }
-
-        if (appDate >= startOfWeek && appDate <= endOfWeek) {
-          weekly += appPrice;
+        .border-purple-custom {
+            border-color: rgba(147, 51, 234, 0.3);
         }
-
-        if (appDate.getFullYear() === currentYear && appDate.getMonth() === currentMonth) {
-          monthly += appPrice;
+        .text-gradient {
+            background: linear-gradient(135deg, #EC4899 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-      }
-    });
+        .btn-gradient {
+            background: linear-gradient(135deg, #9333EA 0%, #EC4899 100%);
+        }
+        .btn-gradient:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
 
-    return { total, daily, weekly, monthly, byMethod, totalPending, pendingAppointments };
-  }, [appointments, selectedDate]);
-
-  return (
-    <div className="min-h-screen bg-[#0D0D12] text-white p-4 md:p-8 font-sans">
-      {/* ENCABEZADO Y PESTAÑAS */}
-      <header className="max-w-6xl mx-auto mb-8">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-purple-900/40 pb-6">
-          <div>
-            <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-400">
-              Panel de Administración
-            </h1>
-            <p className="text-gray-400 text-sm mt-1">Cecy Perales — Depilación con Cera</p>
-          </div>
-
-          <div className="flex bg-[#181824] p-1.5 rounded-full border border-purple-900/50">
-            <button
-              onClick={() => setActiveTab('agenda')}
-              className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-semibold text-sm transition-all ${
-                activeTab === 'agenda'
-                  ? 'bg-gradient-to-r from-purple-600 to-pink-500 text-white shadow-lg shadow-pink-500/20'
-                  : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              <Calendar className="w-4 h-4" />
-              Agenda
-            </button>
-            <button
-              onClick={() => setActiveTab('ingresos')}
-              className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-semibold text-sm transition-all ${
-                activeTab === 'ingresos'
-                  ? 'bg-gradient-to-r from-purple-600 to-pink-500 text-white shadow-lg shadow-pink-500/20'
-                  : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              <TrendingUp className="w-4 h-4" />
-              Ingresos
-            </button>
-          </div>
+    <!-- ENCABEZADO -->
+    <header class="max-w-6xl mx-auto mb-8 border-b border-purple-900/40 pb-6 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div>
+            <h1 class="text-3xl font-extrabold text-gradient">Panel de Administración</h1>
+            <p class="text-gray-400 text-sm mt-1">Cecy Perales — Depilación con Cera</p>
         </div>
-      </header>
 
-      <main className="max-w-6xl mx-auto">
-        {/* PESTAÑA AGENDA */}
-        {activeTab === 'agenda' && (
-          <div className="space-y-8">
-            {/* Formulario */}
-            <div className="bg-[#181824] p-6 rounded-2xl border border-purple-900/30">
-              <h2 className="text-xl font-bold text-pink-400 mb-4 flex items-center gap-2">
-                <Plus className="w-5 h-5" /> Registrar Nueva Cita
-              </h2>
-              <form onSubmit={handleAddAppointment} className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label className="text-xs text-gray-400 block mb-1">Cliente</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Nombre de la cliente"
-                    value={newAppointment.clientName}
-                    onChange={e => setNewAppointment({...newAppointment, clientName: e.target.value})}
-                    className="w-full bg-[#0D0D12] border border-purple-900/50 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pink-500"
-                  />
-                </div>
+        <!-- NAVEGACIÓN PESTAÑAS -->
+        <div class="flex bg-card p-1.5 rounded-full border border-purple-900/50">
+            <button id="btn-agenda" onclick="switchTab('agenda')" class="px-6 py-2.5 rounded-full font-semibold text-sm btn-gradient text-white shadow-lg">
+                📅 Agenda
+            </button>
+            <button id="btn-ingresos" onclick="switchTab('ingresos')" class="px-6 py-2.5 rounded-full font-semibold text-sm text-gray-400 hover:text-white">
+                📈 Ingresos
+            </button>
+        </div>
+    </header>
 
-                <div>
-                  <label className="text-xs text-gray-400 block mb-1">Servicio</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Servicio a realizar"
-                    value={newAppointment.service}
-                    onChange={e => setNewAppointment({...newAppointment, service: e.target.value})}
-                    className="w-full bg-[#0D0D12] border border-purple-900/50 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pink-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-xs text-gray-400 block mb-1">Fecha</label>
-                  <input
-                    type="date"
-                    required
-                    value={newAppointment.date}
-                    onChange={e => setNewAppointment({...newAppointment, date: e.target.value})}
-                    className="w-full bg-[#0D0D12] border border-purple-900/50 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pink-500 text-white"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-xs text-gray-400 block mb-1">Hora</label>
-                  <input
-                    type="time"
-                    required
-                    value={newAppointment.time}
-                    onChange={e => setNewAppointment({...newAppointment, time: e.target.value})}
-                    className="w-full bg-[#0D0D12] border border-purple-900/50 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pink-500 text-white"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-xs text-gray-400 block mb-1">Precio ($)</label>
-                  <input
-                    type="number"
-                    required
-                    placeholder="450"
-                    value={newAppointment.price || ''}
-                    onChange={e => setNewAppointment({...newAppointment, price: e.target.value})}
-                    className="w-full bg-[#0D0D12] border border-purple-900/50 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pink-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-xs text-gray-400 block mb-1">Método de Pago</label>
-                  <select
-                    value={newAppointment.paymentMethod}
-                    onChange={e => setNewAppointment({...newAppointment, paymentMethod: e.target.value})}
-                    className="w-full bg-[#0D0D12] border border-purple-900/50 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pink-500 text-white"
-                  >
-                    <option value="Efectivo">💵 Efectivo</option>
-                    <option value="BBVA">🏦 BBVA</option>
-                    <option value="MPago">📱 Mercado Pago</option>
-                  </select>
-                </div>
-
-                <div className="md:col-span-3 flex justify-end">
-                  <button
-                    type="submit"
-                    className="bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-500 hover:to-pink-400 text-white font-bold px-6 py-2.5 rounded-lg text-sm transition-all"
-                  >
-                    Guardar Cita
-                  </button>
-                </div>
-              </form>
+    <main class="max-w-6xl mx-auto">
+        <!-- ================= PESTAÑA: AGENDA ================= -->
+        <section id="tab-agenda" class="space-y-8">
+            <!-- Formulario de Registro -->
+            <div class="bg-card p-6 rounded-2xl border border-purple-custom">
+                <h2 class="text-xl font-bold text-pink-400 mb-4">➕ Registrar Nueva Cita</h2>
+                <form id="appointment-form" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="text-xs text-gray-400 block mb-1">Cliente</label>
+                        <input type="text" id="clientName" required placeholder="Nombre de la cliente" class="w-full bg-[#0D0D12] border border-purple-900/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-pink-500">
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-400 block mb-1">Servicio</label>
+                        <input type="text" id="service" required placeholder="Servicio a realizar" class="w-full bg-[#0D0D12] border border-purple-900/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-pink-500">
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-400 block mb-1">Teléfono</label>
+                        <input type="text" id="phone" placeholder="8112345678" class="w-full bg-[#0D0D12] border border-purple-900/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-pink-500">
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-400 block mb-1">Fecha</label>
+                        <input type="date" id="date" required class="w-full bg-[#0D0D12] border border-purple-900/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-pink-500">
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-400 block mb-1">Hora</label>
+                        <input type="time" id="time" required value="10:00" class="w-full bg-[#0D0D12] border border-purple-900/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-pink-500">
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-400 block mb-1">Precio ($)</label>
+                        <input type="number" id="price" required placeholder="450" class="w-full bg-[#0D0D12] border border-purple-900/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-pink-500">
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-400 block mb-1">Método de Pago</label>
+                        <select id="paymentMethod" class="w-full bg-[#0D0D12] border border-purple-900/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-pink-500">
+                            <option value="Efectivo">💵 Efectivo</option>
+                            <option value="BBVA">🏦 BBVA</option>
+                            <option value="MPago">📱 Mercado Pago</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-400 block mb-1">Estado Initial</label>
+                        <select id="status" class="w-full bg-[#0D0D12] border border-purple-900/50 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-pink-500">
+                            <option value="Pendiente">⏳ Pendiente</option>
+                            <option value="Confirmada">👍 Confirmada</option>
+                            <option value="Completada">✅ Completada</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-3 flex justify-end">
+                        <button type="submit" class="btn-gradient text-white font-bold px-6 py-2.5 rounded-lg text-sm">
+                            Guardar Cita
+                        </button>
+                    </div>
+                </form>
             </div>
 
-            {/* Citas Agendadas */}
-            <div className="bg-[#181824] p-6 rounded-2xl border border-purple-900/30">
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                  <Calendar className="w-5 h-5 text-purple-400" /> Citas Agendadas
-                </h2>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-gray-400">Filtrar por fecha:</span>
-                  <input
-                    type="date"
-                    value={selectedDate}
-                    onChange={e => setSelectedDate(e.target.value)}
-                    className="bg-[#0D0D12] border border-purple-900/50 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-pink-500"
-                  />
+            <!-- Lista de Citas -->
+            <div class="bg-card p-6 rounded-2xl border border-purple-custom">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                    <h2 class="text-xl font-bold text-white">📅 Citas Agendadas</h2>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs text-gray-400">Filtrar por fecha:</span>
+                        <input type="date" id="filter-date" onchange="renderAppointments()" class="bg-[#0D0D12] border border-purple-900/50 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none">
+                    </div>
                 </div>
-              </div>
 
-              <div className="space-y-4">
-                {appointments
-                  .filter(app => app.date === selectedDate)
-                  .map(app => (
-                    <div
-                      key={app.id}
-                      className="bg-[#0D0D12] p-4 rounded-xl border border-purple-900/40 flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
-                    >
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <span className="font-bold text-pink-400">{app.clientName}</span>
-                          <span className="text-xs bg-purple-950 text-purple-300 px-2 py-0.5 rounded-full border border-purple-800">
-                            {app.time} hrs
-                          </span>
+                <div id="appointments-container" class="space-y-4">
+                    <!-- Las citas se cargan dinámicamente -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PESTAÑA: INGRESOS ================= -->
+        <section id="tab-ingresos" class="space-y-8 hidden">
+            <!-- Tarjetas de Resumen -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-card p-5 rounded-2xl border border-purple-custom">
+                    <p class="text-xs text-gray-400">Ingresos Totales (Cobrados)</p>
+                    <h3 id="stat-total" class="text-2xl font-extrabold text-gradient mt-1">$0 MXN</h3>
+                </div>
+                <div class="bg-card p-5 rounded-2xl border border-purple-custom">
+                    <p class="text-xs text-gray-400">Ingreso Diario (Día Seleccionado)</p>
+                    <h3 id="stat-daily" class="text-2xl font-bold text-white mt-1">$0 MXN</h3>
+                </div>
+                <div class="bg-card p-5 rounded-2xl border border-purple-custom">
+                    <p class="text-xs text-gray-400">Ingreso Semanal</p>
+                    <h3 id="stat-weekly" class="text-2xl font-bold text-white mt-1">$0 MXN</h3>
+                </div>
+                <div class="bg-card p-5 rounded-2xl border border-purple-custom">
+                    <p class="text-xs text-gray-400">Ingreso Mensual</p>
+                    <h3 id="stat-monthly" class="text-2xl font-bold text-white mt-1">$0 MXN</h3>
+                </div>
+            </div>
+
+            <!-- SECCIÓN PENDIENTES DE COBRO -->
+            <div class="bg-card p-6 rounded-2xl border border-yellow-900/40">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-yellow-400">⏳ Pendientes por Cobrar</h2>
+                    <span id="stat-pending-total" class="text-sm font-semibold text-yellow-400 bg-yellow-950 px-3 py-1 rounded-full border border-yellow-800">
+                        Total Pendiente: $0 MXN
+                    </span>
+                </div>
+                <div id="pending-container" class="space-y-3">
+                    <!-- Citas pendientes dinámicas -->
+                </div>
+            </div>
+
+            <!-- DESGLOSE MÉTODOS DE PAGO -->
+            <div class="bg-card p-6 rounded-2xl border border-purple-custom">
+                <h2 class="text-xl font-bold text-pink-400 mb-6">💳 Desglose por Método de Pago</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-[#0D0D12] p-5 rounded-xl border border-emerald-900/40 flex justify-between items-center">
+                        <div>
+                            <span class="text-xs text-gray-400">💵 Efectivo</span>
+                            <p id="stat-efectivo" class="text-2xl font-bold text-emerald-400 mt-2">$0 MXN</p>
                         </div>
-                        <p className="text-sm text-gray-300">{app.service}</p>
-                        <p className="text-xs text-gray-500">Tel: {app.phone}</p>
-                      </div>
+                    </div>
+                    <div class="bg-[#0D0D12] p-5 rounded-xl border border-blue-900/40 flex justify-between items-center">
+                        <div>
+                            <span class="text-xs text-gray-400">🏦 BBVA</span>
+                            <p id="stat-bbva" class="text-2xl font-bold text-blue-400 mt-2">$0 MXN</p>
+                        </div>
+                    </div>
+                    <div class="bg-[#0D0D12] p-5 rounded-xl border border-cyan-900/40 flex justify-between items-center">
+                        <div>
+                            <span class="text-xs text-gray-400">📱 Mercado Pago</span>
+                            <p id="stat-mpago" class="text-2xl font-bold text-cyan-400 mt-2">$0 MXN</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
 
-                      <div className="flex flex-wrap items-center gap-3">
-                        <span className="font-semibold text-green-400 text-base">${app.price} MXN</span>
+    <!-- JAVASCRIPT NATIVO -->
+    <script>
+        // Citas Iniciales (Guardadas en LocalStorage para no perderlas al recargar)
+        let appointments = JSON.parse(localStorage.getItem('cecy_appointments')) || [
+            { id: '1', clientName: 'María López', phone: '8112345678', service: 'Depilación Axilas y Pierna', date: getTodayStr(), time: '10:00', price: 450, paymentMethod: 'Efectivo', status: 'Completada' },
+            { id: '2', clientName: 'Ana García', phone: '8187654321', service: 'Depilación Rostro Completo', date: getTodayStr(), time: '12:00', price: 300, paymentMethod: 'BBVA', status: 'Pendiente' },
+            { id: '3', clientName: 'Carla Sofía', phone: '8119998877', service: 'Diseño de Cejas', date: getTodayStr(), time: '16:00', price: 200, paymentMethod: 'MPago', status: 'Completada' }
+        ];
 
-                        <select
-                          value={app.paymentMethod}
-                          onChange={e => handlePaymentMethodChange(app.id, e.target.value)}
-                          className="bg-[#181824] border border-purple-900/60 rounded-lg px-2.5 py-1 text-xs text-purple-200 focus:outline-none focus:border-pink-500"
-                        >
-                          <option value="Efectivo">💵 Efectivo</option>
-                          <option value="BBVA">🏦 BBVA</option>
-                          <option value="MPago">📱 MPago</option>
+        function getTodayStr() {
+            return new Date().toISOString().split('T')[0];
+        }
+
+        document.getElementById('date').value = getTodayStr();
+        document.getElementById('filter-date').value = getTodayStr();
+
+        function saveData() {
+            localStorage.setItem('cecy_appointments', JSON.stringify(appointments));
+            renderAppointments();
+            calculateIncome();
+        }
+
+        // Cambiar entre pestañas
+        function switchTab(tab) {
+            const btnAgenda = document.getElementById('btn-agenda');
+            const btnIngresos = document.getElementById('btn-ingresos');
+            const tabAgenda = document.getElementById('tab-agenda');
+            const tabIngresos = document.getElementById('tab-ingresos');
+
+            if (tab === 'agenda') {
+                tabAgenda.classList.remove('hidden');
+                tabIngresos.classList.add('hidden');
+                btnAgenda.className = "px-6 py-2.5 rounded-full font-semibold text-sm btn-gradient text-white shadow-lg";
+                btnIngresos.className = "px-6 py-2.5 rounded-full font-semibold text-sm text-gray-400 hover:text-white";
+            } else {
+                tabAgenda.classList.add('hidden');
+                tabIngresos.classList.remove('hidden');
+                btnIngresos.className = "px-6 py-2.5 rounded-full font-semibold text-sm btn-gradient text-white shadow-lg";
+                btnAgenda.className = "px-6 py-2.5 rounded-full font-semibold text-sm text-gray-400 hover:text-white";
+                calculateIncome();
+            }
+        }
+
+        // Agregar Nueva Cita
+        document.getElementById('appointment-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const newApp = {
+                id: Date.now().toString(),
+                clientName: document.getElementById('clientName').value,
+                service: document.getElementById('service').value,
+                phone: document.getElementById('phone').value,
+                date: document.getElementById('date').value,
+                time: document.getElementById('time').value,
+                price: Number(document.getElementById('price').value),
+                paymentMethod: document.getElementById('paymentMethod').value,
+                status: document.getElementById('status').value
+            };
+            appointments.push(newApp);
+            saveData();
+            this.reset();
+            document.getElementById('date').value = getTodayStr();
+        });
+
+        // Cambiar Método de Pago
+        function updatePayment(id, method) {
+            const app = appointments.find(a => a.id === id);
+            if (app) {
+                app.paymentMethod = method;
+                saveData();
+            }
+        }
+
+        // Cambiar Estado
+        function updateStatus(id, status) {
+            const app = appointments.find(a => a.id === id);
+            if (app) {
+                app.status = status;
+                saveData();
+            }
+        }
+
+        // Renderizar Citas
+        function renderAppointments() {
+            const selectedDate = document.getElementById('filter-date').value;
+            const container = document.getElementById('appointments-container');
+            const filtered = appointments.filter(a => a.date === selectedDate);
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<p class="text-center text-gray-500 py-8 text-sm">No hay citas programadas para el ${selectedDate}.</p>`;
+                return;
+            }
+
+            container.innerHTML = filtered.map(app => `
+                <div class="bg-[#0D0D12] p-4 rounded-xl border border-purple-900/40 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-pink-400">${app.clientName}</span>
+                            <span class="text-xs bg-purple-950 text-purple-300 px-2 py-0.5 rounded-full border border-purple-800">${app.time} hrs</span>
+                        </div>
+                        <p class="text-sm text-gray-300">${app.service}</p>
+                        <p class="text-xs text-gray-500">Tel: ${app.phone || 'N/A'}</p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-3">
+                        <span class="font-semibold text-green-400 text-base">$${app.price} MXN</span>
+                        <select onchange="updatePayment('${app.id}', this.value)" class="bg-card border border-purple-900/60 rounded-lg px-2.5 py-1 text-xs text-purple-200 focus:outline-none">
+                            <option value="Efectivo" ${app.paymentMethod === 'Efectivo' ? 'selected' : ''}>💵 Efectivo</option>
+                            <option value="BBVA" ${app.paymentMethod === 'BBVA' ? 'selected' : ''}>🏦 BBVA</option>
+                            <option value="MPago" ${app.paymentMethod === 'MPago' ? 'selected' : ''}>📱 MPago</option>
                         </select>
-
-                        {/* Botón selector de Estado (incluye Pendiente) */}
-                        <select
-                          value={app.status}
-                          onChange={e => handleStatusChange(app.id, e.target.value)}
-                          className={`text-xs px-2.5 py-1 rounded-lg font-medium border focus:outline-none ${
+                        <select onchange="updateStatus('${app.id}', this.value)" class="text-xs px-2.5 py-1 rounded-lg font-medium border focus:outline-none ${
                             app.status === 'Completada' ? 'bg-green-950 text-green-400 border-green-800' :
                             app.status === 'Confirmada' ? 'bg-blue-950 text-blue-400 border-blue-800' :
                             'bg-yellow-950 text-yellow-400 border-yellow-800'
-                          }`}
-                        >
-                          <option value="Pendiente">⏳ Pendiente</option>
-                          <option value="Confirmada">👍 Confirmada</option>
-                          <option value="Completada">✅ Completada</option>
+                        }">
+                            <option value="Pendiente" ${app.status === 'Pendiente' ? 'selected' : ''}>⏳ Pendiente</option>
+                            <option value="Confirmada" ${app.status === 'Confirmada' ? 'selected' : ''}>👍 Confirmada</option>
+                            <option value="Completada" ${app.status === 'Completada' ? 'selected' : ''}>✅ Completada</option>
                         </select>
-                      </div>
                     </div>
-                  ))}
-
-                {appointments.filter(app => app.date === selectedDate).length === 0 && (
-                  <p className="text-center text-gray-500 py-8 text-sm">
-                    No hay citas programadas para el {selectedDate}.
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* PESTAÑA INGRESOS */}
-        {activeTab === 'ingresos' && (
-          <div className="space-y-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="bg-[#181824] p-5 rounded-2xl border border-purple-900/40">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <p className="text-xs text-gray-400 font-medium">Ingresos Totales (Cobrados)</p>
-                    <h3 className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-300 mt-1">
-                      ${incomeStats.total.toLocaleString()} MXN
-                    </h3>
-                  </div>
-                  <div className="p-2.5 bg-pink-500/10 rounded-xl text-pink-400 border border-pink-500/20">
-                    <DollarSign className="w-5 h-5" />
-                  </div>
                 </div>
-              </div>
+            `).join('');
+        }
 
-              <div className="bg-[#181824] p-5 rounded-2xl border border-purple-900/40">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <p className="text-xs text-gray-400 font-medium">Ingreso Diario ({selectedDate})</p>
-                    <h3 className="text-2xl font-bold text-white mt-1">
-                      ${incomeStats.daily.toLocaleString()} MXN
-                    </h3>
-                  </div>
-                  <div className="p-2.5 bg-purple-500/10 rounded-xl text-purple-400 border border-purple-500/20">
-                    <Calendar className="w-5 h-5" />
-                  </div>
-                </div>
-              </div>
+        // Calcular Ingresos y Pendientes
+        function calculateIncome() {
+            const selectedDate = document.getElementById('filter-date').value;
+            const today = new Date(selectedDate);
 
-              <div className="bg-[#181824] p-5 rounded-2xl border border-purple-900/40">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <p className="text-xs text-gray-400 font-medium">Ingreso Semanal</p>
-                    <h3 className="text-2xl font-bold text-white mt-1">
-                      ${incomeStats.weekly.toLocaleString()} MXN
-                    </h3>
-                  </div>
-                  <div className="p-2.5 bg-blue-500/10 rounded-xl text-blue-400 border border-blue-500/20">
-                    <TrendingUp className="w-5 h-5" />
-                  </div>
-                </div>
-              </div>
+            let total = 0, daily = 0, weekly = 0, monthly = 0, totalPending = 0;
+            let efectivo = 0, bbva = 0, mpago = 0;
+            let pendingApps = [];
 
-              <div className="bg-[#181824] p-5 rounded-2xl border border-purple-900/40">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <p className="text-xs text-gray-400 font-medium">Ingreso Mensual</p>
-                    <h3 className="text-2xl font-bold text-white mt-1">
-                      ${incomeStats.monthly.toLocaleString()} MXN
-                    </h3>
-                  </div>
-                  <div className="p-2.5 bg-green-500/10 rounded-xl text-green-400 border border-green-500/20">
-                    <Clock className="w-5 h-5" />
-                  </div>
-                </div>
-              </div>
-            </div>
+            appointments.forEach(app => {
+                const price = Number(app.price) || 0;
+                const appDate = new Date(app.date);
 
-            {/* SECCIÓN PENDIENTES DE COBRO */}
-            <div className="bg-[#181824] p-6 rounded-2xl border border-yellow-900/40">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold text-yellow-400 flex items-center gap-2">
-                  <AlertCircle className="w-5 h-5" /> Pendientes por Cobrar
-                </h2>
-                <span className="text-sm font-semibold text-yellow-400 bg-yellow-950 px-3 py-1 rounded-full border border-yellow-800">
-                  Total Pendiente: ${incomeStats.totalPending.toLocaleString()} MXN
-                </span>
-              </div>
+                if (app.status === 'Pendiente') {
+                    totalPending += price;
+                    pendingApps.push(app);
+                } else if (app.status === 'Completada' || app.status === 'Confirmada') {
+                    total += price;
 
-              <div className="space-y-3">
-                {incomeStats.pendingAppointments.map(app => (
-                  <div
-                    key={app.id}
-                    className="bg-[#0D0D12] p-4 rounded-xl border border-yellow-900/30 flex justify-between items-center"
-                  >
-                    <div>
-                      <p className="font-bold text-white">{app.clientName} — <span className="text-gray-400">{app.service}</span></p>
-                      <p className="text-xs text-gray-500">{app.date} a las {app.time} hrs | Pago: {app.paymentMethod}</p>
+                    if (app.paymentMethod === 'Efectivo') efectivo += price;
+                    if (app.paymentMethod === 'BBVA') bbva += price;
+                    if (app.paymentMethod === 'MPago') mpago += price;
+
+                    if (app.date === selectedDate) daily += price;
+                    if (appDate.getMonth() === today.getMonth() && appDate.getFullYear() === today.getFullYear()) monthly += price;
+                }
+            });
+
+            document.getElementById('stat-total').innerText = `$${total.toLocaleString()} MXN`;
+            document.getElementById('stat-daily').innerText = `$${daily.toLocaleString()} MXN`;
+            document.getElementById('stat-monthly').innerText = `$${monthly.toLocaleString()} MXN`;
+            document.getElementById('stat-pending-total').innerText = `Total Pendiente: $${totalPending.toLocaleString()} MXN`;
+
+            document.getElementById('stat-efectivo').innerText = `$${efectivo.toLocaleString()} MXN`;
+            document.getElementById('stat-bbva').innerText = `$${bbva.toLocaleString()} MXN`;
+            document.getElementById('stat-mpago').innerText = `$${mpago.toLocaleString()} MXN`;
+
+            // Renderizar Pendientes en la Pestaña Ingresos
+            const pendingContainer = document.getElementById('pending-container');
+            if (pendingApps.length === 0) {
+                pendingContainer.innerHTML = `<p class="text-gray-500 text-sm text-center py-4">No hay pagos ni citas pendientes.</p>`;
+            } else {
+                pendingContainer.innerHTML = pendingApps.map(app => `
+                    <div class="bg-[#0D0D12] p-4 rounded-xl border border-yellow-900/30 flex justify-between items-center">
+                        <div>
+                            <p class="font-bold text-white">${app.clientName} — <span class="text-gray-400">${app.service}</span></p>
+                            <p class="text-xs text-gray-500">${app.date} a las ${app.time} hrs | Método: ${app.paymentMethod}</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-yellow-400 font-bold">$${app.price} MXN</span>
+                            <button onclick="updateStatus('${app.id}', 'Completada')" class="bg-green-600 hover:bg-green-500 text-white text-xs px-3 py-1.5 rounded-lg font-medium transition-all">
+                                Marcar Pagada
+                            </button>
+                        </div>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-yellow-400 font-bold">${app.price} MXN</span>
-                      <button
-                        onClick={() => handleStatusChange(app.id, 'Completada')}
-                        className="bg-green-600 hover:bg-green-500 text-white text-xs px-3 py-1.5 rounded-lg font-medium transition-all"
-                      >
-                        Marcar Pagada
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                `).join('');
+            }
+        }
 
-                {incomeStats.pendingAppointments.length === 0 && (
-                  <p className="text-gray-500 text-sm text-center py-4">No hay pagos ni citas pendientes.</p>
-                )}
-              </div>
-            </div>
-
-            {/* Desglose por Método de Pago */}
-            <div className="bg-[#181824] p-6 rounded-2xl border border-purple-900/30">
-              <h2 className="text-xl font-bold text-pink-400 mb-6 flex items-center gap-2">
-                <Wallet className="w-5 h-5" /> Desglose por Método de Pago
-              </h2>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-[#0D0D12] p-5 rounded-xl border border-emerald-900/40 flex items-center justify-between">
-                  <div>
-                    <span className="text-xs text-gray-400 font-medium">💵 Efectivo</span>
-                    <p className="text-2xl font-bold text-emerald-400 mt-2">
-                      ${incomeStats.byMethod.Efectivo.toLocaleString()} MXN
-                    </p>
-                  </div>
-                </div>
-
-                <div className="bg-[#0D0D12] p-5 rounded-xl border border-blue-900/40 flex items-center justify-between">
-                  <div>
-                    <span className="text-xs text-gray-400 font-medium">🏦 BBVA</span>
-                    <p className="text-2xl font-bold text-blue-400 mt-2">
-                      ${incomeStats.byMethod.BBVA.toLocaleString()} MXN
-                    </p>
-                  </div>
-                </div>
-
-                <div className="bg-[#0D0D12] p-5 rounded-xl border border-cyan-900/40 flex items-center justify-between">
-                  <div>
-                    <span className="text-xs text-gray-400 font-medium">📱 Mercado Pago</span>
-                    <p className="text-2xl font-bold text-cyan-400 mt-2">
-                      ${incomeStats.byMethod.MPago.toLocaleString()} MXN
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </main>
-    </div>
-  );
-}
+        // Inicializar
+        renderAppointments();
+        calculateIncome();
+    </script>
+</body>
+</html>
