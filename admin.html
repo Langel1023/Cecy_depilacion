@@ -1,14 +1,13 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
-  Calendar, Clock, DollarSign, CreditCard, Wallet, 
-  TrendingUp, CheckCircle, XCircle, ChevronLeft, ChevronRight, User, Phone, Plus, Filter
+  Calendar, Clock, DollarSign, Wallet, 
+  TrendingUp, Plus, AlertCircle
 } from 'lucide-react';
 
 export default function AdminDashboard() {
-  // Estado para la pestaña activa ('agenda' | 'ingresos')
   const [activeTab, setActiveTab] = useState('agenda');
 
-  // Estado de citas (ejemplo/simulación o sync con Firestore)
+  // Estado inicial con citas de prueba
   const [appointments, setAppointments] = useState([
     {
       id: '1',
@@ -18,7 +17,7 @@ export default function AdminDashboard() {
       date: '2026-11-06',
       time: '10:00',
       price: 450,
-      paymentMethod: 'Efectivo', // 'Efectivo' | 'BBVA' | 'MPago'
+      paymentMethod: 'Efectivo',
       status: 'Completada'
     },
     {
@@ -30,7 +29,7 @@ export default function AdminDashboard() {
       time: '12:00',
       price: 300,
       paymentMethod: 'BBVA',
-      status: 'Completada'
+      status: 'Pendiente'
     },
     {
       id: '3',
@@ -45,7 +44,6 @@ export default function AdminDashboard() {
     }
   ]);
 
-  // Formulario para nueva cita / editar pago
   const [newAppointment, setNewAppointment] = useState({
     clientName: '',
     phone: '',
@@ -54,13 +52,12 @@ export default function AdminDashboard() {
     time: '10:00',
     price: 0,
     paymentMethod: 'Efectivo',
-    status: 'Confirmada'
+    status: 'Pendiente'
   });
 
-  // Filtro de fecha para la agenda
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
 
-  // Agregar cita con método de pago
+  // Agregar cita
   const handleAddAppointment = (e) => {
     e.preventDefault();
     const created = {
@@ -77,30 +74,35 @@ export default function AdminDashboard() {
       time: '10:00',
       price: 0,
       paymentMethod: 'Efectivo',
-      status: 'Confirmada'
+      status: 'Pendiente'
     });
   };
 
-  // Cambiar método de pago de una cita existente
+  // Cambiar método de pago
   const handlePaymentMethodChange = (id, method) => {
     setAppointments(prev =>
       prev.map(item => item.id === id ? { ...item, paymentMethod: method } : item)
     );
   };
 
-  // --- CÁLCULOS DE INGRESOS ---
+  // Cambiar estado de la cita (Completada, Confirmada, Pendiente)
+  const handleStatusChange = (id, status) => {
+    setAppointments(prev =>
+      prev.map(item => item.id === id ? { ...item, status } : item)
+    );
+  };
+
+  // Cálculos de ingresos y cobros pendientes
   const incomeStats = useMemo(() => {
     const todayStr = new Date().toISOString().split('T')[0];
     const today = new Date(todayStr);
 
-    // Inicio y fin de la semana actual (Lunes a Domingo)
     const dayOfWeek = today.getDay() || 7; 
     const startOfWeek = new Date(today);
     startOfWeek.setDate(today.getDate() - (dayOfWeek - 1));
     const endOfWeek = new Date(startOfWeek);
     endOfWeek.setDate(startOfWeek.getDate() + 6);
 
-    // Mes actual
     const currentYear = today.getFullYear();
     const currentMonth = today.getMonth();
 
@@ -108,6 +110,7 @@ export default function AdminDashboard() {
     let daily = 0;
     let weekly = 0;
     let monthly = 0;
+    let totalPending = 0;
 
     const byMethod = {
       Efectivo: 0,
@@ -115,38 +118,37 @@ export default function AdminDashboard() {
       MPago: 0
     };
 
-    appointments.forEach(app => {
-      // Solo contar citas completadas o confirmadas
-      if (app.status === 'Completada' || app.status === 'Confirmada') {
-        const appPrice = Number(app.price) || 0;
-        const appDate = new Date(app.date);
+    const pendingAppointments = [];
 
-        // Total general
+    appointments.forEach(app => {
+      const appPrice = Number(app.price) || 0;
+      const appDate = new Date(app.date);
+
+      if (app.status === 'Pendiente') {
+        totalPending += appPrice;
+        pendingAppointments.push(app);
+      } else if (app.status === 'Completada' || app.status === 'Confirmada') {
         total += appPrice;
 
-        // Desglose por método de pago
         if (byMethod[app.paymentMethod] !== undefined) {
           byMethod[app.paymentMethod] += appPrice;
         }
 
-        // Diario (día seleccionado o hoy)
         if (app.date === selectedDate) {
           daily += appPrice;
         }
 
-        // Semanal
         if (appDate >= startOfWeek && appDate <= endOfWeek) {
           weekly += appPrice;
         }
 
-        // Mensual
         if (appDate.getFullYear() === currentYear && appDate.getMonth() === currentMonth) {
           monthly += appPrice;
         }
       }
     });
 
-    return { total, daily, weekly, monthly, byMethod };
+    return { total, daily, weekly, monthly, byMethod, totalPending, pendingAppointments };
   }, [appointments, selectedDate]);
 
   return (
@@ -161,7 +163,6 @@ export default function AdminDashboard() {
             <p className="text-gray-400 text-sm mt-1">Cecy Perales — Depilación con Cera</p>
           </div>
 
-          {/* Navegación por Pestañas */}
           <div className="flex bg-[#181824] p-1.5 rounded-full border border-purple-900/50">
             <button
               onClick={() => setActiveTab('agenda')}
@@ -190,10 +191,10 @@ export default function AdminDashboard() {
       </header>
 
       <main className="max-w-6xl mx-auto">
-        {/* ==================== PESTAÑA: AGENDA ==================== */}
+        {/* PESTAÑA AGENDA */}
         {activeTab === 'agenda' && (
           <div className="space-y-8">
-            {/* Formulario de Registro / Agendar */}
+            {/* Formulario */}
             <div className="bg-[#181824] p-6 rounded-2xl border border-purple-900/30">
               <h2 className="text-xl font-bold text-pink-400 mb-4 flex items-center gap-2">
                 <Plus className="w-5 h-5" /> Registrar Nueva Cita
@@ -257,7 +258,6 @@ export default function AdminDashboard() {
                   />
                 </div>
 
-                {/* Selección de Método de Pago */}
                 <div>
                   <label className="text-xs text-gray-400 block mb-1">Método de Pago</label>
                   <select
@@ -282,14 +282,12 @@ export default function AdminDashboard() {
               </form>
             </div>
 
-            {/* Lista y Filtro de Citas */}
+            {/* Citas Agendadas */}
             <div className="bg-[#181824] p-6 rounded-2xl border border-purple-900/30">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                 <h2 className="text-xl font-bold text-white flex items-center gap-2">
                   <Calendar className="w-5 h-5 text-purple-400" /> Citas Agendadas
                 </h2>
-                
-                {/* Filtrar Citas por Día */}
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-gray-400">Filtrar por fecha:</span>
                   <input
@@ -301,7 +299,6 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
-              {/* Tarjetas de Citas */}
               <div className="space-y-4">
                 {appointments
                   .filter(app => app.date === selectedDate)
@@ -324,7 +321,6 @@ export default function AdminDashboard() {
                       <div className="flex flex-wrap items-center gap-3">
                         <span className="font-semibold text-green-400 text-base">${app.price} MXN</span>
 
-                        {/* Cambiar Método de Pago Directamente */}
                         <select
                           value={app.paymentMethod}
                           onChange={e => handlePaymentMethodChange(app.id, e.target.value)}
@@ -335,11 +331,20 @@ export default function AdminDashboard() {
                           <option value="MPago">📱 MPago</option>
                         </select>
 
-                        <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
-                          app.status === 'Completada' ? 'bg-green-950 text-green-400 border border-green-800' : 'bg-yellow-950 text-yellow-400 border border-yellow-800'
-                        }`}>
-                          {app.status}
-                        </span>
+                        {/* Botón selector de Estado (incluye Pendiente) */}
+                        <select
+                          value={app.status}
+                          onChange={e => handleStatusChange(app.id, e.target.value)}
+                          className={`text-xs px-2.5 py-1 rounded-lg font-medium border focus:outline-none ${
+                            app.status === 'Completada' ? 'bg-green-950 text-green-400 border-green-800' :
+                            app.status === 'Confirmada' ? 'bg-blue-950 text-blue-400 border-blue-800' :
+                            'bg-yellow-950 text-yellow-400 border-yellow-800'
+                          }`}
+                        >
+                          <option value="Pendiente">⏳ Pendiente</option>
+                          <option value="Confirmada">👍 Confirmada</option>
+                          <option value="Completada">✅ Completada</option>
+                        </select>
                       </div>
                     </div>
                   ))}
@@ -354,16 +359,14 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* ==================== PESTAÑA NUEVA: INGRESOS ==================== */}
+        {/* PESTAÑA INGRESOS */}
         {activeTab === 'ingresos' && (
           <div className="space-y-8">
-            {/* Tarjetas resumen de ingresos */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {/* Total Acumulado */}
-              <div className="bg-[#181824] p-5 rounded-2xl border border-purple-900/40 relative overflow-hidden">
+              <div className="bg-[#181824] p-5 rounded-2xl border border-purple-900/40">
                 <div className="flex justify-between items-start">
                   <div>
-                    <p className="text-xs text-gray-400 font-medium">Ingresos Totales</p>
+                    <p className="text-xs text-gray-400 font-medium">Ingresos Totales (Cobrados)</p>
                     <h3 className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-300 mt-1">
                       ${incomeStats.total.toLocaleString()} MXN
                     </h3>
@@ -374,7 +377,6 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
-              {/* Día Selección / HOY */}
               <div className="bg-[#181824] p-5 rounded-2xl border border-purple-900/40">
                 <div className="flex justify-between items-start">
                   <div>
@@ -389,11 +391,10 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
-              {/* Semanal */}
               <div className="bg-[#181824] p-5 rounded-2xl border border-purple-900/40">
                 <div className="flex justify-between items-start">
                   <div>
-                    <p className="text-xs text-gray-400 font-medium">Ingreso Semanal (Semana actual)</p>
+                    <p className="text-xs text-gray-400 font-medium">Ingreso Semanal</p>
                     <h3 className="text-2xl font-bold text-white mt-1">
                       ${incomeStats.weekly.toLocaleString()} MXN
                     </h3>
@@ -404,11 +405,10 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
-              {/* Mensual */}
               <div className="bg-[#181824] p-5 rounded-2xl border border-purple-900/40">
                 <div className="flex justify-between items-start">
                   <div>
-                    <p className="text-xs text-gray-400 font-medium">Ingreso Mensual (Mes actual)</p>
+                    <p className="text-xs text-gray-400 font-medium">Ingreso Mensual</p>
                     <h3 className="text-2xl font-bold text-white mt-1">
                       ${incomeStats.monthly.toLocaleString()} MXN
                     </h3>
@@ -420,6 +420,45 @@ export default function AdminDashboard() {
               </div>
             </div>
 
+            {/* SECCIÓN PENDIENTES DE COBRO */}
+            <div className="bg-[#181824] p-6 rounded-2xl border border-yellow-900/40">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold text-yellow-400 flex items-center gap-2">
+                  <AlertCircle className="w-5 h-5" /> Pendientes por Cobrar
+                </h2>
+                <span className="text-sm font-semibold text-yellow-400 bg-yellow-950 px-3 py-1 rounded-full border border-yellow-800">
+                  Total Pendiente: ${incomeStats.totalPending.toLocaleString()} MXN
+                </span>
+              </div>
+
+              <div className="space-y-3">
+                {incomeStats.pendingAppointments.map(app => (
+                  <div
+                    key={app.id}
+                    className="bg-[#0D0D12] p-4 rounded-xl border border-yellow-900/30 flex justify-between items-center"
+                  >
+                    <div>
+                      <p className="font-bold text-white">{app.clientName} — <span className="text-gray-400">{app.service}</span></p>
+                      <p className="text-xs text-gray-500">{app.date} a las {app.time} hrs | Pago: {app.paymentMethod}</p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-yellow-400 font-bold">${app.price} MXN</span>
+                      <button
+                        onClick={() => handleStatusChange(app.id, 'Completada')}
+                        className="bg-green-600 hover:bg-green-500 text-white text-xs px-3 py-1.5 rounded-lg font-medium transition-all"
+                      >
+                        Marcar Pagada
+                      </button>
+                    </div>
+                  </div>
+                ))}
+
+                {incomeStats.pendingAppointments.length === 0 && (
+                  <p className="text-gray-500 text-sm text-center py-4">No hay pagos ni citas pendientes.</p>
+                )}
+              </div>
+            </div>
+
             {/* Desglose por Método de Pago */}
             <div className="bg-[#181824] p-6 rounded-2xl border border-purple-900/30">
               <h2 className="text-xl font-bold text-pink-400 mb-6 flex items-center gap-2">
@@ -427,49 +466,31 @@ export default function AdminDashboard() {
               </h2>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Efectivo */}
                 <div className="bg-[#0D0D12] p-5 rounded-xl border border-emerald-900/40 flex items-center justify-between">
                   <div>
-                    <span className="text-xs text-gray-400 font-medium flex items-center gap-1.5">
-                      💵 Efectivo
-                    </span>
+                    <span className="text-xs text-gray-400 font-medium">💵 Efectivo</span>
                     <p className="text-2xl font-bold text-emerald-400 mt-2">
                       ${incomeStats.byMethod.Efectivo.toLocaleString()} MXN
                     </p>
                   </div>
-                  <span className="text-xs text-emerald-400 bg-emerald-950 px-2.5 py-1 rounded-full border border-emerald-800 font-semibold">
-                    {incomeStats.total > 0 ? Math.round((incomeStats.byMethod.Efectivo / incomeStats.total) * 100) : 0}%
-                  </span>
                 </div>
 
-                {/* BBVA */}
                 <div className="bg-[#0D0D12] p-5 rounded-xl border border-blue-900/40 flex items-center justify-between">
                   <div>
-                    <span className="text-xs text-gray-400 font-medium flex items-center gap-1.5">
-                      🏦 BBVA (Transferencia)
-                    </span>
+                    <span className="text-xs text-gray-400 font-medium">🏦 BBVA</span>
                     <p className="text-2xl font-bold text-blue-400 mt-2">
                       ${incomeStats.byMethod.BBVA.toLocaleString()} MXN
                     </p>
                   </div>
-                  <span className="text-xs text-blue-400 bg-blue-950 px-2.5 py-1 rounded-full border border-blue-800 font-semibold">
-                    {incomeStats.total > 0 ? Math.round((incomeStats.byMethod.BBVA / incomeStats.total) * 100) : 0}%
-                  </span>
                 </div>
 
-                {/* Mercado Pago */}
                 <div className="bg-[#0D0D12] p-5 rounded-xl border border-cyan-900/40 flex items-center justify-between">
                   <div>
-                    <span className="text-xs text-gray-400 font-medium flex items-center gap-1.5">
-                      📱 Mercado Pago
-                    </span>
+                    <span className="text-xs text-gray-400 font-medium">📱 Mercado Pago</span>
                     <p className="text-2xl font-bold text-cyan-400 mt-2">
                       ${incomeStats.byMethod.MPago.toLocaleString()} MXN
                     </p>
                   </div>
-                  <span className="text-xs text-cyan-400 bg-cyan-950 px-2.5 py-1 rounded-full border border-cyan-800 font-semibold">
-                    {incomeStats.total > 0 ? Math.round((incomeStats.byMethod.MPago / incomeStats.total) * 100) : 0}%
-                  </span>
                 </div>
               </div>
             </div>
