@@ -25,9 +25,9 @@
         .tab-btn.active { background: white; color: #d66b8d; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
 
         /* Formularios e Inputs */
-        label { display: block; font-size: 14px; font-weight: bold; color: #666; margin-bottom: 8px; margin-top: 15px; }
+        label { display: block; font-size: 13px; font-weight: bold; color: #666; margin-bottom: 6px; margin-top: 12px; }
         input[type="email"], input[type="password"], input[type="date"], input[type="time"], input[type="number"], select {
-            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 15px; background-color: #fcfcfc;
+            width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 14px; background-color: #fcfcfc;
         }
 
         /* Botones Generales */
@@ -45,69 +45,30 @@
         .cita-nombre { font-size: 16px; font-weight: bold; color: #333; margin: 0; }
         .cita-hora-badge { font-size: 14px; color: white; background: #d66b8d; padding: 4px 10px; border-radius: 20px; font-weight: bold; }
         .cita-servicios { font-size: 14px; color: #555; margin: 0 0 8px 0; line-height: 1.5; }
-        .badge-pago { display: inline-block; padding: 3px 8px; font-size: 11px; font-weight: bold; border-radius: 4px; background: #eef2ff; color: #4f46e5; border: 1px solid #c7d2fe; margin-top: 4px; }
-        .badge-pago.sin-pago { background: #fff7ed; color: #c2410c; border-color: #fed7aa; }
-
-        /* Registro rápido de pago (Agenda) */
-        .pago-rapido { background: #f0fdf4; border: 1px solid #bbf7d0; padding: 10px; border-radius: 6px; margin-top: 12px; }
-        .pago-rapido label { margin-top: 0; font-size: 12px; color: #166534; }
-        .pago-rapido-fila { display: flex; gap: 6px; margin-bottom: 8px; }
-        .pago-rapido-fila input, .pago-rapido-fila select { padding: 8px; font-size: 13px; flex: 1; min-width: 0; }
-        .metodos-botones { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
-        .metodo-btn.pend { flex-basis: 100%; border-color: #fdba74; color: #c2410c; }
-        .metodo-btn.pend.sel { background: #ea580c; color: white; border-color: #ea580c; }
-        .metodo-btn { flex: 1 1 28%; padding: 9px 4px; border: 1px solid #d1d5db; background: white; color: #555; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.15s; }
-        .metodo-btn.sel { background: #15803d; color: white; border-color: #15803d; }
+        .badge-pago { display: block; padding: 5px 8px; font-size: 11px; font-weight: bold; border-radius: 4px; background: #eef2ff; color: #4f46e5; border: 1px solid #c7d2fe; margin-top: 4px; line-height: 1.4; }
 
         /* Acciones de Citas */
-        .cita-acciones { display: flex; flex-direction: column; gap: 8px; margin-top: 15px; }
+        .cita-acciones { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
         .btn-confirmar { background: #25D366; color: white; border: none; padding: 10px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 13px; }
         .btn-editar { background: #007bff; color: white; border: none; padding: 10px; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 12px; }
         .acciones-rojas { display: flex; gap: 8px; }
         .btn-cancelar { background: #ff4d4d; color: white; border: none; padding: 10px; border-radius: 5px; flex: 1; font-weight: bold; cursor: pointer; font-size: 12px; }
         .btn-liberar { background: #ff9900; color: white; border: none; padding: 10px; border-radius: 5px; flex: 1; font-weight: bold; cursor: pointer; font-size: 12px; }
 
-        /* Panel Desplegable para Reasignar u Opciones */
+        /* Panel Desplegable */
         .panel-editar-hora { background: #f0f7ff; border: 1px dashed #007bff; padding: 12px; border-radius: 6px; margin-top: 10px; }
-        .panel-editar-hora label { margin-top: 5px; font-size: 12px; color: #0056b3; }
-        .panel-editar-hora input, .panel-editar-hora select { padding: 8px; font-size: 13px; margin-bottom: 8px; }
+        .panel-editar-hora label { margin-top: 8px; font-size: 12px; color: #0056b3; }
 
         /* Tarjetas de Ingresos */
         .card-ingreso { background: #fcfcfc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin-bottom: 12px; }
         .card-ingreso-titulo { font-size: 13px; color: #64748b; font-weight: bold; text-transform: uppercase; margin: 0 0 5px 0; }
         .card-ingreso-monto { font-size: 24px; color: #0f172a; font-weight: 800; margin: 0; }
-        .card-ingreso-sub { font-size: 11px; color: #94a3b8; margin: 3px 0 0 0; }
-        .grid-metodos { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 8px; }
+        .grid-metodos { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 15px; }
         .box-metodo { background: #f8fafc; border: 1px solid #e2e8f0; padding: 8px; border-radius: 6px; text-align: center; }
         .box-metodo span { display: block; font-size: 11px; color: #64748b; font-weight: bold; }
         .box-metodo b { display: block; font-size: 14px; color: #1e293b; margin-top: 2px; }
 
-        /* Servicios y total automático */
-        .total-auto { background: white; border: 1px dashed #86efac; border-radius: 6px; padding: 8px 10px; margin-bottom: 8px; }
-        .total-auto b { font-size: 18px; color: #15803d; }
-        .total-auto small { display: block; font-size: 11px; color: #64748b; margin-top: 2px; line-height: 1.4; }
-        .total-auto .aviso { color: #c2410c; font-weight: bold; }
-        .serv-lista { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
-        .serv-chip { display: inline-flex; align-items: center; gap: 5px; background: white; border: 1px solid #bfdbfe; color: #1e3a8a; border-radius: 16px; padding: 4px 4px 4px 10px; font-size: 12px; }
-        .serv-chip b { color: #15803d; }
-        .serv-chip button { border: none; background: #fee2e2; color: #b91c1c; width: 20px; height: 20px; border-radius: 50%; cursor: pointer; font-size: 11px; line-height: 1; padding: 0; }
-        .fila-agregar { display: flex; gap: 6px; }
-        .fila-agregar select { flex: 1; min-width: 0; margin-bottom: 0 !important; }
-        .fila-agregar button { background: #007bff; color: white; border: none; border-radius: 6px; padding: 0 14px; font-weight: bold; cursor: pointer; font-size: 13px; }
-
-        /* Desglose por periodo (Ingresos) */
-        .segmento { display: flex; background: #f1f5f9; padding: 3px; border-radius: 8px; margin-top: 8px; }
-        .seg-btn { flex: 1; border: none; background: transparent; padding: 9px 4px; border-radius: 6px; font-size: 13px; font-weight: bold; color: #64748b; cursor: pointer; }
-        .seg-btn.active { background: white; color: #d66b8d; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
-        .lista-periodos { max-height: 420px; overflow-y: auto; margin-top: 12px; padding-right: 2px; }
-        .periodo-row { border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; background: white; }
-        .periodo-top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
-        .periodo-label { font-size: 14px; font-weight: bold; color: #334155; }
-        .periodo-total { font-size: 16px; font-weight: 800; color: #15803d; white-space: nowrap; }
-        .periodo-det { display: flex; flex-wrap: wrap; gap: 4px 10px; margin-top: 6px; font-size: 11.5px; color: #64748b; }
-        .periodo-det b { color: #1e293b; }
-
-        /* GRILLA DE HORARIOS (Cuadritos) */
+        /* GRILLA DE HORARIOS */
         .opciones-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
         .chip { padding: 12px 10px; background: #f0f0f0; color: #777; border-radius: 6px; cursor: pointer; user-select: none; font-size: 15px; border: 1px solid #e0e0e0; flex-grow: 1; text-align: center; min-width: 25%; font-weight: 500; transition: 0.2s; }
         .chip.activo { background: #d66b8d; color: white; border-color: #b85273; font-weight: bold; transform: scale(1.03); box-shadow: 0 2px 5px rgba(214, 107, 141, 0.3); }
@@ -138,7 +99,7 @@
         <!-- PANEL PRINCIPAL -->
         <div id="seccion-panel" class="oculto">
             <button id="btn-logout" class="btn-logout">Cerrar Sesión</button>
-
+            
             <div class="tabs">
                 <button id="tab-agenda" class="tab-btn active">Agenda 📅</button>
                 <button id="tab-solicitudes" class="tab-btn">Pendientes ⏳</button>
@@ -169,52 +130,42 @@
             <!-- PESTAÑA 3: INGRESOS -->
             <div id="vista-ingresos" class="oculto">
                 <h3 style="margin-top: 0; color: #333; font-size: 18px;">Reporte de Ingresos</h3>
-
+                
                 <div class="card-ingreso" style="background: #f0fdf4; border-color: #bbf7d0;">
-                    <p class="card-ingreso-titulo" style="color: #166534;">Ingresos Totales</p>
+                    <p class="card-ingreso-titulo" style="color: #166534;">Total Histórico Confirmado</p>
                     <p class="card-ingreso-monto" id="ingreso-total" style="color: #15803d;">$0.00</p>
-                    <p class="card-ingreso-sub" id="ingreso-total-sub"></p>
-                </div>
-
-                <div class="card-ingreso" style="background: #fff7ed; border-color: #fed7aa;">
-                    <p class="card-ingreso-titulo" style="color: #9a3412;">⏳ Pendiente por cobrar</p>
-                    <p class="card-ingreso-monto" id="ingreso-pendiente" style="color: #c2410c;">$0.00</p>
-                    <p class="card-ingreso-sub" id="ingreso-pendiente-sub"></p>
                 </div>
 
                 <div style="display: flex; gap: 10px;">
-                    <div class="card-ingreso" style="flex: 1; margin-bottom: 0;">
-                        <p class="card-ingreso-titulo">Hoy</p>
-                        <p class="card-ingreso-monto" id="ingreso-diario" style="font-size: 18px;">$0.00</p>
+                    <div class="card-ingreso" style="flex: 1;">
+                        <p class="card-ingreso-titulo">Ingreso Hoy</p>
+                        <p class="card-ingreso-monto" id="ingreso-diario" style="font-size: 20px;">$0.00</p>
                     </div>
-                    <div class="card-ingreso" style="flex: 1; margin-bottom: 0;">
+                    <div class="card-ingreso" style="flex: 1;">
                         <p class="card-ingreso-titulo">Esta Semana</p>
-                        <p class="card-ingreso-monto" id="ingreso-semanal" style="font-size: 18px;">$0.00</p>
-                    </div>
-                    <div class="card-ingreso" style="flex: 1; margin-bottom: 0;">
-                        <p class="card-ingreso-titulo">Este Mes</p>
-                        <p class="card-ingreso-monto" id="ingreso-mensual" style="font-size: 18px;">$0.00</p>
+                        <p class="card-ingreso-monto" id="ingreso-semanal" style="font-size: 20px;">$0.00</p>
                     </div>
                 </div>
 
-                <label>Por método de pago (total):</label>
+                <div class="card-ingreso">
+                    <p class="card-ingreso-titulo">Ingresos del Mes</p>
+                    <p class="card-ingreso-monto" id="ingreso-mensual">$0.00</p>
+                </div>
+
+                <label>Desglose por Método de Pago (Histórico):</label>
                 <div class="grid-metodos">
-                    <div class="box-metodo"><span>💵 Efectivo</span><b id="monto-efectivo">$0</b></div>
-                    <div class="box-metodo"><span>🏦 BBVA</span><b id="monto-bbva">$0</b></div>
-                    <div class="box-metodo"><span>📱 MPago</span><b id="monto-mpago">$0</b></div>
-                </div>
-                <p id="aviso-sin-metodo" class="card-ingreso-sub oculto" style="color:#c2410c; margin-top:8px;"></p>
-
-                <hr>
-                <label style="margin-top:0;">Desglose de ingresos:</label>
-                <div class="segmento">
-                    <button class="seg-btn active" data-modo="cita">Por cita</button>
-                    <button class="seg-btn" data-modo="dia">Diario</button>
-                    <button class="seg-btn" data-modo="semana">Semanal</button>
-                    <button class="seg-btn" data-modo="mes">Mensual</button>
-                </div>
-                <div id="lista-periodos" class="lista-periodos">
-                    <div class="mensaje-vacio">Cargando...</div>
+                    <div class="box-metodo">
+                        <span>💵 Efectivo</span>
+                        <b id="monto-efectivo">$0</b>
+                    </div>
+                    <div class="box-metodo">
+                        <span>🏦 BBVA</span>
+                        <b id="monto-bbva">$0</b>
+                    </div>
+                    <div class="box-metodo">
+                        <span>📱 MPago</span>
+                        <b id="monto-mpago">$0</b>
+                    </div>
                 </div>
             </div>
 
@@ -223,11 +174,11 @@
                 <h3 style="margin-top: 0; color: #333; font-size: 18px;">Gestión de Disponibilidad</h3>
                 <label>1. Elige el día que quieres abrir</label>
                 <input type="date" id="fecha-seleccionada">
-
+                
                 <div id="seccion-plantilla" class="oculto" style="margin-top: 20px;">
                     <label>2. Toca las horas para abrirlas (rosas) o cerrarlas (grises)</label>
                     <div class="opciones-container" id="plantilla-chips"></div>
-
+                    
                     <div style="margin-top: 15px; background: #fdfdfd; padding: 12px; border-radius: 8px; border: 1px dashed #d66b8d; box-sizing: border-box;">
                         <label style="margin-top: 0; font-size: 13px; color: #555;">➕ Hora personalizada fuera de plantilla</label>
                         <div style="display: flex; gap: 8px; margin-top: 5px;">
@@ -235,7 +186,7 @@
                             <button id="btn-agregar-manual" class="btn-main" style="margin-top: 0; padding: 10px; flex: 1; font-size: 14px; background-color: #555;">+ Añadir</button>
                         </div>
                     </div>
-
+                    
                     <div style="display: flex; gap: 10px; margin-top: 15px;">
                         <button id="btn-plantilla-completa" class="btn-main" style="margin-top: 0; background-color: #fff0f3; color: #d66b8d; border: 1px solid #ffb3c6; flex: 1; font-size: 14px;">☀️ Marcar Todo</button>
                         <button id="btn-guardar-plantilla" class="btn-main" style="margin-top: 0; background-color: #25D366; flex: 1; font-size: 14px;">✓ Guardar Día</button>
@@ -277,12 +228,12 @@
     const seccionPanel = document.getElementById('seccion-panel');
     const btnLogin = document.getElementById('btn-login');
     const btnLogout = document.getElementById('btn-logout');
-
+    
     const tabAgenda = document.getElementById('tab-agenda');
     const tabSolicitudes = document.getElementById('tab-solicitudes');
     const tabIngresos = document.getElementById('tab-ingresos');
     const tabHorarios = document.getElementById('tab-horarios');
-
+    
     const vistaAgenda = document.getElementById('vista-agenda');
     const vistaSolicitudes = document.getElementById('vista-solicitudes');
     const vistaIngresos = document.getElementById('vista-ingresos');
@@ -304,69 +255,9 @@
     const mensajeExito = document.getElementById('mensaje-exito');
 
     const HORARIOS_BASE = ["10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30"];
-    const METODOS = ["Efectivo", "BBVA", "MPago"];
-    const PENDIENTE = "Pendiente";   // cita atendida/agendada pero aún sin cobrar
-    const esPendiente = (c) => c.metodoPago === PENDIENTE;
     let diaActivo = true;
-    let citasPorId = {};          // citas cargadas, para no pasar texto por los onclick
-    let citasConfirmadas = [];    // base del reporte de ingresos
-    let modoDesglose = 'cita';
-    let editServicios = {};       // servicios en edición por cita
 
-    /* ---------- Catálogo de precios (mismos precios de la página) ---------- */
-    const CATALOGO = {
-        "Depilación Facial": [["Ceja",100],["Bozo",60],["Frente",60],["Nariz",40],["Patillas",80],["Barbilla",50],["Cuello",50],["Mejillas",60]],
-        "Depilación Corporal": [["Axilas",100],["Brazos",350],["1/2 Brazo",280],["Manos",50],["Dedos",50],["Bikini Completo",300],["Línea de bikini",260],["Interglúteo",100],["Glúteos",280],["Piernas Completas",450],["1/2 Pierna",350],["Abdomen Completo",250],["1/2 Abdomen",150],["Caminito de ombligo",100],["Espalda Completa",350],["1/2 Espalda",250]],
-        "Paquetes Especiales": [["Paquete Playa",600],["Paquete Completo",680],["Paquete Facial",370]]
-    };
-    const sinAcentos = (t) => String(t).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
-    const PRECIOS = {};
-    Object.values(CATALOGO).flat().forEach(([n, p]) => { PRECIOS[sinAcentos(n)] = p; });
-    PRECIOS['interglutea'] = 100; // así lo guarda la página de reservas
-
-    const parseServicios = (txt) => String(txt || '').split(',').map(s => s.trim()).filter(Boolean);
-    const precioServicio = (nombre) => { const p = PRECIOS[sinAcentos(nombre)]; return p === undefined ? null : p; };
-
-    function resumenPrecio(lista, extra) {
-        let subtotal = 0; const desconocidos = [];
-        lista.forEach(s => { const p = precioServicio(s); if (p === null) desconocidos.push(s); else subtotal += p; });
-        extra = parseFloat(extra) || 0;
-        return { subtotal, extra, total: subtotal + extra, desconocidos, lista };
-    }
-    function totalAutoHTML(r) {
-        const det = r.lista.map(s => { const p = precioServicio(s); return `${esc(s)} ${p === null ? '(sin precio)' : '$' + p}`; }).join(' + ');
-        return `<b>${dinero(r.total)}</b><small>${det || 'Sin servicios'}${r.extra ? ' + Extra $' + r.extra : ''}</small>` +
-            (r.desconocidos.length ? `<small class="aviso">⚠️ Sin precio en el catálogo: ${esc(r.desconocidos.join(', '))}. Agrégalo en Editar o súmalo como Extra.</small>` : '');
-    }
-    function opcionesCatalogo() {
-        return `<option value="">➕ Agregar servicio…</option>` + Object.entries(CATALOGO).map(([g, items]) =>
-            `<optgroup label="${g}">` + items.map(([n, p]) => `<option value="${esc(n)}">${esc(n)} - $${p}</option>`).join('') + `</optgroup>`).join('');
-    }
-
-    /* ---------- Utilidades ---------- */
-    const esc = (t) => String(t ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-    const dinero = (n) => (Number(n) || 0).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
-
-    // Fecha local YYYY-MM-DD (toISOString usa UTC y de noche daba el día siguiente)
-    function fechaLocalStr(d) {
-        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-    }
-    function parseFecha(str) {
-        const [y, m, d] = str.split('-').map(Number);
-        return new Date(y, m - 1, d);
-    }
-    function lunesDe(str) {
-        const d = parseFecha(str);
-        const dow = d.getDay();
-        d.setDate(d.getDate() - (dow === 0 ? 6 : dow - 1));
-        return fechaLocalStr(d);
-    }
-    const primeraMayus = (t) => t.charAt(0).toUpperCase() + t.slice(1);
-    function fmtCorta(d) {
-        return d.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' }).replace('.', '');
-    }
-
-    /* ---------- Navegación de pestañas ---------- */
+    // Navegación Pestañas
     tabAgenda.addEventListener('click', () => { activarPestaña(tabAgenda, vistaAgenda); cargarCitas(); });
     tabSolicitudes.addEventListener('click', () => { activarPestaña(tabSolicitudes, vistaSolicitudes); cargarCitas(); });
     tabIngresos.addEventListener('click', () => { activarPestaña(tabIngresos, vistaIngresos); calcularIngresos(); });
@@ -379,36 +270,18 @@
         vista.classList.remove('oculto');
     }
 
-    /* ---------- Autenticación ---------- */
-    async function iniciarSesion() {
-        const correo = document.getElementById('email').value.trim();
-        const clave = document.getElementById('password').value;
-        if (!correo || !clave) { alert("Escribe tu correo y contraseña."); return; }
-        try { await signInWithEmailAndPassword(auth, correo, clave); }
-        catch (e) {
-            console.error(e);
-            const msgs = {
-                'auth/invalid-credential': 'Correo o contraseña incorrectos.',
-                'auth/wrong-password': 'Contraseña incorrecta.',
-                'auth/user-not-found': 'Ese correo no está registrado.',
-                'auth/invalid-email': 'El correo no es válido.',
-                'auth/too-many-requests': 'Demasiados intentos. Espera unos minutos e intenta de nuevo.',
-                'auth/network-request-failed': 'Sin conexión o bloqueado. Revisa tu internet.',
-                'auth/unauthorized-domain': 'Este dominio no está autorizado en Firebase (Authentication > Settings > Authorized domains).',
-                'auth/operation-not-supported-in-this-environment': 'No funciona abriendo el archivo directo en tu computadora; ábrelo desde tu página web publicada.'
-            };
-            alert((msgs[e.code] || 'No se pudo entrar.') + '\n\nCódigo: ' + (e.code || e.message));
-        }
-    }
-    btnLogin.addEventListener('click', iniciarSesion);
-    document.getElementById('password').addEventListener('keydown', (e) => { if (e.key === 'Enter') iniciarSesion(); });
+    // Autenticación
+    btnLogin.addEventListener('click', async () => {
+        try { await signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('password').value); } 
+        catch (e) { alert("Acceso denegado."); }
+    });
     btnLogout.addEventListener('click', () => signOut(auth));
 
     onAuthStateChanged(auth, (user) => {
         if (user) {
             seccionLogin.classList.add('oculto');
             seccionPanel.classList.remove('oculto');
-            const hoy = fechaLocalStr(new Date());
+            const hoy = new Date().toISOString().split('T')[0];
             filtroFechaAgenda.value = hoy;
             fechaInput.value = hoy;
             cargarCitas();
@@ -419,7 +292,7 @@
         }
     });
 
-    /* ---------- Citas ---------- */
+    // Cargar Citas
     async function cargarCitas() {
         listaAgendaContainer.innerHTML = "<div class='mensaje-vacio'>Cargando...</div>";
         listaSolicitudesContainer.innerHTML = "<div class='mensaje-vacio'>Cargando...</div>";
@@ -428,11 +301,9 @@
             const snapshot = await getDocs(collection(db, "citas"));
             let confirmadasDelDia = [];
             let pendientesGlobales = [];
-            citasPorId = {};
 
-            snapshot.forEach(d => {
-                const data = { id: d.id, ...d.data() };
-                citasPorId[d.id] = data;
+            snapshot.forEach(doc => {
+                const data = { id: doc.id, ...doc.data() };
                 if (data.estado === 'confirmado') {
                     if (data.fecha === filtroFechaAgenda.value) confirmadasDelDia.push(data);
                 } else {
@@ -441,215 +312,190 @@
             });
 
             if (confirmadasDelDia.length === 0) {
-                listaAgendaContainer.innerHTML = `<div class='mensaje-vacio'>No tienes citas confirmadas para el día ${esc(filtroFechaAgenda.value)}.</div>`;
+                listaAgendaContainer.innerHTML = `<div class='mensaje-vacio'>No tienes citas confirmadas para el día ${filtrofechaAgendaValue = filtroFechaAgenda.value}.</div>`;
             } else {
                 listaAgendaContainer.innerHTML = "";
-                confirmadasDelDia.sort((a, b) => (a.hora || '').localeCompare(b.hora || '')).forEach(cita => {
+                confirmadasDelDia.sort((a,b) => a.hora.localeCompare(b.hora)).forEach(cita => {
                     listaAgendaContainer.innerHTML += generarHTMLTarjeta(cita, true);
                 });
-
             }
 
             if (pendientesGlobales.length === 0) {
                 listaSolicitudesContainer.innerHTML = "<div class='mensaje-vacio'>No hay solicitudes pendientes.</div>";
             } else {
                 listaSolicitudesContainer.innerHTML = "";
-                pendientesGlobales.sort((a, b) => (a.fecha || '').localeCompare(b.fecha || '')).forEach(cita => {
+                pendientesGlobales.sort((a,b) => a.fecha.localeCompare(b.fecha)).forEach(cita => {
                     listaSolicitudesContainer.innerHTML += generarHTMLTarjeta(cita, false);
                 });
             }
         } catch (e) { console.error(e); }
     }
 
-    function opcionesMetodo(actual, conVacio) {
-        return (conVacio ? `<option value="" ${!actual ? 'selected' : ''}>Sin cambiar / sin método</option>` : '') +
-            METODOS.map(m => `<option value="${m}" ${actual === m ? 'selected' : ''}>${m}</option>`).join('') +
-            (conVacio ? `<option value="${PENDIENTE}" ${actual === PENDIENTE ? 'selected' : ''}>⏳ Pendiente (por cobrar)</option>` : '');
-    }
-
-    function chipsServiciosHTML(id) {
-        const lista = editServicios[id] || [];
-        if (!lista.length) return '<span style="font-size:12px; color:#999;">Sin servicios</span>';
-        return lista.map((s, i) => {
-            const p = precioServicio(s);
-            return `<span class="serv-chip">${esc(s)} <b>${p === null ? '¿$?' : '$' + p}</b><button type="button" onclick="quitarServicio('${id}', ${i})">✕</button></span>`;
-        }).join('');
-    }
-
     function generarHTMLTarjeta(cita, esAgenda) {
-        const id = esc(cita.id);
-        const tieneMetodo = METODOS.includes(cita.metodoPago);
-        const pendiente = esPendiente(cita);
-        const metodoPagoText = pendiente ? '⏳ Pago pendiente' : tieneMetodo ? `💳 Pago: ${esc(cita.metodoPago)}` : '💳 Pago: Sin registrar';
-        editServicios[cita.id] = parseServicios(cita.servicios);
-        const r = resumenPrecio(editServicios[cita.id], cita.extra);
-        const precioMostrar = (cita.estado === 'confirmado' && cita.precio) ? cita.precio : r.total;
+        // Soporte para pagos mixtos o método único
+        let textoPago = "💳 Pago: Sin registrar";
+        if (cita.pagoMix && cita.pagoMix.length > 0) {
+            textoPago = cita.pagoMix.map(p => `${p.metodo}: $${p.monto}`).join(' | ');
+        } else if (cita.metodoPago) {
+            textoPago = `${cita.metodoPago}: $${cita.precio || 0}`;
+        }
+        const totalCita = cita.precio || 0;
 
         return `
             <div class="cita-card ${esAgenda ? 'confirmada' : ''}">
                 <div class="cita-header">
-                    <h4 class="cita-nombre">👤 ${esc(cita.nombre)}</h4>
-                    <span class="cita-hora-badge">${esc(cita.hora)}</span>
+                    <h4 class="cita-nombre">👤 ${cita.nombre}</h4>
+                    <span class="cita-hora-badge">${cita.hora}</span>
                 </div>
-                ${!esAgenda ? `<p style="font-size:12px; color:#d66b8d; font-weight:bold; margin-bottom:5px;">📅 Fecha: ${esc(cita.fecha)}</p>` : ''}
-                <p class="cita-servicios">✨ <b>Servicios:</b> ${esc(cita.servicios)}</p>
+                ${!esAgenda ? `<p style="font-size:12px; color:#d66b8d; font-weight:bold; margin-bottom:5px;">📅 Fecha: ${cita.fecha}</p>` : ''}
+                <p class="cita-servicios">✨ <b>Servicios:</b> ${cita.servicios}</p>
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span class="badge-pago ${tieneMetodo ? '' : 'sin-pago'}">${metodoPagoText}</span>
-                    <b style="color:#25D366; font-size:15px;">${dinero(precioMostrar)}</b>
+                    <span class="badge-pago">${textoPago}</span>
+                    <b style="color:#25D366; font-size:15px;">Total: $${totalCita}</b>
                 </div>
 
                 <div class="cita-acciones">
                     ${!esAgenda ? `
                         <div style="background:#f9f9f9; padding:8px; border-radius:6px; border:1px solid #eee;">
-                            <label style="margin-top:0; font-size:11px;">Total a cobrar (automático) y método de pago:</label>
-                            <div class="total-auto">${totalAutoHTML(r)}</div>
-                            <select id="metodo-pago-${id}" style="padding:6px; font-size:13px; margin-bottom:5px;">
-                                ${opcionesMetodo(cita.metodoPago, false)}
-                            </select>
-                            <button class="btn-confirmar" style="width:100%;" onclick="confirmarPago('${id}')">✓ Confirmar Pago</button>
+                            <label style="margin-top:0; font-size:11px;">Pago 1 (Método y Monto):</label>
+                            <div style="display:flex; gap:5px; margin-bottom:5px;">
+                                <select id="m1-metodo-${cita.id}" style="padding:5px; font-size:12px; flex:1;">
+                                    <option value="Efectivo">Efectivo</option>
+                                    <option value="BBVA">BBVA</option>
+                                    <option value="MPago">MPago</option>
+                                </select>
+                                <input type="number" id="m1-monto-${cita.id}" placeholder="Monto $" style="padding:5px; font-size:12px; flex:1;">
+                            </div>
+
+                            <label style="margin-top:0; font-size:11px;">Pago 2 (Opcional - Mixto):</label>
+                            <div style="display:flex; gap:5px; margin-bottom:8px;">
+                                <select id="m2-metodo-${cita.id}" style="padding:5px; font-size:12px; flex:1;">
+                                    <option value="">-- Ninguno --</option>
+                                    <option value="Efectivo">Efectivo</option>
+                                    <option value="BBVA">BBVA</option>
+                                    <option value="MPago">MPago</option>
+                                </select>
+                                <input type="number" id="m2-monto-${cita.id}" placeholder="Monto $" style="padding:5px; font-size:12px; flex:1;">
+                            </div>
+
+                            <button class="btn-confirmar" style="width:100%;" onclick="confirmarPago('${cita.id}')">✓ Confirmar Pago</button>
                         </div>
                     ` : `
-                        <div class="pago-rapido">
-                            <label>💳 Pago realizado con:</label>
-                            <div class="metodos-botones" id="metodos-${id}" data-sel="${(tieneMetodo || pendiente) ? esc(cita.metodoPago) : ''}">
-                                ${METODOS.map(m => `<button type="button" class="metodo-btn ${cita.metodoPago === m ? 'sel' : ''}" onclick="elegirMetodo('${id}','${m}')">${m === 'Efectivo' ? '💵' : m === 'BBVA' ? '🏦' : '📱'} ${m}</button>`).join('')}
-                                <button type="button" class="metodo-btn pend ${pendiente ? 'sel' : ''}" onclick="elegirMetodo('${id}','${PENDIENTE}')">⏳ Pendiente (aún no pagan)</button>
-                            </div>
-                            <div class="total-auto">${totalAutoHTML(r)}</div>
-                            <button class="btn-confirmar" style="width:100%;" onclick="guardarPagoRapido('${id}')">✓ Guardar pago</button>
-                        </div>
+                        <button class="btn-editar" onclick="mostrarReasignar('${cita.id}')">✏️ Reasignar Hora / Fecha y Pagos</button>
                     `}
-                    <button class="btn-editar" onclick="mostrarReasignar('${id}')">✏️ Editar Cita / Servicios / Pago / Hora</button>
-
-                    <!-- Panel desplegable -->
-                    <div id="edit-panel-${id}" class="panel-editar-hora oculto">
-                        <label>Servicios de la cita:</label>
-                        <div class="serv-lista" id="edit-servs-${id}">${chipsServiciosHTML(id)}</div>
-                        <div class="fila-agregar">
-                            <select id="edit-add-${id}">${opcionesCatalogo()}</select>
-                            <button type="button" onclick="agregarServicio('${id}')">Añadir</button>
+                    
+                    <!-- Panel desplegable para editar fecha, hora y pagos mixtos -->
+                    <div id="edit-panel-${cita.id}" class="panel-editar-hora oculto">
+                        <label>Pago 1 (Método y Monto):</label>
+                        <div style="display:flex; gap:5px; margin-bottom:5px;">
+                            <select id="edit-m1-metodo-${cita.id}" style="padding:5px; font-size:12px; flex:1;">
+                                <option value="Efectivo" ${cita.pagoMix && cita.pagoMix[0]?.metodo === 'Efectivo' ? 'selected' : ''}>Efectivo</option>
+                                <option value="BBVA" ${cita.pagoMix && cita.pagoMix[0]?.metodo === 'BBVA' ? 'selected' : ''}>BBVA</option>
+                                <option value="MPago" ${cita.pagoMix && cita.pagoMix[0]?.metodo === 'MPago' ? 'selected' : ''}>MPago</option>
+                            </select>
+                            <input type="number" id="edit-m1-monto-${cita.id}" value="${cita.pagoMix && cita.pagoMix[0] ? cita.pagoMix[0].monto : (cita.precio || 0)}" style="padding:5px; font-size:12px; flex:1;">
                         </div>
 
-                        <label>Cargo extra ($) — ej. vello grueso (opcional):</label>
-                        <input type="number" id="edit-extra-${id}" value="${esc(parseFloat(cita.extra) || 0)}" min="0" oninput="refrescarEdicion('${id}')">
-
-                        <label>Total (automático):</label>
-                        <div class="total-auto" id="edit-total-${id}">${totalAutoHTML(r)}</div>
-
-                        <label>Método de Pago:</label>
-                        <select id="edit-metodo-${id}">
-                            ${opcionesMetodo(cita.metodoPago, true)}
-                        </select>
+                        <label>Pago 2 (Opcional - Mixto):</label>
+                        <div style="display:flex; gap:5px; margin-bottom:5px;">
+                            <select id="edit-m2-metodo-${cita.id}" style="padding:5px; font-size:12px; flex:1;">
+                                <option value="">-- Ninguno --</option>
+                                <option value="Efectivo" ${cita.pagoMix && cita.pagoMix[1]?.metodo === 'Efectivo' ? 'selected' : ''}>Efectivo</option>
+                                <option value="BBVA" ${cita.pagoMix && cita.pagoMix[1]?.metodo === 'BBVA' ? 'selected' : ''}>BBVA</option>
+                                <option value="MPago" ${cita.pagoMix && cita.pagoMix[1]?.metodo === 'MPago' ? 'selected' : ''}>MPago</option>
+                            </select>
+                            <input type="number" id="edit-m2-monto-${cita.id}" value="${cita.pagoMix && cita.pagoMix[1] ? cita.pagoMix[1].monto : ''}" style="padding:5px; font-size:12px; flex:1;">
+                        </div>
 
                         <label>Nueva Fecha:</label>
-                        <input type="date" id="nueva-fecha-${id}" value="${esc(cita.fecha)}">
-
+                        <input type="date" id="nueva-fecha-${cita.id}" value="${cita.fecha}">
+                        
                         <label>Nueva Hora:</label>
-                        <input type="time" id="nueva-hora-${id}" value="${esc(cita.hora)}">
-
-                        <button class="btn-confirmar" style="width: 100%; margin-top: 5px;" onclick="guardarReasignacion('${id}')">✓ Guardar Cambios</button>
+                        <input type="time" id="nueva-hora-${cita.id}" value="${cita.hora}">
+                        
+                        <button class="btn-confirmar" style="width: 100%; margin-top: 8px;" onclick="guardarReasignacion('${cita.id}', '${cita.fecha}', '${cita.hora}')">✓ Guardar Cambios</button>
                     </div>
 
-                    <div class="acciones-rojas">
-                        <button class="btn-cancelar" onclick="eliminarCita('${id}')">❌ Borrar</button>
-                        <button class="btn-liberar" onclick="liberarCita('${id}')">🔓 Liberar Hora</button>
+                    <div class="acciones-rojas" style="margin-top: 8px;">
+                        <button class="btn-cancelar" onclick="eliminarCita('${cita.id}', '${cita.nombre}')">❌ Borrar</button>
+                        <button class="btn-liberar" onclick="liberarCita('${cita.id}', '${cita.fecha}', '${cita.hora}', '${cita.nombre}')">🔓 Liberar Hora</button>
                     </div>
                 </div>
             </div>
         `;
     }
 
-    /* ---------- Acciones de citas ---------- */
+    // Funciones globales de Citas
     window.mostrarReasignar = (id) => {
-        document.getElementById(`edit-panel-${id}`).classList.toggle('oculto');
-    };
-
-    window.elegirMetodo = (id, metodo) => {
-        const cont = document.getElementById(`metodos-${id}`);
-        cont.dataset.sel = metodo;
-        cont.querySelectorAll('.metodo-btn').forEach(b => {
-            b.classList.toggle('sel', b.textContent.includes(metodo));
-        });
-    };
-
-    // Edición de servicios (el total se recalcula solo)
-    window.refrescarEdicion = (id) => {
-        document.getElementById(`edit-servs-${id}`).innerHTML = chipsServiciosHTML(id);
-        const extra = document.getElementById(`edit-extra-${id}`).value;
-        document.getElementById(`edit-total-${id}`).innerHTML = totalAutoHTML(resumenPrecio(editServicios[id] || [], extra));
-    };
-    window.agregarServicio = (id) => {
-        const sel = document.getElementById(`edit-add-${id}`);
-        if (!sel.value) return;
-        (editServicios[id] = editServicios[id] || []).push(sel.value);
-        sel.value = '';
-        refrescarEdicion(id);
-    };
-    window.quitarServicio = (id, i) => {
-        (editServicios[id] || []).splice(i, 1);
-        refrescarEdicion(id);
-    };
-
-    function avisarSinPrecio(r) {
-        return r.desconocidos.length === 0 ||
-            confirm(`Estos servicios no tienen precio en el catálogo y se cobrarán en $0:\n${r.desconocidos.join(', ')}\n\n¿Guardar de todos modos?`);
-    }
-
-    window.guardarPagoRapido = async (id) => {
-        const cita = citasPorId[id];
-        if (!cita) return;
-        const metodo = document.getElementById(`metodos-${id}`).dataset.sel;
-        if (!METODOS.includes(metodo) && metodo !== PENDIENTE) { alert("Elige con qué se realizó el pago (Efectivo, BBVA o MPago) o marca Pendiente."); return; }
-        const r = resumenPrecio(parseServicios(cita.servicios), cita.extra);
-        if (!avisarSinPrecio(r)) return;
-        try {
-            await updateDoc(doc(db, "citas", id), { metodoPago: metodo, precio: r.total });
-            cargarCitas();
-        } catch (e) { alert("No se pudo guardar el pago."); console.error(e); }
+        const panel = document.getElementById(`edit-panel-${id}`);
+        panel.classList.toggle('oculto');
     };
 
     window.confirmarPago = async (id) => {
-        const cita = citasPorId[id];
-        if (!cita) return;
-        const metodo = document.getElementById(`metodo-pago-${id}`).value;
-        const r = resumenPrecio(parseServicios(cita.servicios), cita.extra);
-        if (!avisarSinPrecio(r)) return;
-        if (!confirm(`¿Confirmar pago de ${dinero(r.total)} con ${metodo}?`)) return;
+        const m1Metodo = document.getElementById(`m1-metodo-${id}`).value;
+        const m1Monto = parseFloat(document.getElementById(`m1-monto-${id}`).value) || 0;
+        
+        const m2Metodo = document.getElementById(`m2-metodo-${id}`).value;
+        const m2Monto = parseFloat(document.getElementById(`m2-monto-${id}`).value) || 0;
 
-        await updateDoc(doc(db, "citas", id), {
+        let pagoMix = [{ metodo: m1Metodo, monto: m1Monto }];
+        let total = m1Monto;
+
+        if (m2Metodo && m2Monto > 0) {
+            pagoMix.push({ metodo: m2Metodo, monto: m2Monto });
+            total += m2Monto;
+        }
+
+        if (!confirm(`¿Confirmar pago total de $${total}?`)) return;
+
+        await updateDoc(doc(db, "citas", id), { 
             estado: "confirmado",
-            metodoPago: metodo,
-            precio: r.total
+            pagoMix: pagoMix,
+            precio: total,
+            metodoPago: pagoMix.length > 1 ? "Mixto" : m1Metodo
         });
         cargarCitas();
     };
 
-    window.guardarReasignacion = async (id) => {
-        const cita = citasPorId[id];
-        if (!cita) return;
+    window.guardarReasignacion = async (id, fechaVieja, horaVieja) => {
         const nuevaFecha = document.getElementById(`nueva-fecha-${id}`).value;
         const nuevaHora = document.getElementById(`nueva-hora-${id}`).value;
-        const nuevoMetodo = document.getElementById(`edit-metodo-${id}`).value;
-        const extra = parseFloat(document.getElementById(`edit-extra-${id}`).value) || 0;
-        const lista = editServicios[id] || [];
 
-        if (!nuevaFecha || !nuevaHora) { alert("Selecciona fecha y hora válidas."); return; }
-        if (lista.length === 0) { alert("La cita debe tener al menos un servicio."); return; }
-        const r = resumenPrecio(lista, extra);
-        if (!avisarSinPrecio(r)) return;
+        const m1Metodo = document.getElementById(`edit-m1-metodo-${id}`).value;
+        const m1Monto = parseFloat(document.getElementById(`edit-m1-monto-${id}`).value) || 0;
+        
+        const m2Metodo = document.getElementById(`edit-m2-metodo-${id}`).value;
+        const m2Monto = parseFloat(document.getElementById(`edit-m2-monto-${id}`).value) || 0;
+
+        let pagoMix = [{ metodo: m1Metodo, monto: m1Monto }];
+        let total = m1Monto;
+
+        if (m2Metodo && m2Monto > 0) {
+            pagoMix.push({ metodo: m2Metodo, monto: m2Monto });
+            total += m2Monto;
+        }
+
+        if (!nuevaFecha || !nuevaHora) {
+            alert("Selecciona fecha y hora válidas.");
+            return;
+        }
 
         try {
-            const cambios = { fecha: nuevaFecha, hora: nuevaHora, servicios: lista.join(', '), extra: extra, precio: r.total };
-            if (nuevoMetodo) cambios.metodoPago = nuevoMetodo;
-            await updateDoc(doc(db, "citas", id), cambios);
+            await updateDoc(doc(db, "citas", id), {
+                fecha: nuevaFecha,
+                hora: nuevaHora,
+                pagoMix: pagoMix,
+                precio: total,
+                metodoPago: pagoMix.length > 1 ? "Mixto" : m1Metodo
+            });
 
-            if (cita.fecha !== nuevaFecha || cita.hora !== nuevaHora) {
-                await setDoc(doc(db, "disponibilidad", cita.fecha), {
-                    horarios: arrayUnion(cita.hora)
+            if (fechaVieja !== nuevaFecha || horaVieja !== nuevaHora) {
+                await setDoc(doc(db, "disponibilidad", fechaVieja), { 
+                    horarios: arrayUnion(horaVieja) 
                 }, { merge: true });
             }
 
-            alert("Cita actualizada correctamente.");
+            alert("Cita y pagos actualizados correctamente.");
             cargarCitas();
             cargarHorariosDisponibles();
         } catch (e) {
@@ -658,173 +504,106 @@
         }
     };
 
-    window.eliminarCita = async (id) => {
-        const cita = citasPorId[id];
-        if (!confirm(`¿Borrar cita de ${cita ? cita.nombre : ''}?`)) return;
+    window.eliminarCita = async (id, nombre) => {
+        if (!confirm(`¿Borrar cita de ${nombre}?`)) return;
         await deleteDoc(doc(db, "citas", id));
         cargarCitas();
     };
 
-    window.liberarCita = async (id) => {
-        const cita = citasPorId[id];
-        if (!cita) return;
-        if (!confirm(`¿Cancelar cita de ${cita.nombre} y abrir la hora ${cita.hora} en la web?`)) return;
+    window.liberarCita = async (id, fecha, hora, nombre) => {
+        if (!confirm(`¿Cancelar cita de ${nombre} y abrir la hora ${hora} en la web?`)) return;
         await deleteDoc(doc(db, "citas", id));
-        await setDoc(doc(db, "disponibilidad", cita.fecha), { horarios: arrayUnion(cita.hora), activo: true }, { merge: true });
+        await setDoc(doc(db, "disponibilidad", fecha), { horarios: arrayUnion(hora), activo: true }, { merge: true });
         cargarCitas();
         cargarHorariosDisponibles();
     };
 
-    /* ---------- Ingresos ---------- */
-    // Agrupa las citas confirmadas por día, semana (lunes a domingo) o mes
-    function agruparIngresos(citas, modo) {
-        const grupos = {};
-        citas.forEach(c => {
-            if (!c.fecha) return;
-            const key = modo === 'dia' ? c.fecha : modo === 'semana' ? lunesDe(c.fecha) : c.fecha.slice(0, 7);
-            const g = grupos[key] || (grupos[key] = { key, total: 0, n: 0, Efectivo: 0, BBVA: 0, MPago: 0, sin: 0, pend: 0 });
-            const m = parseFloat(c.precio) || 0;
-            g.n += 1;
-            if (esPendiente(c)) { g.pend += m; return; }
-            g.total += m;
-            if (METODOS.includes(c.metodoPago)) g[c.metodoPago] += m; else g.sin += m;
-        });
-        return Object.values(grupos).sort((a, b) => b.key.localeCompare(a.key));
-    }
-
-    function etiquetaPeriodo(key, modo) {
-        if (modo === 'dia') {
-            return parseFecha(key).toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' }).replace('.', '');
-        }
-        if (modo === 'semana') {
-            const ini = parseFecha(key);
-            const fin = new Date(ini); fin.setDate(ini.getDate() + 6);
-            return `Semana ${fmtCorta(ini)} – ${fmtCorta(fin)}`;
-        }
-        const [y, m] = key.split('-').map(Number);
-        return new Date(y, m - 1, 1).toLocaleDateString('es-MX', { month: 'long', year: 'numeric' });
-    }
-
-    function pintarDesglose() {
-        const cont = document.getElementById('lista-periodos');
-        if (citasConfirmadas.length === 0) {
-            cont.innerHTML = "<div class='mensaje-vacio'>Aún no hay ingresos confirmados.</div>";
-            return;
-        }
-
-        if (modoDesglose === 'cita') {
-            const lista = [...citasConfirmadas].sort((a, b) =>
-                (b.fecha || '').localeCompare(a.fecha || '') || (b.hora || '').localeCompare(a.hora || ''));
-            cont.innerHTML = lista.map(c => {
-                const fecha = c.fecha ? primeraMayus(parseFecha(c.fecha).toLocaleDateString('es-MX', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }).replace(/\./g, '')) : 'Sin fecha';
-                const metodo = esPendiente(c) ? '<span style="color:#c2410c;">⏳ Pendiente de pago</span>' : METODOS.includes(c.metodoPago) ? esc(c.metodoPago) : '<span style="color:#c2410c;">Sin método</span>';
-                return `
-                <div class="periodo-row">
-                    <div class="periodo-top">
-                        <span class="periodo-label">👤 ${esc(c.nombre)}</span>
-                        <span class="periodo-total" ${esPendiente(c) ? 'style="color:#c2410c;"' : ''}>${dinero(c.precio)}</span>
-                    </div>
-                    <div class="periodo-det"><span>✨ ${esc(c.servicios)}</span></div>
-                    <div class="periodo-det"><span>📅 ${esc(fecha)} · ${esc(c.hora || '')}</span><span>💳 <b>${metodo}</b></span></div>
-                </div>`;
-            }).join('');
-            return;
-        }
-
-        const grupos = agruparIngresos(citasConfirmadas, modoDesglose);
-        cont.innerHTML = grupos.map(g => `
-            <div class="periodo-row">
-                <div class="periodo-top">
-                    <span class="periodo-label">${esc(primeraMayus(etiquetaPeriodo(g.key, modoDesglose)))}</span>
-                    <span class="periodo-total">${dinero(g.total)}</span>
-                </div>
-                <div class="periodo-det">
-                    <span>${g.n} cita${g.n === 1 ? '' : 's'}</span>
-                    <span>💵 <b>${dinero(g.Efectivo)}</b></span>
-                    <span>🏦 <b>${dinero(g.BBVA)}</b></span>
-                    <span>📱 <b>${dinero(g.MPago)}</b></span>
-                    ${g.sin ? `<span style="color:#c2410c;">⚠️ Sin método <b>${dinero(g.sin)}</b></span>` : ''}
-                    ${g.pend ? `<span style="color:#c2410c;">⏳ Pendiente <b>${dinero(g.pend)}</b></span>` : ''}
-                </div>
-            </div>`).join('');
-    }
-
-    document.querySelectorAll('.seg-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            modoDesglose = btn.dataset.modo;
-            document.querySelectorAll('.seg-btn').forEach(b => b.classList.toggle('active', b === btn));
-            pintarDesglose();
-        });
-    });
-
+    // Lógica de Ingresos (Compatible con Pagos Mixtos)
     async function calcularIngresos() {
         try {
             const snapshot = await getDocs(collection(db, "citas"));
-            citasConfirmadas = [];
-            snapshot.forEach(d => {
-                const c = d.data();
-                if (c.estado === 'confirmado') citasConfirmadas.push(c);
+            let total = 0, diario = 0, semanal = 0, mensual = 0;
+            let efectivo = 0, bbva = 0, mpago = 0;
+
+            const hoyObj = new Date();
+            const hoyStr = hoyObj.toISOString().split('T')[0];
+
+            const diaSemana = hoyObj.getDay();
+            const inicioSemana = new Date(hoyObj);
+            inicioSemana.setDate(hoyObj.getDate() - (diaSemana === 0 ? 6 : diaSemana - 1));
+            inicioSemana.setHours(0,0,0,0);
+
+            const mesActual = hoyObj.getMonth();
+            const anioActual = hoyObj.getFullYear();
+
+            snapshot.forEach(doc => {
+                const cita = doc.data();
+                if (cita.estado === 'confirmado') {
+                    let montoCita = 0;
+
+                    // Procesar desglose si tiene pagos mixtos
+                    if (cita.pagoMix && cita.pagoMix.length > 0) {
+                        cita.pagoMix.forEach(p => {
+                            const m = parseFloat(p.monto) || 0;
+                            montoCita += m;
+                            if (p.metodo === 'Efectivo') efectivo += m;
+                            else if (p.metodo === 'BBVA') bbva += m;
+                            else if (p.metodo === 'MPago') mpago += m;
+                        });
+                    } else {
+                        // Compatibilidad con formato anterior único
+                        montoCita = parseFloat(cita.precio) || 0;
+                        if (cita.metodoPago === 'Efectivo') efectivo += montoCita;
+                        else if (cita.metodoPago === 'BBVA') bbva += montoCita;
+                        else if (cita.metodoPago === 'MPago') mpago += montoCita;
+                        else efectivo += montoCita; // por defecto
+                    }
+
+                    total += montoCita;
+
+                    if (cita.fecha) {
+                        const [year, month, day] = cita.fecha.split('-').map(Number);
+                        const fechaCita = new Date(year, month - 1, day);
+
+                        if (cita.fecha === hoyStr) diario += montoCita;
+                        if (fechaCita >= inicioSemana && fechaCita <= hoyObj) semanal += montoCita;
+                        if (month - 1 === mesActual && year === anioActual) mensual += montoCita;
+                    }
+                }
             });
 
-            const hoyStr = fechaLocalStr(new Date());
-            const sumar = (lista) => lista.reduce((s, c) => s + (parseFloat(c.precio) || 0), 0);
-            const cobradas = citasConfirmadas.filter(c => !esPendiente(c));
-            const porCobrar = citasConfirmadas.filter(esPendiente);
-            const total = sumar(cobradas);
-            const diario = sumar(cobradas.filter(c => c.fecha === hoyStr));
-            const semanal = sumar(cobradas.filter(c => c.fecha && lunesDe(c.fecha) === lunesDe(hoyStr)));
-            const mensual = sumar(cobradas.filter(c => c.fecha && c.fecha.slice(0, 7) === hoyStr.slice(0, 7)));
+            document.getElementById('ingreso-total').textContent = `$${total.toFixed(2)}`;
+            document.getElementById('ingreso-diario').textContent = `$${diario.toFixed(2)}`;
+            document.getElementById('ingreso-semanal').textContent = `$${semanal.toFixed(2)}`;
+            document.getElementById('ingreso-mensual').textContent = `$${mensual.toFixed(2)}`;
 
-            const porMetodo = { Efectivo: 0, BBVA: 0, MPago: 0, sin: 0 };
-            cobradas.forEach(c => {
-                const m = parseFloat(c.precio) || 0;
-                if (METODOS.includes(c.metodoPago)) porMetodo[c.metodoPago] += m; else porMetodo.sin += m;
-            });
+            document.getElementById('monto-efectivo').textContent = `$${efectivo.toFixed(2)}`;
+            document.getElementById('monto-bbva').textContent = `$${bbva.toFixed(2)}`;
+            document.getElementById('monto-mpago').textContent = `$${mpago.toFixed(2)}`;
 
-            document.getElementById('ingreso-total').textContent = dinero(total);
-            document.getElementById('ingreso-total-sub').textContent = `${cobradas.length} cita${cobradas.length === 1 ? '' : 's'} cobrada${cobradas.length === 1 ? '' : 's'}`;
-            document.getElementById('ingreso-pendiente').textContent = dinero(sumar(porCobrar));
-            document.getElementById('ingreso-pendiente-sub').textContent = porCobrar.length ? `${porCobrar.length} cita${porCobrar.length === 1 ? '' : 's'} sin cobrar (no suman a tus ingresos hasta que se paguen)` : 'No hay cobros pendientes';
-            document.getElementById('ingreso-diario').textContent = dinero(diario);
-            document.getElementById('ingreso-semanal').textContent = dinero(semanal);
-            document.getElementById('ingreso-mensual').textContent = dinero(mensual);
-            document.getElementById('monto-efectivo').textContent = dinero(porMetodo.Efectivo);
-            document.getElementById('monto-bbva').textContent = dinero(porMetodo.BBVA);
-            document.getElementById('monto-mpago').textContent = dinero(porMetodo.MPago);
-
-            const aviso = document.getElementById('aviso-sin-metodo');
-            if (porMetodo.sin > 0) {
-                aviso.textContent = `⚠️ ${dinero(porMetodo.sin)} sin método de pago registrado (edítalos en Agenda).`;
-                aviso.classList.remove('oculto');
-            } else {
-                aviso.classList.add('oculto');
-            }
-
-            pintarDesglose();
         } catch (e) {
             console.error("Error al calcular ingresos:", e);
-            document.getElementById('lista-periodos').innerHTML = "<div class='mensaje-vacio'>No se pudieron cargar los ingresos.</div>";
         }
     }
 
-    /* ---------- Horarios ---------- */
+    // Horarios
     async function cargarHorariosDisponibles() {
         const f = fechaInput.value;
         if (!f) { seccionPlantilla.classList.add('oculto'); return; }
-
+        
         seccionPlantilla.classList.remove('oculto');
         plantillaChips.innerHTML = "Cargando...";
         btnToggleDia.style.display = 'none';
         estadoVisibilidad.innerHTML = "";
         mensajeExito.style.display = "none";
-
+        
         const snap = await getDoc(doc(db, "disponibilidad", f));
         let horasAbiertas = [];
-
+        
         if (snap.exists()) {
             diaActivo = snap.data().activo !== false;
             horasAbiertas = snap.data().horarios || [];
-
+            
             btnToggleDia.style.display = 'block';
             if (diaActivo) {
                 btnToggleDia.innerHTML = "👁️ Ocultar todo este día al público";
@@ -884,7 +663,7 @@
     btnGuardarPlantilla.addEventListener('click', async () => {
         const f = fechaInput.value;
         if (!f) return;
-
+        
         let horasSeleccionadas = [];
         document.querySelectorAll('#plantilla-chips .chip.activo').forEach(chip => {
             horasSeleccionadas.push(chip.textContent);
@@ -893,11 +672,11 @@
         horasSeleccionadas.sort();
 
         btnGuardarPlantilla.textContent = "Guardando...";
-        await setDoc(doc(db, "disponibilidad", f), {
-            horarios: horasSeleccionadas,
-            activo: diaActivo
+        await setDoc(doc(db, "disponibilidad", f), { 
+            horarios: horasSeleccionadas, 
+            activo: diaActivo 
         }, { merge: true });
-
+        
         btnGuardarPlantilla.textContent = "✓ Guardar Día";
         mensajeExito.style.display = "block";
         setTimeout(() => { mensajeExito.style.display = "none"; }, 3000);
