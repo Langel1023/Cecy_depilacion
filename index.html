@@ -38,6 +38,10 @@
         .checkbox-label { display: block; padding: 8px 0; font-size: 15px; color: #555; cursor: pointer; }
         .checkbox-label input[type="checkbox"] { margin-right: 12px; transform: scale(1.3); accent-color: #d66b8d; cursor: pointer; }
         
+        /* Etiqueta Nuevo Servicio */
+        .badge-nuevo { background-color: #d66b8d; color: #fff; font-size: 10px; font-weight: bold; padding: 2px 7px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.5px; margin-left: 6px; vertical-align: middle; display: inline-block; }
+        .badge-nuevo-blanco { background-color: #fff; color: #b85273; font-size: 10px; font-weight: bold; padding: 2px 7px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.5px; margin-left: 6px; vertical-align: middle; display: inline-block; }
+
         /* Carrusel de Fechas y Horas */
         .carrusel-dias { display: flex; justify-content: space-between; align-items: center; margin: 20px auto; width: 90%; }
         .btn-flecha { background: none; border: none; font-size: 35px; color: #d66b8d; cursor: pointer; padding: 0 10px; font-weight: bold; }
@@ -104,7 +108,13 @@
         <p style="color: #666; font-size: 14px; margin-bottom: 10px;">1. Selecciona uno o más servicios:</p>
         
         <div class="checkbox-group">
-            <div class="grupo-titulo">Depilación Facial</div>
+            <div class="grupo-titulo">Pestañas</div>
+            <label class="checkbox-label">
+                <input type="checkbox" class="servicio-checkbox" value="Aplicación de pestañas ($200)"> 
+                Aplicación de pestañas - $200 <span class="badge-nuevo">Nuevo servicio</span>
+            </label>
+
+            <div class="grupo-titulo" style="margin-top: 15px;">Depilación Facial</div>
             <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Ceja ($100)"> Ceja - $100</label>
             <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Bozo ($60)"> Bozo - $60</label>
             <label class="checkbox-label"><input type="checkbox" class="servicio-checkbox" value="Frente ($60)"> Frente - $60</label>
@@ -216,6 +226,14 @@
 
     <!-- MENÚS DESPLEGABLES -->
     <section class="seccion" style="padding-top: 10px; padding-bottom: 5px;">
+        <details class="acordeon-servicios" open>
+            <summary>≡ Pestañas <span class="badge-nuevo">Nuevo servicio</span> ▼</summary>
+            <div class="servicio-fila">
+                <div class="servicio-nombre">Aplicación de pestañas <span class="badge-nuevo-blanco">Nuevo servicio</span></div>
+                <div class="servicio-precio">$200</div>
+            </div>
+        </details>
+
         <details class="acordeon-servicios">
             <summary>≡ Depilación Facial ▼</summary>
             <div class="servicio-fila"><div class="servicio-nombre">Ceja</div><div class="servicio-precio">$100</div></div>
